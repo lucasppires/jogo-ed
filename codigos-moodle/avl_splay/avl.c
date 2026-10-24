@@ -1,0 +1,198 @@
+/* avl.c
+ * Arvore AVL: BST com balanceamento automatico por rotacoes.
+ * INF01203 - Estruturas de Dados - UFRGS
+ *
+ * Compilar: gcc -Wall -o avl avl.c
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "avl.h"
+
+/* ------------------------------------------------------------------ */
+/*  Auxiliares internos                                                 */
+/* ------------------------------------------------------------------ */
+static int maximo(int a, int b) { return a > b ? a : b; }
+
+static NodoAvl *criarNodo(int dado) {
+    NodoAvl *n = (NodoAvl *) malloc(sizeof(NodoAvl));
+    if (!n) return NULL;
+    n->dado   = dado;
+    n->altura = 0;
+    n->esq    = NULL;
+    n->dir    = NULL;
+    return n;
+}
+
+static void atualizarAltura(NodoAvl *n) {
+    if (n)
+        n->altura = 1 + maximo(avlAltura(n->esq), avlAltura(n->dir));
+}
+
+/* ------------------------------------------------------------------ */
+/*  Altura e fator de balanceamento                                     */
+/* ------------------------------------------------------------------ */
+int avlAltura(const NodoAvl *n) {
+    return n ? n->altura : -1;
+}
+
+/* FB = h(esq) - h(dir). Positivo: pesado a esquerda. */
+int avlFb(const NodoAvl *n) {
+    return n ? avlAltura(n->esq) - avlAltura(n->dir) : 0;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Rotacoes simples                                                    */
+/* ------------------------------------------------------------------ */
+
+/*
+ * Rotacao simples a direita (caso LL):
+ *       y                x
+ *      / \             /   \
+ *     x   T3   ->    T1     y
+ *    / \                   / \
+ *   T1  T2               T2   T3
+ */
+static NodoAvl *rotDir(NodoAvl *y) {
+    NodoAvl *x  = y->esq;
+    NodoAvl *T2 = x->dir;
+    x->dir = y;
+    y->esq = T2;
+    atualizarAltura(y);
+    atualizarAltura(x);
+    return x;
+}
+
+/*
+ * Rotacao simples a esquerda (caso RR):
+ *     x                  y
+ *    / \               /   \
+ *   T1   y    ->      x     T3
+ *       / \          / \
+ *      T2  T3       T1  T2
+ */
+static NodoAvl *rotEsq(NodoAvl *x) {
+    NodoAvl *y  = x->dir;
+    NodoAvl *T2 = y->esq;
+    y->esq = x;
+    x->dir = T2;
+    atualizarAltura(x);
+    atualizarAltura(y);
+    return y;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Reequilibrio: detecta o caso e aplica a rotacao adequada           */
+/* ------------------------------------------------------------------ */
+static NodoAvl *reequilibrar(NodoAvl *raiz) {
+    atualizarAltura(raiz);
+    int fb = avlFb(raiz);
+
+    /* Caso LL: pesado a esquerda, filho esquerdo tambem pesado a esq */
+    if (fb > 1 && avlFb(raiz->esq) >= 0)
+        return rotDir(raiz);
+
+    /* Caso LR: pesado a esquerda, filho esquerdo pesado a dir */
+    if (fb > 1 && avlFb(raiz->esq) < 0) {
+        raiz->esq = rotEsq(raiz->esq);
+        return rotDir(raiz);
+    }
+
+    /* Caso RR: pesado a direita, filho direito tambem pesado a dir */
+    if (fb < -1 && avlFb(raiz->dir) <= 0)
+        return rotEsq(raiz);
+
+    /* Caso RL: pesado a direita, filho direito pesado a esq */
+    if (fb < -1 && avlFb(raiz->dir) > 0) {
+        raiz->dir = rotDir(raiz->dir);
+        return rotEsq(raiz);
+    }
+
+    return raiz; /* ja balanceado */
+}
+
+/* ------------------------------------------------------------------ */
+/*  Operacoes publicas                                                  */
+/* ------------------------------------------------------------------ */
+NodoAvl *avlBuscar(NodoAvl *raiz, int dado) {
+    if (!raiz)          return NULL;
+    if (dado < raiz->dado) return avlBuscar(raiz->esq, dado);
+    if (dado > raiz->dado) return avlBuscar(raiz->dir, dado);
+    return raiz;
+}
+
+NodoAvl *avlInserir(NodoAvl *raiz, int dado) {
+    if (!raiz) return criarNodo(dado);
+    if (dado < raiz->dado)
+        raiz->esq = avlInserir(raiz->esq, dado);
+    else if (dado > raiz->dado)
+        raiz->dir = avlInserir(raiz->dir, dado);
+    else
+        return raiz; /* duplicatas ignoradas */
+    return reequilibrar(raiz);
+}
+
+static NodoAvl *minimo(NodoAvl *n) {
+    while (n->esq) n = n->esq;
+    return n;
+}
+
+NodoAvl *avlRemover(NodoAvl *raiz, int dado) {
+    if (!raiz) return NULL;
+    if (dado < raiz->dado) {
+        raiz->esq = avlRemover(raiz->esq, dado);
+    } else if (dado > raiz->dado) {
+        raiz->dir = avlRemover(raiz->dir, dado);
+    } else {
+        /* Nodo encontrado */
+        if (!raiz->esq || !raiz->dir) {
+            NodoAvl *filho = raiz->esq ? raiz->esq : raiz->dir;
+            free(raiz);
+            return filho;
+        }
+        /* Dois filhos: substitui pelo menor da subarvore direita */
+        NodoAvl *suc = minimo(raiz->dir);
+        raiz->dado = suc->dado;
+        raiz->dir  = avlRemover(raiz->dir, suc->dado);
+    }
+    return reequilibrar(raiz);
+}
+
+NodoAvl *avlDestruir(NodoAvl *raiz) {
+    if (!raiz) return NULL;
+    avlDestruir(raiz->esq);
+    avlDestruir(raiz->dir);
+    free(raiz);
+    return NULL;
+}
+
+void avlEmOrdem(const NodoAvl *raiz) {
+    if (!raiz) return;
+    avlEmOrdem(raiz->esq);
+    printf("%d(h%d) ", raiz->dado, raiz->altura);
+    avlEmOrdem(raiz->dir);
+}
+
+/* ------------------------------------------------------------------ */
+/*  main de demonstracao                                                */
+/* ------------------------------------------------------------------ */
+int main(void) {
+    NodoAvl *raiz = NULL;
+    int chaves[] = {30, 20, 40, 10, 25, 35, 50};
+    int n = 7;
+
+    for (int i = 0; i < n; i++)
+        raiz = avlInserir(raiz, chaves[i]);
+
+    printf("Em-ordem apos insercoes: ");
+    avlEmOrdem(raiz);
+    printf("\nAltura da raiz: %d\n", avlAltura(raiz));
+
+    raiz = avlRemover(raiz, 20);
+    printf("Em-ordem apos remover 20: ");
+    avlEmOrdem(raiz);
+    printf("\n");
+
+    raiz = avlDestruir(raiz);
+    return 0;
+}
