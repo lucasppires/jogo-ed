@@ -1,33 +1,31 @@
-#ifndef LISTADUPLAENC_H
-#define LISTADUPLAENC_H
+#ifndef LISTA_HPP
+#define LISTA_HPP
 
-typedef struct {
-    int cod;
-    char nome[50];
+struct Produto {
+    int   cod;
+    char  nome[50];
     float preco;
-} Produto;
+};
 
-typedef struct str_NodoD NodoD;
-
-struct str_NodoD {
-    NodoD *ant;
-    NodoD *prox;
+struct NodoD {
+    NodoD  *ant;
+    NodoD  *prox;
     Produto dado;
 };
 
-typedef struct {
+struct ListaDuplaEnc {
     NodoD *ini;
     NodoD *fim;
-} ListaDuplaEnc;
+};
 
 void    inicializar(ListaDuplaEnc *l);
 void    imprimir(ListaDuplaEnc *l);
 void    imprimirInverso(ListaDuplaEnc *l);
 Produto acessar(ListaDuplaEnc *l, int cod);
-int     inserirInicio(ListaDuplaEnc *l, Produto prod);
-int     inserirFim(ListaDuplaEnc *l, Produto prod);
-int     removerPorCod(ListaDuplaEnc *l, int cod);
+bool    inserirInicio(ListaDuplaEnc *l, Produto prod);
+bool    inserirFim(ListaDuplaEnc *l, Produto prod);
+bool    removerPorCod(ListaDuplaEnc *l, int cod);
 void    destruir(ListaDuplaEnc *l);
 int     tamanho(ListaDuplaEnc *l);
 
-#endif
+#endif /* LISTA_HPP */

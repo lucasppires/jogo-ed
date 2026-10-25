@@ -1,13 +1,11 @@
-/* avl.c
+/* avl.cpp
  * Arvore AVL: BST com balanceamento automatico por rotacoes.
  * INF01203 - Estruturas de Dados - UFRGS
- *
- * Compilar: gcc -Wall -o avl avl.c
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "avl.h"
+#include <iostream>
+#include <new>
+#include "avl.hpp"
 
 /* ------------------------------------------------------------------ */
 /*  Auxiliares internos                                                 */
@@ -15,12 +13,12 @@
 static int maximo(int a, int b) { return a > b ? a : b; }
 
 static NodoAvl *criarNodo(int dado) {
-    NodoAvl *n = (NodoAvl *) malloc(sizeof(NodoAvl));
-    if (!n) return NULL;
+    NodoAvl *n = new (std::nothrow) NodoAvl;
+    if (!n) return nullptr;
     n->dado   = dado;
     n->altura = 0;
-    n->esq    = NULL;
-    n->dir    = NULL;
+    n->esq    = nullptr;
+    n->dir    = nullptr;
     return n;
 }
 
@@ -115,7 +113,7 @@ static NodoAvl *reequilibrar(NodoAvl *raiz) {
 /*  Operacoes publicas                                                  */
 /* ------------------------------------------------------------------ */
 NodoAvl *avlBuscar(NodoAvl *raiz, int dado) {
-    if (!raiz)          return NULL;
+    if (!raiz)             return nullptr;
     if (dado < raiz->dado) return avlBuscar(raiz->esq, dado);
     if (dado > raiz->dado) return avlBuscar(raiz->dir, dado);
     return raiz;
@@ -138,7 +136,7 @@ static NodoAvl *minimo(NodoAvl *n) {
 }
 
 NodoAvl *avlRemover(NodoAvl *raiz, int dado) {
-    if (!raiz) return NULL;
+    if (!raiz) return nullptr;
     if (dado < raiz->dado) {
         raiz->esq = avlRemover(raiz->esq, dado);
     } else if (dado > raiz->dado) {
@@ -147,7 +145,7 @@ NodoAvl *avlRemover(NodoAvl *raiz, int dado) {
         /* Nodo encontrado */
         if (!raiz->esq || !raiz->dir) {
             NodoAvl *filho = raiz->esq ? raiz->esq : raiz->dir;
-            free(raiz);
+            delete raiz;
             return filho;
         }
         /* Dois filhos: substitui pelo menor da subarvore direita */
@@ -159,40 +157,16 @@ NodoAvl *avlRemover(NodoAvl *raiz, int dado) {
 }
 
 NodoAvl *avlDestruir(NodoAvl *raiz) {
-    if (!raiz) return NULL;
+    if (!raiz) return nullptr;
     avlDestruir(raiz->esq);
     avlDestruir(raiz->dir);
-    free(raiz);
-    return NULL;
+    delete raiz;
+    return nullptr;
 }
 
 void avlEmOrdem(const NodoAvl *raiz) {
     if (!raiz) return;
     avlEmOrdem(raiz->esq);
-    printf("%d(h%d) ", raiz->dado, raiz->altura);
+    std::cout << raiz->dado << "(h" << raiz->altura << ") ";
     avlEmOrdem(raiz->dir);
-}
-
-/* ------------------------------------------------------------------ */
-/*  main de demonstracao                                                */
-/* ------------------------------------------------------------------ */
-int main(void) {
-    NodoAvl *raiz = NULL;
-    int chaves[] = {30, 20, 40, 10, 25, 35, 50};
-    int n = 7;
-
-    for (int i = 0; i < n; i++)
-        raiz = avlInserir(raiz, chaves[i]);
-
-    printf("Em-ordem apos insercoes: ");
-    avlEmOrdem(raiz);
-    printf("\nAltura da raiz: %d\n", avlAltura(raiz));
-
-    raiz = avlRemover(raiz, 20);
-    printf("Em-ordem apos remover 20: ");
-    avlEmOrdem(raiz);
-    printf("\n");
-
-    raiz = avlDestruir(raiz);
-    return 0;
 }

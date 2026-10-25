@@ -1,28 +1,26 @@
-#ifndef PILHAENC_H
-#define PILHAENC_H
+#ifndef PILHA_HPP
+#define PILHA_HPP
 
-typedef struct {
-    int cod;
-    char nome[50];
+struct Produto {
+    int   cod;
+    char  nome[50];
     float preco;
-} Produto;
+};
 
-typedef struct str_Nodo Nodo;
-
-struct str_Nodo {
-    Nodo *prox;
+struct Nodo {
+    Nodo   *prox;
     Produto dado;
 };
 
-typedef struct {
+struct PilhaEnc {
     Nodo *topo;
-} PilhaEnc;
+};
 
 void inicializa(PilhaEnc *p);
-int  estaVazia(PilhaEnc *p);
-int  empilha(PilhaEnc *p, Produto valor);
-int  desempilha(PilhaEnc *p, Produto *valorRemovido);
-int  topo(PilhaEnc *p, Produto *valor);
+bool estaVazia(PilhaEnc *p);
+bool empilha(PilhaEnc *p, Produto valor);
+bool desempilha(PilhaEnc *p, Produto *valorRemovido);
+bool topo(PilhaEnc *p, Produto *valor);
 int  tamanho(PilhaEnc *p);
 
-#endif
+#endif /* PILHA_HPP */

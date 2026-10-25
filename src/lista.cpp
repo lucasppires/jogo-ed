@@ -1,17 +1,31 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "listaDuplaEnc.h"
+#include <iostream>
+#include <iomanip>
+#include <new>
+#include "lista.hpp"
+
+/* Imprime um produto no formato "cod - nome - preco" (preco com 2 casas),
+ * sem alterar a formatacao de std::cout para o resto do programa. */
+static void imprimirProduto(const Produto &p) {
+    std::ios_base::fmtflags flags = std::cout.flags();
+    std::streamsize precisao = std::cout.precision();
+
+    std::cout << p.cod << " - " << p.nome << " - "
+              << std::fixed << std::setprecision(2) << p.preco << '\n';
+
+    std::cout.flags(flags);
+    std::cout.precision(precisao);
+}
 
 void inicializar(ListaDuplaEnc *l) {
-    l->ini = NULL;
-    l->fim = NULL;
+    l->ini = nullptr;
+    l->fim = nullptr;
 }
 
 void imprimir(ListaDuplaEnc *l) {
     NodoD *aux = l->ini;
 
-    while (aux != NULL) {
-        printf("%d - %s - %.2f\n", aux->dado.cod, aux->dado.nome, aux->dado.preco);
+    while (aux != nullptr) {
+        imprimirProduto(aux->dado);
         aux = aux->prox;
     }
 }
@@ -19,8 +33,8 @@ void imprimir(ListaDuplaEnc *l) {
 void imprimirInverso(ListaDuplaEnc *l) {
     NodoD *aux = l->fim;
 
-    while (aux != NULL) {
-        printf("%d - %s - %.2f\n", aux->dado.cod, aux->dado.nome, aux->dado.preco);
+    while (aux != nullptr) {
+        imprimirProduto(aux->dado);
         aux = aux->ant;
     }
 }
@@ -29,7 +43,7 @@ Produto acessar(ListaDuplaEnc *l, int cod) {
     NodoD *aux = l->ini;
     Produto prod = {-1, "", 0.0f};
 
-    while (aux != NULL) {
+    while (aux != nullptr) {
         if (aux->dado.cod == cod)
             return aux->dado;
         aux = aux->prox;
@@ -38,84 +52,84 @@ Produto acessar(ListaDuplaEnc *l, int cod) {
     return prod;
 }
 
-int inserirInicio(ListaDuplaEnc *l, Produto prod) {
-    NodoD *novo = (NodoD*) malloc(sizeof(NodoD));
-    if (novo == NULL)
-        return 0;
+bool inserirInicio(ListaDuplaEnc *l, Produto prod) {
+    NodoD *novo = new (std::nothrow) NodoD;
+    if (novo == nullptr)
+        return false;
 
     novo->dado = prod;
-    novo->ant = NULL;
+    novo->ant  = nullptr;
     novo->prox = l->ini;
 
-    if (l->ini != NULL)
+    if (l->ini != nullptr)
         l->ini->ant = novo; // o antigo início passa a ter um antecessor
     else
         l->fim = novo;      // lista estava vazia: novo nodo também é o fim
 
     l->ini = novo;
-    return 1;
+    return true;
 }
 
-int inserirFim(ListaDuplaEnc *l, Produto prod) {
-    NodoD *novo = (NodoD*) malloc(sizeof(NodoD));
-    if (novo == NULL)
-        return 0;
+bool inserirFim(ListaDuplaEnc *l, Produto prod) {
+    NodoD *novo = new (std::nothrow) NodoD;
+    if (novo == nullptr)
+        return false;
 
     novo->dado = prod;
-    novo->prox = NULL;
-    novo->ant = l->fim;
+    novo->prox = nullptr;
+    novo->ant  = l->fim;
 
-    if (l->fim != NULL)
+    if (l->fim != nullptr)
         l->fim->prox = novo; // o antigo fim passa a apontar para o novo nodo
     else
         l->ini = novo;       // lista estava vazia: novo nodo também é o início
 
     l->fim = novo;
-    return 1;
+    return true;
 }
 
-int removerPorCod(ListaDuplaEnc *l, int cod) {
+bool removerPorCod(ListaDuplaEnc *l, int cod) {
     NodoD *aux = l->ini;
 
-    while (aux != NULL && aux->dado.cod != cod)
+    while (aux != nullptr && aux->dado.cod != cod)
         aux = aux->prox;
 
-    if (aux == NULL) // não encontrado
-        return 0;
+    if (aux == nullptr) // não encontrado
+        return false;
 
-    if (aux->ant != NULL) // existe antecessor: religa por ele
+    if (aux->ant != nullptr) // existe antecessor: religa por ele
         aux->ant->prox = aux->prox;
-    else                  // removendo o próprio início
+    else                     // removendo o próprio início
         l->ini = aux->prox;
 
-    if (aux->prox != NULL) // existe sucessor: religa por ele
+    if (aux->prox != nullptr) // existe sucessor: religa por ele
         aux->prox->ant = aux->ant;
-    else                   // removendo o próprio fim
+    else                      // removendo o próprio fim
         l->fim = aux->ant;
 
-    free(aux);
-    return 1;
+    delete aux;
+    return true;
 }
 
 void destruir(ListaDuplaEnc *l) {
     NodoD *ant;
     NodoD *aux = l->ini;
 
-    while (aux != NULL) {
+    while (aux != nullptr) {
         ant = aux;
         aux = aux->prox;
-        free(ant);
+        delete ant;
     }
 
-    l->ini = NULL;
-    l->fim = NULL;
+    l->ini = nullptr;
+    l->fim = nullptr;
 }
 
 int tamanho(ListaDuplaEnc *l) {
     NodoD *aux = l->ini;
     int contador = 0;
 
-    while (aux != NULL) {
+    while (aux != nullptr) {
         contador++;
         aux = aux->prox;
     }

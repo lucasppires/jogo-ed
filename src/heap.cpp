@@ -1,12 +1,9 @@
-/* heap.c
+/* heap.cpp
  * Heap maximo e fila de prioridade (max-heap sobre array).
  * INF01203 - Estruturas de Dados - UFRGS
- *
- * Compilar: gcc -Wall -o heap heap.c
  */
 
-#include <stdio.h>
-#include "heap.h"
+#include "heap.hpp"
 
 /* ------------------------------------------------------------------ */
 /*  Auxiliar                                                            */
@@ -79,60 +76,29 @@ void fpInicializar(FilaPrioridade *fp) {
     fp->tamanho = 0;
 }
 
-int fpEstaVazia(const FilaPrioridade *fp) {
+bool fpEstaVazia(const FilaPrioridade *fp) {
     return fp->tamanho == 0;
 }
 
-int fpInserir(FilaPrioridade *fp, int valor) {
-    if (fp->tamanho >= HEAP_CAP) return 0;
+bool fpInserir(FilaPrioridade *fp, int valor) {
+    if (fp->tamanho >= HEAP_CAP) return false;
     fp->dados[fp->tamanho] = valor;
     siftUp(fp->dados, fp->tamanho);
     fp->tamanho++;
-    return 1;
+    return true;
 }
 
-int fpMaximo(const FilaPrioridade *fp, int *valor) {
-    if (fpEstaVazia(fp)) return 0;
+bool fpMaximo(const FilaPrioridade *fp, int *valor) {
+    if (fpEstaVazia(fp)) return false;
     *valor = fp->dados[0];
-    return 1;
+    return true;
 }
 
-int fpRemoverMaximo(FilaPrioridade *fp, int *valor) {
-    if (fpEstaVazia(fp)) return 0;
+bool fpRemoverMaximo(FilaPrioridade *fp, int *valor) {
+    if (fpEstaVazia(fp)) return false;
     *valor = fp->dados[0];
     fp->tamanho--;
     fp->dados[0] = fp->dados[fp->tamanho];
     heapify(fp->dados, fp->tamanho, 0);
-    return 1;
-}
-
-/* ------------------------------------------------------------------ */
-/*  main de demonstracao                                                */
-/* ------------------------------------------------------------------ */
-int main(void) {
-    /* Heap Sort */
-    int a[] = {12, 11, 13, 5, 6, 7};
-    int n = 6;
-    printf("Original:   ");
-    for (int i = 0; i < n; i++) printf("%d ", a[i]);
-
-    heapSort(a, n);
-    printf("\nHeap Sort:  ");
-    for (int i = 0; i < n; i++) printf("%d ", a[i]);
-    printf("\n");
-
-    /* Fila de prioridade */
-    FilaPrioridade fp;
-    fpInicializar(&fp);
-    fpInserir(&fp, 30);
-    fpInserir(&fp, 10);
-    fpInserir(&fp, 50);
-    fpInserir(&fp, 20);
-
-    printf("\nFila de prioridade (maior primeiro):\n");
-    int v;
-    while (fpRemoverMaximo(&fp, &v))
-        printf("  Removido: %d\n", v);
-
-    return 0;
+    return true;
 }

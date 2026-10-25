@@ -1,13 +1,11 @@
-/* hash.h
+/* hash.hpp
  * TAD Tabela Hash — funções de hash e tratamento de colisão.
  * Cobre o conteúdo das aulas 19 e 20 de INF01203 — UFRGS.
  *
- * Compilar:
- *   gcc -Wall -o hash_demo hash_demo.c hash.c -lm
  */
 
-#ifndef HASH_H
-#define HASH_H
+#ifndef HASH_HPP
+#define HASH_HPP
 
 /* ================================================================
  * Funções de hash (aula 19)
@@ -34,22 +32,22 @@ int hashString(const char *s, int m);
  * Custo médio de busca: O(1 + λ).
  */
 
-typedef struct No {
+struct No {
     int chave;
     int valor;
-    struct No *prox;
-} No;
+    No *prox;
+};
 
-typedef struct {
+struct TabelaEnc {
     No **tabela;   /* vetor de ponteiros para listas */
     int m;         /* número de slots */
     int n;         /* número de elementos */
-} TabelaEnc;
+};
 
 void encInicializar(TabelaEnc *t, int m);
 void encInserir(TabelaEnc *t, int chave, int valor);
 int  encBuscar(const TabelaEnc *t, int chave);
-int  encRemover(TabelaEnc *t, int chave);
+bool encRemover(TabelaEnc *t, int chave);
 void encDestruir(TabelaEnc *t);
 
 
@@ -59,13 +57,13 @@ void encDestruir(TabelaEnc *t);
  * Remoção usa marca lápide (DELETADO) para não interromper sondagens.
  */
 
-typedef enum { VAZIO, OCUPADO, DELETADO } EstadoSlot;
+enum EstadoSlot { VAZIO, OCUPADO, DELETADO };
 
-typedef struct {
+struct Slot {
     int chave;
     int valor;
     EstadoSlot estado;
-} Slot;
+};
 
 
 /* ================================================================
@@ -77,16 +75,16 @@ typedef struct {
  * Requer λ < 1; m primo recomendado.
  */
 
-typedef struct {
+struct TabelaLinear {
     Slot *tabela;
     int m;   /* número de slots (primo recomendado) */
     int n;   /* número de elementos */
-} TabelaLinear;
+};
 
 void linInicializar(TabelaLinear *t, int m);
-int  linInserir(TabelaLinear *t, int chave, int valor);
+bool linInserir(TabelaLinear *t, int chave, int valor);
 int  linBuscar(const TabelaLinear *t, int chave);
-int  linRemover(TabelaLinear *t, int chave);
+bool linRemover(TabelaLinear *t, int chave);
 void linDestruir(TabelaLinear *t);
 
 
@@ -99,16 +97,16 @@ void linDestruir(TabelaLinear *t);
  * Requer λ < 0,5 para garantia de inserção; m primo recomendado.
  */
 
-typedef struct {
+struct TabelaQuad {
     Slot *tabela;
     int m;   /* número de slots (primo recomendado) */
     int n;   /* número de elementos */
-} TabelaQuad;
+};
 
 void quadInicializar(TabelaQuad *t, int m);
-int  quadInserir(TabelaQuad *t, int chave, int valor);
+bool quadInserir(TabelaQuad *t, int chave, int valor);
 int  quadBuscar(const TabelaQuad *t, int chave);
-int  quadRemover(TabelaQuad *t, int chave);
+bool quadRemover(TabelaQuad *t, int chave);
 void quadDestruir(TabelaQuad *t);
 
 
@@ -122,16 +120,16 @@ void quadDestruir(TabelaQuad *t);
  * Requer m primo (e m-2 primo para máxima qualidade).
  */
 
-typedef struct {
+struct TabelaDouble {
     Slot *tabela;
     int m;   /* número de slots (primo recomendado, e m-2 primo) */
     int n;   /* número de elementos */
-} TabelaDouble;
+};
 
 void dblInicializar(TabelaDouble *t, int m);
-int  dblInserir(TabelaDouble *t, int chave, int valor);
+bool dblInserir(TabelaDouble *t, int chave, int valor);
 int  dblBuscar(const TabelaDouble *t, int chave);
-int  dblRemover(TabelaDouble *t, int chave);
+bool dblRemover(TabelaDouble *t, int chave);
 void dblDestruir(TabelaDouble *t);
 
-#endif /* HASH_H */
+#endif /* HASH_HPP */

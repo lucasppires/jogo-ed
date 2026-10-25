@@ -1,55 +1,54 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "filaEnc.h"
+#include <new>
+#include "fila.hpp"
 
 void inicializa(FilaEnc *f) {
-    f->frente = NULL;
-    f->final = NULL;
+    f->frente = nullptr;
+    f->final  = nullptr;
 }
 
-int estaVazia(FilaEnc *f) {
-    return f->frente == NULL;
+bool estaVazia(FilaEnc *f) {
+    return f->frente == nullptr;
 }
 
-int enfileira(FilaEnc *f, Produto valor) {
-    Nodo *novo = (Nodo*) malloc(sizeof(Nodo));
-    if (novo == NULL)
-        return 0;
+bool enfileira(FilaEnc *f, Produto valor) {
+    Nodo *novo = new (std::nothrow) Nodo;
+    if (novo == nullptr)
+        return false;
 
     novo->dado = valor;
-    novo->prox = NULL;
+    novo->prox = nullptr;
 
-    if (f->final != NULL)
+    if (f->final != nullptr)
         f->final->prox = novo; // o antigo final passa a apontar para o novo nodo
     else
         f->frente = novo;      // fila estava vazia: novo nodo também é a frente
 
     f->final = novo;
-    return 1;
+    return true;
 }
 
-int desenfileira(FilaEnc *f, Produto *valorRemovido) {
+bool desenfileira(FilaEnc *f, Produto *valorRemovido) {
     Nodo *removido;
 
     if (estaVazia(f)) // underflow
-        return 0;
+        return false;
 
     removido = f->frente;
     *valorRemovido = removido->dado;
     f->frente = removido->prox;
 
-    if (f->frente == NULL) // a fila ficou vazia
-        f->final = NULL;
+    if (f->frente == nullptr) // a fila ficou vazia
+        f->final = nullptr;
 
-    free(removido);
-    return 1;
+    delete removido;
+    return true;
 }
 
 int tamanho(FilaEnc *f) {
     Nodo *aux = f->frente;
     int contador = 0;
 
-    while (aux != NULL) {
+    while (aux != nullptr) {
         contador++;
         aux = aux->prox;
     }

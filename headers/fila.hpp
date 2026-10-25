@@ -1,28 +1,26 @@
-#ifndef FILAENC_H
-#define FILAENC_H
+#ifndef FILA_HPP
+#define FILA_HPP
 
-typedef struct {
-    int cod;
-    char nome[50];
+struct Produto {
+    int   cod;
+    char  nome[50];
     float preco;
-} Produto;
+};
 
-typedef struct str_Nodo Nodo;
-
-struct str_Nodo {
-    Nodo *prox;
+struct Nodo {
+    Nodo   *prox;
     Produto dado;
 };
 
-typedef struct {
+struct FilaEnc {
     Nodo *frente;
     Nodo *final;
-} FilaEnc;
+};
 
 void inicializa(FilaEnc *f);
-int  estaVazia(FilaEnc *f);
-int  enfileira(FilaEnc *f, Produto valor);
-int  desenfileira(FilaEnc *f, Produto *valorRemovido);
+bool estaVazia(FilaEnc *f);
+bool enfileira(FilaEnc *f, Produto valor);
+bool desenfileira(FilaEnc *f, Produto *valorRemovido);
 int  tamanho(FilaEnc *f);
 
-#endif
+#endif /* FILA_HPP */

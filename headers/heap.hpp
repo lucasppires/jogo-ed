@@ -1,4 +1,4 @@
-/* heap.h
+/* heap.hpp
  * Heap maximo e fila de prioridade (max-heap sobre array).
  * INF01203 - Estruturas de Dados - UFRGS
  *
@@ -8,10 +8,10 @@
  *   dir(i)   = 2 * i + 2
  */
 
-#ifndef HEAP_H
-#define HEAP_H
+#ifndef HEAP_HPP
+#define HEAP_HPP
 
-#define HEAP_CAP 1024
+constexpr int HEAP_CAP = 1024;
 
 /* ------------------------------------------------------------------ */
 /*  Heap sobre array (sem struct — funcoes de proposito geral)          */
@@ -32,15 +32,15 @@ void heapSort(int a[], int n);
 /* ------------------------------------------------------------------ */
 /*  Fila de prioridade (max-heap)                                       */
 /* ------------------------------------------------------------------ */
-typedef struct {
+struct FilaPrioridade {
     int dados[HEAP_CAP];
     int tamanho;
-} FilaPrioridade;
+};
 
 void fpInicializar(FilaPrioridade *fp);
-int  fpEstaVazia(const FilaPrioridade *fp);
-int  fpInserir(FilaPrioridade *fp, int valor);
-int  fpMaximo(const FilaPrioridade *fp, int *valor);
-int  fpRemoverMaximo(FilaPrioridade *fp, int *valor);
+bool fpEstaVazia(const FilaPrioridade *fp);
+bool fpInserir(FilaPrioridade *fp, int valor);
+bool fpMaximo(const FilaPrioridade *fp, int *valor);
+bool fpRemoverMaximo(FilaPrioridade *fp, int *valor);
 
-#endif /* HEAP_H */
+#endif /* HEAP_HPP */
