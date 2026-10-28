@@ -12,10 +12,11 @@
 /* ------------------------------------------------------------------ */
 static int maximo(int a, int b) { return a > b ? a : b; }
 
-static NodoAvl *criarNodo(int dado) {
+static NodoAvl *criarNodo(int dado, std::string receita) {
     NodoAvl *n = new (std::nothrow) NodoAvl;
     if (!n) return nullptr;
-    n->dado   = dado;
+    n->dado = dado;
+    n->receita = receita;
     n->altura = 0;
     n->esq    = nullptr;
     n->dir    = nullptr;
@@ -119,12 +120,12 @@ NodoAvl *avlBuscar(NodoAvl *raiz, int dado) {
     return raiz;
 }
 
-NodoAvl *avlInserir(NodoAvl *raiz, int dado) {
-    if (!raiz) return criarNodo(dado);
+NodoAvl *avlInserir(NodoAvl *raiz, int dado, std::string receita) {
+    if (!raiz) return criarNodo(dado, receita);
     if (dado < raiz->dado)
-        raiz->esq = avlInserir(raiz->esq, dado);
+        raiz->esq = avlInserir(raiz->esq, dado, receita);
     else if (dado > raiz->dado)
-        raiz->dir = avlInserir(raiz->dir, dado);
+        raiz->dir = avlInserir(raiz->dir, dado, receita);
     else
         return raiz; /* duplicatas ignoradas */
     return reequilibrar(raiz);

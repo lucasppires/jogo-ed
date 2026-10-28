@@ -11,6 +11,7 @@
 /* ------------------------------------------------------------------ */
 struct NodoAvl {
     int      dado;
+    std::string receita;
     int      altura;
     NodoAvl *esq;
     NodoAvl *dir;
@@ -22,7 +23,7 @@ int      avlFb(const NodoAvl *n);
 
 /* Operacoes principais (retornam a nova raiz da subarvore) */
 NodoAvl *avlBuscar(NodoAvl *raiz, int dado);
-NodoAvl *avlInserir(NodoAvl *raiz, int dado);
+NodoAvl *avlInserir(NodoAvl *raiz, int dado, std::string receita);
 NodoAvl *avlRemover(NodoAvl *raiz, int dado);
 NodoAvl *avlDestruir(NodoAvl *raiz);
 
