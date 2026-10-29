@@ -3,6 +3,7 @@
 #include <fstream>
 #include "avl.hpp"
 #include "timer.hpp" 
+#include "lista.hpp"
 
 using namespace std;
 
@@ -43,6 +44,53 @@ int contarLinhas(const char *nomeArquivo){
     return linhas;
 }
 
+int carregarPartidasListaContEst(const char *arquivo, ListaContEst *l, double *tempoListaContEst){
+    ifstream arq2(arquivo);
+
+    if (!arq2){  // Se deu problema ao abrir
+        cerr << "Nao foi possivel abrir o arquivo.\n";
+        return -1;
+    }
+
+    Jogador aux;
+    string nome;
+    int score;
+    int qtePartidas = 0;
+
+    Timer t2;
+    timer_iniciar(&t2);
+
+   while (getline(arq2, nome) && arq2 >> score){
+        arq2.ignore();          // descarta o '\n' que sobra depois do número
+        
+        aux.nome_jogador = nome;
+        aux.score = score;
+        auto var = inserir(l, aux, tamanho(l));
+        qtePartidas++;
+    }
+
+    *tempoListaContEst = timer_parar(&t2);
+    return qtePartidas;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 int main(int argc, char *argv[]) {
     if (argc < 3) {
         cerr << "Uso: " << argv[0] << " <arquivo_pedidos> <arquivo_historico>\n";
@@ -67,5 +115,18 @@ int main(int argc, char *argv[]) {
     if (lidos < 0) return 1;
 
     cout << lidos << " pedidos lidos em " << tempoCarga << " s\n";
+
+
+
+    ListaContEst *l = new ListaContEst;
+    inicializar(l);
+    double tempoCargaListaContEst = 0.0;
+
+    int lidos2 = carregarPartidasListaContEst(argv[2], l, &tempoCargaListaContEst);
+    if (lidos2 < 0) return 1;
+
+    cout << lidos2 << " partidas lidas em " << tempoCargaListaContEst << " s\n";
+    
+    delete l;
     return 0;
 }

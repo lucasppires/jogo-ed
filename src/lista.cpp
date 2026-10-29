@@ -149,7 +149,7 @@ int tamanho(const ListaContEst *l) {
     return l->tamanho;
 }
 
-bool inserir(ListaContEst *l, Produto novo, int pos) {
+bool inserir(ListaContEst *l, Jogador novo, int pos) {
     if (l->tamanho == CAPACIDADE) return false;       // lista cheia
     if (pos > l->tamanho || pos < 0) return false;    // posição inválida
 
@@ -161,10 +161,10 @@ bool inserir(ListaContEst *l, Produto novo, int pos) {
     return true;
 }
 
-Produto acessar(const ListaContEst *l, int pos) {
-    Produto pAux;
+Jogador acessar(const ListaContEst *l, int pos) {
+    Jogador pAux;
     if (pos >= l->tamanho || pos < 0) // posição inválida
-        pAux.cod = -1;
+        pAux.score = -1;
     else
         pAux = l->dados[pos];
 
@@ -173,7 +173,7 @@ Produto acessar(const ListaContEst *l, int pos) {
 
 int buscar(const ListaContEst *l, int cod) {
     for (int i = 0; i < l->tamanho; i++) {
-        if (l->dados[i].cod == cod) {
+        if (l->dados[i].score == cod) {
             return i; // posição onde o produto foi encontrado
         }
     }

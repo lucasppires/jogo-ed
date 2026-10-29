@@ -7,5 +7,10 @@ Adaptações no TAD AVL:
 1. O struct NodoAvl agora possui o campo receita, do tipo string.
 2. A função AvlInserir agora recebe como parâmetro o string receita.
 3. A função criarNodo agora recebe como parâmetro o string receita.
-4. 
+
+Alterações no TAD LISTA CONT EST:
+1. A struct ListaContEst agora possui como atribudo um array da struct Jogador, definida no início do .hpp. Não é mais um vetor de produtos.
+2. A função inserir recebe como parâmetro um Jogador, não mais um Produto.
+3. A função acessar foi modificada também, mudei seu retorno: agora é um Jogador.
+4. A função buscar também teve seu corpo modificado, para que compilasse
 

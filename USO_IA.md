@@ -18,4 +18,18 @@ Includes: apontavam para os nomes antigos ("avl.h", "filaEnc.h"…) e agora usam
 
 Demos: removi os main de demonstração do avl.cpp e do heap.cpp, porque eles impediriam o programa de compilar junto com o seu main.cpp. Os códigos originais continuam em codigos-moodle/."
 
-3. 
+3. Pedi ajuda pra ler o historico.txt. vou colar o output da ajuda.
+
+1. O nome tem espaço e por isso o >> falha (é por isso que dá 0)
+O historico.txt tem este formato:
+
+
+Tamires A.
+15
+O arq2 >> nome lê só até o primeiro espaço, ou seja, "Tamires". Depois o >> score tenta ler "A." como inteiro, falha, e o while termina logo na primeira volta. A solução é usar getline para o nome:
+
+
+while (getline(arq2, nome) && arq2 >> score){
+    arq2.ignore();          // descarta o '\n' que sobra depois do número
+    ...
+}

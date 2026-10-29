@@ -1,10 +1,16 @@
 #ifndef LISTA_HPP
 #define LISTA_HPP
+#include <string>
 
 struct Produto {
     int   cod;
     char  nome[50];
     float preco;
+};
+
+struct Jogador {
+    std :: string nome_jogador;
+    int score;
 };
 
 struct NodoD {
@@ -33,13 +39,13 @@ constexpr int CAPACIDADE = 50;
 
 struct ListaContEst {
     int     tamanho;
-    Produto dados[CAPACIDADE];
+    Jogador dados[CAPACIDADE];
 };
 
 void    inicializar(ListaContEst *l);
 int     tamanho(const ListaContEst *l);
-bool    inserir(ListaContEst *l, Produto novo, int pos);
-Produto acessar(const ListaContEst *l, int pos);
+bool    inserir(ListaContEst *l, Jogador novo, int pos);
+Jogador acessar(const ListaContEst *l, int pos);
 int     buscar(const ListaContEst *l, int cod);
 bool    remover(ListaContEst *l, int pos);
 void    destruir(ListaContEst *l);
