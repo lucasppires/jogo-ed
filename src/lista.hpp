@@ -28,4 +28,20 @@ bool    removerPorCod(ListaDuplaEnc *l, int cod);
 void    destruir(ListaDuplaEnc *l);
 int     tamanho(ListaDuplaEnc *l);
 
+
+constexpr int CAPACIDADE = 50;
+
+struct ListaContEst {
+    int     tamanho;
+    Produto dados[CAPACIDADE];
+};
+
+void    inicializar(ListaContEst *l);
+int     tamanho(const ListaContEst *l);
+bool    inserir(ListaContEst *l, Produto novo, int pos);
+Produto acessar(const ListaContEst *l, int pos);
+int     buscar(const ListaContEst *l, int cod);
+bool    remover(ListaContEst *l, int pos);
+void    destruir(ListaContEst *l);
+
 #endif /* LISTA_HPP */

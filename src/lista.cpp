@@ -1,3 +1,6 @@
+
+
+
 #include <iostream>
 #include <iomanip>
 #include <new>
@@ -135,4 +138,59 @@ int tamanho(ListaDuplaEnc *l) {
     }
 
     return contador;
+}
+
+
+void inicializar(ListaContEst *l) {
+    l->tamanho = 0;
+}
+
+int tamanho(const ListaContEst *l) {
+    return l->tamanho;
+}
+
+bool inserir(ListaContEst *l, Produto novo, int pos) {
+    if (l->tamanho == CAPACIDADE) return false;       // lista cheia
+    if (pos > l->tamanho || pos < 0) return false;    // posição inválida
+
+    for (int i = l->tamanho; i > pos; i--) // abre espaço, empurrando para a direita
+        l->dados[i] = l->dados[i - 1];
+
+    l->dados[pos] = novo;
+    l->tamanho++;
+    return true;
+}
+
+Produto acessar(const ListaContEst *l, int pos) {
+    Produto pAux;
+    if (pos >= l->tamanho || pos < 0) // posição inválida
+        pAux.cod = -1;
+    else
+        pAux = l->dados[pos];
+
+    return pAux;
+}
+
+int buscar(const ListaContEst *l, int cod) {
+    for (int i = 0; i < l->tamanho; i++) {
+        if (l->dados[i].cod == cod) {
+            return i; // posição onde o produto foi encontrado
+        }
+    }
+
+    return -1; // não encontrado
+}
+
+bool remover(ListaContEst *l, int pos) {
+    if (pos >= l->tamanho || pos < 0) return false; // posição inválida
+
+    for (int i = pos; i < l->tamanho - 1; i++) // puxa elementos seguintes para a esquerda
+        l->dados[i] = l->dados[i + 1];
+
+    l->tamanho--;
+    return true;
+}
+
+void destruir(ListaContEst *l) {
+    l->tamanho = 0;
 }
