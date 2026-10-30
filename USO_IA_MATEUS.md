@@ -33,3 +33,5 @@ while (getline(arq2, nome) && arq2 >> score){
     arq2.ignore();          // descarta o '\n' que sobra depois do número
     ...
 }
+
+4. (Mateus) Teste: Claude Code escrevendo automaticamente neste arquivo.
