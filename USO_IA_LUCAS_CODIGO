@@ -172,3 +172,89 @@ std::cout << cores::VERDE << "Pronto!" << cores::RESET << '\n';
 ```
 
 ############################################################
+
+## Lucas — Prompt 5
+
+por que estou tendo erros ao passar a variavel estado menu na funcao como jogar? 
+
+## Resposta do assistente
+
+### Atualização de andamento
+
+Vou conferir a declaração e a chamada de `como_jogar` para identificar o erro.
+
+### Resposta final
+
+São dois pontos: **a função espera um ponteiro (`int*`), mas você passa um inteiro**, e dentro dela precisa usar `*` para alterar o valor apontado.
+
+No `teste_menu.cpp`, passe o endereço da variável com `&`:
+
+```cpp
+como_jogar(&ESTADO_MENU);
+```
+
+Dentro de `como_jogar`, altere as atribuições para:
+
+```cpp
+if (opcao == 1)
+{
+    *estado_menu = NOVO_JOGO;
+}
+else if (opcao == 2)
+{
+    *estado_menu = MENU;
+}
+```
+
+A declaração no `.hpp` e a definição no `.cpp` continuam assim:
+
+```cpp
+void como_jogar(int *estado_menu);
+```
+
+- `&ESTADO_MENU`: obtém o endereço da variável do `main`.
+- `int *estado_menu`: recebe esse endereço.
+- `*estado_menu = ...`: altera o valor da variável original.
+
+**Há também um problema no fluxo:** seu `if/else` está depois do `while`. Ao sair de `como_jogar`, o programa chega ao fim do `main`, mesmo que você tenha escolhido voltar ao menu. Para navegar entre as telas, coloque o tratamento dos estados dentro de um laço que continue enquanto o estado for diferente de `SAIR`.
+
+############################################################
+
+## Lucas — Prompt 6
+
+agora esta certo?
+
+## Resposta do assistente
+
+### Atualização de andamento
+
+Vou conferir como ficaram a passagem da variável e o fluxo do menu.
+
+### Resposta final
+
+A passagem do ponteiro está correta agora, e a verificação de compilação passou sem erros. Escolher **Como jogar → Voltar ao menu** também está correto com o laço externo.
+
+Ainda há um problema: em `NOVO_JOGO` e `HISTORICO`, você imprime a mensagem, mas não muda o estado. O laço vai repetir essa mensagem sem parar.
+
+Enquanto essas telas não estiverem prontas, você pode voltar ao menu assim:
+
+```cpp
+if (ESTADO_MENU == NOVO_JOGO)
+{
+    cout << "Novo jogo selecionado." << endl;
+    ESTADO_MENU = MENU;
+}
+else if (ESTADO_MENU == COMO_JOGAR)
+{
+    como_jogar(&ESTADO_MENU);
+}
+else if (ESTADO_MENU == HISTORICO)
+{
+    cout << "Historico selecionado." << endl;
+    ESTADO_MENU = MENU;
+}
+```
+
+Também falta tratar entradas inválidas: um número fora de 0 a 4 deixa o laço rodando sem exibir nada, e letras fazem o `cin` entrar em estado de falha.
+
+############################################################

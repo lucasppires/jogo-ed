@@ -20,7 +20,7 @@ void pula_linha(int n)
         std::printf("\n");
 }
 
-void como_jogar()
+void como_jogar(int *estado_menu)
 {
     cout << R"(
 COMO JOGAR - DADO BURGER
@@ -66,6 +66,22 @@ Somente o cliente em atendimento perde paciencia a cada acao que gasta turno. Se
 Atenda todos os clientes para vencer!
 Sua pontuacao e o numero de clientes atendidos.
 
-Voltar ao menu.
+
+Selecione uma opcao:
+
+1. Jogar
+2. Voltar ao menu
 )";
+
+    int opcao;
+    cin >> opcao;
+
+    if (opcao == 1)
+    {
+        *estado_menu = NOVO_JOGO;
+    }
+    else if (opcao == 2)
+    {
+        *estado_menu = MENU;
+    }
 }
