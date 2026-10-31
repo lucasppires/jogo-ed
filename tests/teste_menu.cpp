@@ -1,9 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "funcoes_menu.hpp"
-#include "cores.hpp"
-#include "leitura_arquivos.hpp"
+#include "../src/funcoes_menu.hpp"
+#include "../src/cores.hpp"
+#include "../src/leitura_arquivos.hpp"
 using std::cout;
 using std::cin;
 using std::scanf;
