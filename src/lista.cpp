@@ -143,6 +143,8 @@ int tamanho(ListaDuplaEnc *l) {
 
 void inicializar(ListaContEst *l) {
     l->tamanho = 0;
+    l->capacidade = CAPACIDADE;
+    l->dados = new Jogador[l->capacidade];
 }
 
 int tamanho(const ListaContEst *l) {
@@ -150,8 +152,27 @@ int tamanho(const ListaContEst *l) {
 }
 
 bool inserir(ListaContEst *l, Jogador novo, int pos) {
-    if (l->tamanho == CAPACIDADE) return false;       // lista cheia
-    if (pos > l->tamanho || pos < 0) return false;    // posição inválida
+
+    if (pos > l->tamanho || pos < 0) 
+    {
+        return false;    // posição inválida
+    }
+
+    if (l->tamanho == l->capacidade) //se a lista estiver cheia...
+    {
+        int novaCapacidade = l->capacidade * 2;  //dobra a capacidade  
+        Jogador *novosDados = new Jogador[novaCapacidade];  //aloca um novo vetor com a nova capacidade dobrada
+
+        for (int i = 0; i < l->tamanho; i++)
+        {
+            novosDados[i] = l->dados[i];  //copia os elementos do vetor antigo pro novo, que é 2x maior
+        }
+
+        delete[] l->dados; //desaloca o vetor antigo
+        l->dados = novosDados; //aponta o ponteiro da lista pro novo vetor
+        l->capacidade = novaCapacidade;  
+
+    }
 
     for (int i = l->tamanho; i > pos; i--) // abre espaço, empurrando para a direita
         l->dados[i] = l->dados[i - 1];
@@ -171,9 +192,9 @@ Jogador acessar(const ListaContEst *l, int pos) {
     return pAux;
 }
 
-int buscar(const ListaContEst *l, int cod) {
+int buscar(const ListaContEst *l, int score) {
     for (int i = 0; i < l->tamanho; i++) {
-        if (l->dados[i].score == cod) {
+        if (l->dados[i].score == score) {
             return i; // posição onde o produto foi encontrado
         }
     }
@@ -193,4 +214,7 @@ bool remover(ListaContEst *l, int pos) {
 
 void destruir(ListaContEst *l) {
     l->tamanho = 0;
+    delete[] l->dados;
+    l->dados = nullptr;
+    l->capacidade = 0;
 }

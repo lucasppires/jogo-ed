@@ -20,6 +20,26 @@ void pula_linha(int n)
         std::printf("\n");
 }
 
+void imprimir_menu(int& estado_menu)
+{
+    imprime_linha(44);
+            pula_linha(1);
+            cout << cores::AZUL <<"\t\tDADO BURGER\n";
+            pula_linha(1);
+            cout << cores::AMARELO <<"\t\t1. Novo jogo\n";
+            cout << cores::VERMELHO <<"\t\t2. Como jogar\n";
+            cout << cores::VERDE <<"\t\t3. Historico\n";
+            cout << cores::MAGENTA <<"\t\t4. Sair\n" << cores::RESET;
+        
+            pula_linha(1);
+            imprime_linha(44);
+            pula_linha(2);
+
+            cout << "Digite a opcao desejada: ";
+
+            cin >> estado_menu;
+}
+
 void como_jogar(int& estado_menu)
 {
     cout << R"(

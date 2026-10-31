@@ -13,6 +13,8 @@ void imprime_linha(int n);
 
 void pula_linha(int n);
 
+void imprimir_menu(int& estado_menu);
+
 void como_jogar(int& estado_menu);
 
 #endif

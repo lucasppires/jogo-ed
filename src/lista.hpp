@@ -39,7 +39,8 @@ constexpr int CAPACIDADE = 50;
 
 struct ListaContEst {
     int     tamanho;
-    Jogador dados[CAPACIDADE];
+    int    capacidade;
+    Jogador *dados;
 };
 
 void    inicializar(ListaContEst *l);

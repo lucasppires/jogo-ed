@@ -13,4 +13,9 @@ Alterações no TAD LISTA CONT EST:
 2. A função inserir recebe como parâmetro um Jogador, não mais um Produto.
 3. A função acessar foi modificada também, mudei seu retorno: agora é um Jogador.
 4. A função buscar também teve seu corpo modificado, para que compilasse
+5. Foi adicionado o campo capacidade a struct ListaContEst, pois assim seu limite de jogadores fica flexível.
+6. Em vez de um vetor de jogadores com capacidade fixa, troquei para um ponteiro para um vetor de jogadores sem tamanho prévio, mais flexível.
+7. A inicialização da ListaContEst agora também atribui um valor de início ao campo de capacidade da struct, definido pela constante CAPACIDADE. Atualmente esse valor é 50.
+8. A função inserir na ListaContEst agora não retorna mais false quando a lista esta cheia, mas sim dobra a capacidade da lista, dinamicamente.
+9. A função destruir agora também anula o ponteiro pro vetor e zera a capacidade.
 

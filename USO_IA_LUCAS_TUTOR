@@ -176,3 +176,250 @@ Está dentro da pasta **`src`**: [leitura_arquivos.cpp](/C:/Users/lucas/jogo-ed/
 No Explorador do VS Code, expanda `src` e procure por `leitura_arquivos.cpp`. Você também pode pressionar **Ctrl + P**, digitar esse nome e pressionar Enter.
 
 ##################################################
+
+Lucas — Prompt 6:
+vamos voltar ao plano original. como voce me orientaria para realizar: Carregar o histórico de `argv[2]` na lista contígua com alocação dinâmica; arquivo ausente = histórico vazio. confira tambem se isso ja nao foi feito
+
+Resposta:
+Essa tarefa está **parcialmente implementada**, mas eu ainda não a marcaria como concluída. Conferi o código por leitura; não executei o programa.
+
+O que já existe em [leitura_arquivos.cpp](/C:/Users/lucas/jogo-ed/src/leitura_arquivos.cpp):
+
+- O `main()` recebe o caminho do histórico por `argv[2]`.
+- A função `carregarPartidasListaContEst` abre esse arquivo.
+- Ela lê o nome com `getline`, preservando espaços, e depois lê a pontuação.
+- Ela tenta inserir cada registro no final da lista, mantendo a ordem do arquivo.
+
+Há três pontos principais a concluir.
+
+**1. A lista ainda tem capacidade fixa de 50 registros**
+
+Em [lista.hpp](/C:/Users/lucas/jogo-ed/src/lista.hpp), a estrutura possui:
+
+```cpp
+constexpr int CAPACIDADE = 50;
+
+struct ListaContEst {
+    int tamanho;
+    Jogador dados[CAPACIDADE];
+};
+```
+
+Embora você faça `new ListaContEst`, isso só aloca dinamicamente uma estrutura que continua tendo espaço para **exatamente 50 jogadores**. Ela não cresce conforme o arquivo.
+
+Para atender ao requisito, eu começaria adaptando a lista para manter:
+
+- **Dados:** um ponteiro para um vetor de jogadores alocado dinamicamente.
+- **Tamanho:** quantos registros estão armazenados.
+- **Capacidade:** quantos registros cabem na memória atualmente reservada.
+
+Quando tamanho e capacidade forem iguais, a inserção deve reservar um vetor maior, copiar os registros, liberar o vetor antigo e atualizar a capacidade. Dobrar a capacidade é uma escolha comum. Os elementos continuam contíguos, ou seja, lado a lado em um único vetor.
+
+A função de destruição também precisará liberar esse vetor.
+
+**2. Histórico ausente ainda encerra o programa**
+
+Hoje, quando a abertura falha, a função retorna `-1`; quem a chamou encerra o programa.
+
+Para o caso de arquivo inexistente, o comportamento esperado é: manter a lista inicializada e vazia, informar zero registros carregados e continuar normalmente. Não é necessário criar o arquivo nesse momento; ele pode ser criado ao salvar a primeira partida.
+
+Vale distinguir arquivo inexistente de outros problemas de abertura, como falta de permissão, para não tratar todos como histórico vazio.
+
+**3. A contagem pode indicar registros que não foram armazenados**
+
+A função guarda o resultado de `inserir` em `var`, mas não o verifica. Depois, incrementa `qtePartidas` mesmo quando a inserção falha.
+
+Com a implementação atual, um arquivo com mais de 50 registros pode ser lido inteiro, mas apenas os primeiros 50 ficam na lista. A contagem deve aumentar **somente depois de uma inserção bem-sucedida**, e uma falha precisa ser tratada.
+
+Eu faria nesta ordem: **adaptar a lista dinâmica → validar a inserção → ajustar arquivo ausente → testar o carregamento**.
+
+Para considerar pronto, confira estes casos:
+
+| Caso | Resultado esperado |
+|---|---|
+| Arquivo inexistente | Lista vazia; programa continua. |
+| Arquivo vazio | Zero registros; programa continua. |
+| Três registros, incluindo nome com espaços | Nomes e pontuações preservados, na ordem original. |
+| Mais de 50 registros | Todos armazenados, sem truncamento. |
+
+Seu primeiro passo concreto pode ser **definir os campos da lista dinâmica e explicar como tamanho e capacidade serão atualizados**. Depois disso, fica mais fácil adaptar as operações. Não alterei nenhum código.
+
+##################################################
+
+Lucas — Prompt 7:
+ficou certo do jeito que eu fiz?
+
+Resposta:
+Está quase certo. Você fez corretamente a reserva do novo vetor, a cópia dos jogadores, a liberação do antigo e a troca do ponteiro. **Faltou atualizar a capacidade da lista.**
+
+Em [lista.cpp](/C:/Users/lucas/jogo-ed/src/lista.cpp), logo depois de:
+
+```cpp
+l->dados = novosDados;
+```
+
+adicione:
+
+```cpp
+l->capacidade = novaCapacidade;
+```
+
+Sem essa atualização, acontece o seguinte:
+
+1. A lista enche suas 50 posições e cria um vetor de 100.
+2. O campo `capacidade` continua valendo 50.
+3. Após a inserção, `tamanho` passa a 51.
+4. Nas próximas inserções, a condição `tamanho == capacidade` não volta a ser verdadeira. Eventualmente, o programa escreve além das 100 posições disponíveis.
+
+**Também recomendo verificar a posição antes de aumentar o vetor.** Coloque esta verificação no início de `inserir`:
+
+```cpp
+if (pos > l->tamanho || pos < 0) return false;
+```
+
+Assim, uma tentativa com posição inválida é recusada sem fazer uma alocação desnecessária.
+
+A inicialização agora reserva memória corretamente. Você manteve `CAPACIDADE = 50`, então começa com 50 posições; isso também funciona, não precisa ser 10.
+
+Por fim, **`destruir` ainda precisa liberar o vetor**. Atualmente ela só zera o tamanho. Precisará executar `delete[] l->dados`, colocar `dados` em `nullptr` e zerar tamanho e capacidade. Depois de destruir, inicialize novamente antes de reutilizar a lista.
+
+Primeiro corrija a atualização de capacidade em `inserir`; depois podemos conferir a destruição. Não alterei código nem executei testes.
+
+##################################################
+
+Lucas — Prompt 8:
+se fazemos tantas alterações como fiz na ListaContEst, nao estamos na verdade criando um novo tipo de estrutura?
+
+Resposta:
+**Estamos criando uma variante da implementação, mas ela continua sendo uma lista contígua.** Sua dúvida faz sentido porque realmente mudamos a maneira de reservar a memória.
+
+O que caracteriza a lista contígua permanece:
+
+- Os elementos ficam lado a lado em um vetor.
+- Cada elemento pode ser acessado diretamente pelo índice: `dados[i]`.
+- Inserir ou remover no meio exige deslocar os elementos seguintes.
+
+O que mudou foi a gestão do espaço:
+
+| Antes | Agora |
+|---|---|
+| Vetor dentro da estrutura, com capacidade fixa. | Vetor alocado separadamente, com capacidade que pode crescer. |
+| Inserção recusada quando enche. | Um vetor maior substitui o antigo quando enche. |
+| Não precisa liberar um vetor separado. | Precisa liberar o vetor com `delete[]`. |
+
+Portanto, você passou de uma **lista contígua de capacidade fixa para uma lista contígua dinâmica**. Ela não virou uma lista encadeada: não existem nós ligados por ponteiros; `dados` aponta para um único vetor.
+
+Isso é justamente uma adaptação necessária para atender ao requisito do trabalho de não assumir um tamanho fixo para o histórico. Você está aproveitando a lógica das aulas, como acesso por índice e deslocamento na inserção, e acrescentando o controle de memória.
+
+Se o `Est` de `ListaContEst` significa “estática”, o nome ficou desatualizado. Mais adiante, vocês podem renomeá-la para `ListaContigua`, mas isso não é necessário para ela funcionar.
+
+Essa mudança deve ser registrada no `ADAPTACOES.md`, explicando **quais campos e funções mudaram e por que foi necessário permitir o crescimento**.
+
+##################################################
+
+Lucas — Prompt 9:
+ela continua sendo contigua pois quando mudamos a capacidade trocamos todo o vetor ne, e nao somente emendamos mais um nodo
+
+Resposta:
+Exatamente. **Ao aumentar a capacidade, criamos um único vetor maior e copiamos todos os elementos para ele.** Assim, eles continuam lado a lado na memória:
+
+```text
+Antes: [A][B][C]             capacidade 3
+Depois: [A][B][C][ ][ ][ ]   capacidade 6
+```
+
+O endereço do vetor pode mudar, mas a ordem dos registros é preservada e o acesso continua sendo por índice: `dados[0]`, `dados[1]` etc.
+
+Numa lista encadeada, cada nó pode estar em um lugar diferente da memória, conectado ao próximo por um ponteiro. Na sua lista, **não emendamos nós: substituímos o vetor inteiro por outro maior**.
+
+##################################################
+
+Lucas — Prompt 10:
+esta correto do jeito que fiz?
+
+Resposta:
+**Sim, agora a lógica principal da lista dinâmica está correta**, considerando que ela seja inicializada antes do uso. Conferi por leitura do código; ainda não executei testes.
+
+Em [lista.cpp](/C:/Users/lucas/jogo-ed/src/lista.cpp), você ajustou corretamente:
+
+- **Inicialização:** tamanho zero, capacidade inicial e reserva do vetor com `new[]`.
+- **Crescimento:** cria um vetor maior, copia os registros, libera o antigo e atualiza tanto o ponteiro quanto a capacidade.
+- **Inserção:** abre espaço na posição desejada, guarda o jogador e aumenta o tamanho.
+- **Destruição:** libera o vetor, coloca o ponteiro em `nullptr` e zera tamanho e capacidade.
+
+Ficou apenas uma verificação repetida em `inserir`:
+
+```cpp
+if (pos > l->tamanho || pos < 0) return false;
+```
+
+Você já faz essa checagem no início. A segunda, depois do crescimento, pode ser removida. Ela não causa erro; apenas é desnecessária.
+
+**O próximo passo é testar a lista isoladamente:** inserir 101 registros fará a capacidade passar de **50 para 100 e depois para 200**. Confira se o tamanho final é 101 e se os nomes e pontuações foram preservados, principalmente nas posições próximas às trocas de vetor.
+
+Ao terminar de usar a lista, lembre-se de chamar `destruir`. Se quiser reutilizá-la depois disso, chame `inicializar` novamente antes de inserir.
+
+Não alterei o código.
+
+##################################################
+
+Lucas — Prompt 11:
+por que seria necessario zerar a capacidade na função destruir?
+
+Resposta:
+**Porque, depois de liberar o vetor, a lista não tem mais espaço reservado para jogadores.** Zerar a capacidade faz esse campo representar a situação real.
+
+Antes de destruir:
+
+```text
+ tamanho = 8
+ capacidade = 50
+ dados → vetor com 50 posições
+```
+
+Depois de destruir:
+
+```text
+ tamanho = 0
+ capacidade = 0
+ dados = nullptr
+```
+
+O `delete[]` libera o vetor, mas **não altera automaticamente os outros campos da estrutura**. Se você mantiver `capacidade = 50`, a lista continuará informando que possui espaço para 50 jogadores, embora esse espaço já tenha sido liberado.
+
+Portanto, zerar a capacidade não é o que libera memória — isso é responsabilidade do `delete[]`. Zerar serve para deixar o estado da lista coerente.
+
+**Atenção:** isso não torna a lista pronta para novas inserções. Na implementação atual, depois de `destruir`, você precisa chamar `inicializar` antes de reutilizá-la, pois dobrar uma capacidade zero continuaria resultando em zero.
+
+##################################################
+
+Lucas — Prompt 12:
+depois de arrumadas as funções, qual o proximo passo?
+
+Resposta:
+**O próximo passo é testar a lista sozinha**, antes de conectá-la ao arquivo de histórico. Assim você confere se as alterações funcionam sem misturar possíveis erros de leitura de arquivo.
+
+Crie um teste separado em `tests/teste_lista.cpp`. Ele deve:
+
+1. Criar uma `ListaContEst` e chamar `inicializar`.
+2. Inserir **101 jogadores no final**, usando o tamanho atual como posição de inserção. Dê nomes ou pontuações diferentes a eles para conferir a ordem.
+3. Verificar o retorno de cada `inserir`: deve ser `true`.
+4. Exibir o tamanho, a capacidade e alguns registros.
+5. Chamar `destruir` ao terminar.
+
+Com capacidade inicial de 50, os resultados esperados são:
+
+| Registros inseridos | Tamanho | Capacidade |
+|---|---|---|
+| 0 | 0 | 50 |
+| 50 | 50 | 50 |
+| 51 | 51 | 100 |
+| 101 | 101 | 200 |
+
+Confira principalmente os registros nos índices **0, 49, 50, 99 e 100**. Eles devem preservar os nomes e pontuações inseridos, mesmo após as duas trocas de vetor.
+
+**Depois que esse teste funcionar**, voltamos a `carregarPartidasListaContEst` para verificar o resultado das inserções e fazer o arquivo ausente representar um histórico vazio.
+
+Por enquanto, concentre-se só no teste da lista. Não alterei código.
+
+##################################################
