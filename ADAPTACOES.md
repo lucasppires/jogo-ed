@@ -18,4 +18,4 @@ Alterações no TAD LISTA CONT EST:
 7. A inicialização da ListaContEst agora também atribui um valor de início ao campo de capacidade da struct, definido pela constante CAPACIDADE. Atualmente esse valor é 50.
 8. A função inserir na ListaContEst agora não retorna mais false quando a lista esta cheia, mas sim dobra a capacidade da lista, dinamicamente.
 9. A função destruir agora também anula o ponteiro pro vetor e zera a capacidade.
-
+10. Foi criada a função para imprimir uma ListaContEst

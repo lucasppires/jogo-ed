@@ -50,5 +50,6 @@ Jogador acessar(const ListaContEst *l, int pos);
 int     buscar(const ListaContEst *l, int cod);
 bool    remover(ListaContEst *l, int pos);
 void    destruir(ListaContEst *l);
+void    imprimir_ListaContEst(const ListaContEst *l);
 
 #endif /* LISTA_HPP */

@@ -218,3 +218,18 @@ void destruir(ListaContEst *l) {
     l->dados = nullptr;
     l->capacidade = 0;
 }
+
+void imprimir_ListaContEst(const ListaContEst *l)
+ {
+    if (l->tamanho == 0)
+{
+        std::cout << "Lista vazia.\n";
+        return;
+    }
+
+    for (int i = 0; i < l->tamanho; i++)
+     {
+        std::cout << "Nome: " << l->dados[i].nome_jogador
+                  << ", Score: " << l->dados[i].score << '\n';
+     }
+}
