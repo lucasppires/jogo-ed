@@ -20,7 +20,7 @@ void pula_linha(int n)
         std::printf("\n");
 }
 
-void como_jogar(int *estado_menu)
+void como_jogar(int& estado_menu)
 {
     cout << R"(
 COMO JOGAR - DADO BURGER
@@ -78,10 +78,10 @@ Selecione uma opcao:
 
     if (opcao == 1)
     {
-        *estado_menu = NOVO_JOGO;
+        estado_menu = NOVO_JOGO;
     }
     else if (opcao == 2)
     {
-        *estado_menu = MENU;
+        estado_menu = MENU;
     }
 }

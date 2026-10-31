@@ -258,3 +258,42 @@ else if (ESTADO_MENU == HISTORICO)
 Também falta tratar entradas inválidas: um número fora de 0 a 4 deixa o laço rodando sem exibir nada, e letras fazem o `cin` entrar em estado de falha.
 
 ############################################################
+
+## Lucas — Prompt 7
+
+qual a função de endl?
+
+## Resposta do assistente
+
+### Atualização de andamento
+
+Vou explicar a diferença entre `endl` e `\n` e registrar esta interação no relatório.
+
+### Resposta final
+
+`std::endl` faz duas coisas:
+
+1. **Pula para a próxima linha.**
+2. **Força o envio do texto pendente para a saída** (chamado de *flush*).
+
+```cpp
+cout << "Ola!" << endl;
+cout << "Outra linha";
+```
+
+O resultado é:
+
+```text
+Ola!
+Outra linha
+```
+
+Já `\n` apenas insere a quebra de linha, sem forçar esse envio:
+
+```cpp
+cout << "Ola!\n";
+```
+
+Para os textos do seu menu, pode usar `\n` normalmente. Se usar `endl` sem `std::`, coloque `using std::endl;` depois dos includes.
+
+############################################################

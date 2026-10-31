@@ -40,15 +40,17 @@ int main()
 
         if (ESTADO_MENU == NOVO_JOGO)
         {
-            cout << "Novo jogo selecionado." << endl;
+            cout << "Novo jogo selecionado.";
+            return 0;
         }
         else if (ESTADO_MENU == COMO_JOGAR)
         {
-            como_jogar(&ESTADO_MENU);
+            como_jogar(ESTADO_MENU);
         }
         else if (ESTADO_MENU == HISTORICO)
         {
-            cout << "Historico selecionado." << endl;
+            cout << "Historico selecionado.";
+            return 0;
         }
         else if (ESTADO_MENU == SAIR)
         {

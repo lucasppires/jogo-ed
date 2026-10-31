@@ -1,0 +1,77 @@
+Lucas — Prompt 1:
+como que funciona a parte de argc e argv presente no plano de tarefas?
+
+Resposta:
+`argc` e `argv` permitem que o programa receba informações quando você o inicia pelo terminal. No seu projeto, essas informações são **os caminhos dos arquivos de pedidos e histórico**.
+
+Por exemplo:
+
+```powershell
+.\dado_burger.exe pedidos.txt historico.txt
+```
+
+O sistema entrega esses dados à função `main`:
+
+```cpp
+int main(int argc, char *argv[]) {
+    // ...
+}
+```
+
+**`argc` é a quantidade de argumentos, contando o próprio nome do programa.** Nesse exemplo, vale `3`.
+
+**`argv` é um vetor de strings com os argumentos:**
+
+| Posição | Conteúdo no exemplo |
+|---|---|
+| `argv[0]` | Nome ou caminho usado para executar o programa |
+| `argv[1]` | `pedidos.txt` |
+| `argv[2]` | `historico.txt` |
+
+O tipo `char *argv[]` significa que cada posição contém um ponteiro para uma sequência de caracteres, isto é, uma string no estilo de C.
+
+Antes de acessar as posições 1 e 2, você precisa verificar se elas foram fornecidas:
+
+```cpp
+if (argc < 3) {
+    std::cout << "Uso: " << argv[0]
+              << " <arquivo_pedidos> <arquivo_historico>\n";
+    return 1;
+}
+```
+
+O `return 1` encerra o programa indicando erro. Com os argumentos presentes, você usa `argv[1]` para abrir o arquivo de pedidos e `argv[2]` para abrir o histórico. **Receber o nome não abre nem lê o arquivo automaticamente**: essa parte precisa ser implementada depois.
+
+Isso permite executar o mesmo programa com arquivos diferentes, sem mudar o código:
+
+```powershell
+.\dado_burger.exe pedidos_final.txt historico_final.txt
+```
+
+Se o histórico indicado não existir, o jogo deve começar com histórico vazio. Isso é diferente de não fornecer o segundo argumento: o caminho continua sendo obrigatório.
+
+##################################################
+
+Lucas — Prompt 2:
+considerando a plano de tarefas e que o o esqueleto do menu ja foi feito, o que voce recomenda fazer agora?
+
+Resposta:
+Eu recomendo **concluir a Fase 1: integrar o carregamento dos arquivos ao menu**. O próximo objetivo é executar o programa, carregar os dados e só então mostrar as opções.
+
+Conferindo os arquivos atuais, vocês já avançaram além do menu: `src/leitura_arquivos.cpp` contém funções para carregar pedidos na AVL e partidas na lista, além de um `main()` próprio. O `src/main.cpp` continua vazio, e o menu está em `tests/teste_menu.cpp`.
+
+Eu seguiria esta ordem:
+
+1. **Fechar a navegação do menu.** Atualmente, selecionar Novo jogo ou Histórico deixa o estado nessas opções e repete a mensagem continuamente. Enquanto essas telas não existem, faça cada uma retornar ao menu. Trate também opções inválidas e entradas com letras.
+
+2. **Integrar as partes em um único programa.** O `main.cpp` deve coordenar: validar `argc/argv`, inicializar as estruturas, carregar os arquivos e abrir o menu. As funções de leitura ficam no módulo de leitura, e as do menu no módulo de menu. Cada executável deve ter apenas um `main()`.
+
+3. **Validar o carregamento com arquivos pequenos.** Confira alguns códigos e receitas na AVL e nomes e pontuações na lista. Verifique se a lista cresce dinamicamente e se a ausência do arquivo de histórico resulta em histórico vazio — hoje a função trata essa ausência como erro.
+
+4. **Completar as adaptações e medições da carga.** A receita está atualmente em uma `std::string` no nó da AVL; o trabalho pede uma lista encadeada com um ingrediente por nó. Planeje também nós inseridos, altura, rotações e tempo de carga, com registro em `medicoes.log`.
+
+**Seu próximo marco pode ser:** abrir o programa com dois caminhos, carregar corretamente um conjunto pequeno de dados, navegar por todas as opções e sair normalmente. Depois disso, avance para uma partida simples com um cliente.
+
+Não alterei código; registrei esta troca no arquivo combinado.
+
+##################################################
