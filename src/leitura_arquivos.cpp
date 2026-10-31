@@ -4,6 +4,7 @@
 #include "avl.hpp"
 #include "timer.hpp" 
 #include "lista.hpp"
+#include "leitura_arquivos.hpp"
 
 using namespace std;
 

@@ -297,3 +297,126 @@ cout << "Ola!\n";
 Para os textos do seu menu, pode usar `\n` normalmente. Se usar `endl` sem `std::`, coloque `using std::endl;` depois dos includes.
 
 ############################################################
+
+## Lucas — Prompt 8
+
+explique como funciona o teste argv
+
+## Resposta do assistente
+
+### Atualização de andamento
+
+Vou ler o `teste_argv.cpp` para explicar como ele recebe os arquivos e o que faz com eles.
+
+### Resposta final
+
+O `teste_argv.cpp` testa **receber os caminhos de dois arquivos pelo terminal e contar suas linhas não vazias**. Ele ainda não carrega os pedidos nas estruturas do jogo.
+
+Para compilar e executar, estando na pasta `jogo-ed`:
+
+```powershell
+g++ tests/teste_argv.cpp -o tests/teste_argv.exe
+.\tests\teste_argv.exe src/pedidos.txt src/historico.txt
+```
+
+Os arquivos estão atualmente dentro de `src`, por isso usamos esses caminhos.
+
+A função `main` recebe os argumentos aqui:
+
+```cpp
+int main(int argc, char *argv[])
+```
+
+- `argc`: quantidade de argumentos, **incluindo o nome do programa**.
+- `argv`: um vetor de strings no estilo C, contendo os textos desses argumentos.
+
+No comando acima:
+
+| Expressão | Valor |
+|---|---|
+| `argc` | `3` |
+| `argv[0]` | Nome/caminho do executável |
+| `argv[1]` | `"src/pedidos.txt"` |
+| `argv[2]` | `"src/historico.txt"` |
+
+Este trecho verifica se você informou os dois arquivos:
+
+```cpp
+if (argc < 3) {
+    cerr << "Uso: " << argv[0]
+         << " <arquivo_pedidos> <arquivo_historico>\n";
+    cerr << "Exemplo: " << argv[0]
+         << " pedidos.txt historico.txt\n";
+    return 1;
+}
+```
+
+Se faltar algum, ele mostra como usar e encerra com código `1`, indicando erro. `cerr` é a saída destinada a mensagens de erro.
+
+Depois, ele dá nomes mais claros aos argumentos:
+
+```cpp
+const char *arqPedidos   = argv[1];
+const char *arqHistorico = argv[2];
+```
+
+Essas variáveis apontam para os **caminhos dos arquivos**, não para seus conteúdos. A leitura acontece em `contarLinhas`:
+
+```cpp
+int contarLinhas(const char *nomeArquivo) {
+    ifstream arq(nomeArquivo);
+    if (!arq) return -1;
+
+    int linhas = 0;
+    string linha;
+
+    while (getline(arq, linha))
+        if (!linha.empty()) linhas++;
+
+    return linhas;
+}
+```
+
+1. `ifstream` abre o arquivo para leitura.
+2. Se não conseguir abrir, retorna `-1`.
+3. `getline` lê uma linha por vez até acabar o arquivo.
+4. `!linha.empty()` faz contar apenas linhas que tenham algum caractere. Uma linha só com espaços também conta.
+5. Retorna a contagem, que o `main` imprime.
+
+**Detalhe:** caminhos relativos como `src/pedidos.txt` são procurados a partir da pasta atual do terminal, não da pasta onde está o executável. Se um caminho tiver espaços, passe-o entre aspas.
+
+############################################################
+
+## Lucas — Prompt 9
+
+nao deveria ter um 3 no comando para executar tb? seria o argc
+
+## Resposta do assistente
+
+### Atualização de andamento
+
+Vou registrar a explicação no relatório, seguindo a numeração combinada.
+
+### Resposta final
+
+Não precisa. **O `argc` é calculado automaticamente** quando você executa o programa.
+
+Neste comando:
+
+```powershell
+.\tests\teste_argv.exe src/pedidos.txt src/historico.txt
+```
+
+O programa recebe três elementos:
+
+```text
+argv[0] = nome/caminho do executável
+argv[1] = "src/pedidos.txt"
+argv[2] = "src/historico.txt"
+```
+
+Por isso, `argc` será `3`. Você não informa esse número: o sistema conta os argumentos e passa a quantidade para o `main`.
+
+Se você colocar um `3` no comando, ele será tratado como mais um argumento de texto, podendo até ocupar a posição onde seu programa espera o caminho de um arquivo.
+
+############################################################

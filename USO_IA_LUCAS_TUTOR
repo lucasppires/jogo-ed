@@ -75,3 +75,104 @@ Eu seguiria esta ordem:
 Não alterei código; registrei esta troca no arquivo combinado.
 
 ##################################################
+
+Lucas — Prompt 3:
+explique mais sobre o numero 2
+
+Resposta:
+O número 2 significa **juntar as partes que vocês desenvolveram separadamente para que funcionem na mesma execução**.
+
+Hoje vocês têm dois programas independentes:
+
+- `tests/teste_menu.cpp`: tem um `main()` que executa o menu.
+- `src/leitura_arquivos.cpp`: tem outro `main()` que recebe os argumentos e carrega os dados.
+
+Executar o teste de leitura e depois executar o teste de menu não transfere automaticamente os dados de um para o outro. Para o jogo usar os pedidos carregados, essas partes precisam trabalhar juntas no mesmo programa.
+
+**O papel do `main.cpp`**
+
+Pense no `main()` como quem coordena a sequência do programa. Ele não precisa conter toda a implementação, mas deve chamar as funções na ordem correta:
+
+1. Receber e validar os caminhos por `argc` e `argv`.
+2. Inicializar a AVL e a lista de histórico.
+3. Chamar as funções de carregamento.
+4. Tratar os resultados: continuar se a carga deu certo ou encerrar quando houver um erro que impeça o jogo.
+5. Abrir o menu e encaminhar a opção escolhida.
+6. Ao sair, liberar a memória das estruturas.
+
+O carregamento acontece **uma vez, antes do menu**. Voltar da tela Como jogar para o menu não deve carregar tudo novamente.
+
+**O que fica em cada arquivo**
+
+| Arquivo | Responsabilidade na integração |
+|---|---|
+| `src/main.cpp` | Conter o `main()` do jogo e coordenar as chamadas. |
+| `src/leitura_arquivos.cpp` | Implementar as funções que leem os arquivos e preenchem as estruturas. |
+| Um cabeçalho `leitura_arquivos.hpp` | Declarar essas funções para que o `main.cpp` possa chamá-las. |
+| `src/funcoes_menu.cpp` | Implementar a exibição e a navegação do menu. |
+| `src/funcoes_menu.hpp` | Declarar as funções e os estados do menu. |
+| `tests/teste_menu.cpp` | Continuar sendo um teste independente, compilado separadamente do jogo. |
+
+Na prática, o conteúdo do `main()` atual de leitura serve como ponto de partida para a coordenação em `src/main.cpp`. Já a lógica do menu que está no teste pode virar uma função do módulo de menu, chamada pelo `main()` do jogo.
+
+**Como os dados chegam ao jogo**
+
+A raiz da AVL e a lista de histórico precisam continuar existindo enquanto o menu e as partidas estiverem em execução. O `main()` pode manter essas estruturas e passá-las às funções que precisam delas. Por exemplo, Novo jogo precisará acessar os pedidos; Histórico precisará acessar os registros carregados.
+
+O menu pode apenas devolver a opção escolhida, deixando o `main()` decidir qual função chamar. Isso evita colocar leitura de arquivos e regras da partida dentro da função que desenha o menu.
+
+**Como os arquivos se conectam**
+
+O `main.cpp` inclui os cabeçalhos `.hpp`, que informam quais funções estão disponíveis. Na compilação, você reúne os `.cpp` necessários para formar um único executável. Não precisa incluir um `.cpp` dentro de outro.
+
+Esse executável deve ter **um único `main()`**. Por isso, os arquivos de teste com `main()` próprio ficam fora da compilação do jogo.
+
+Antes de implementar, uma boa primeira tarefa é listar: quais funções o `main()` vai chamar, quais dados cada uma recebe e o que cada uma devolve.
+
+##################################################
+
+Lucas — Prompt 4:
+tinha pensado em ir fazendo o jogo a partir do teste menu, ja que vou colocando as funções para cada estados ali dentro. se eu fizer assim, qual o proximo passo?
+
+Resposta:
+Pode seguir assim. **Você pode usar o `teste_menu.cpp` como ponto de partida do jogo**, acrescentando as chamadas das funções em cada estado. Depois, quando estiver integrado, esse programa pode passar a ser o `src/main.cpp`.
+
+Nessa abordagem, o próximo passo é **colocar a inicialização e o carregamento dos arquivos antes do laço do menu**.
+
+A sequência fica assim:
+
+```text
+Início do programa
+    Receber e validar argc e argv
+    Inicializar a AVL e a lista de histórico
+    Carregar os pedidos e o histórico
+    Entrar no laço do menu
+        NOVO_JOGO → chamar a função da partida
+        COMO_JOGAR → mostrar as instruções
+        HISTORICO → chamar a função de exibição do histórico
+        SAIR → encerrar o laço
+    Liberar a memória
+Fim do programa
+```
+
+Para fazer isso por etapas:
+
+1. **Adapte o `main()` do teste para receber `argc` e `argv`.** Primeiro, confira se o programa recebe os dois caminhos corretamente.
+2. **Aproveite as funções de `leitura_arquivos.cpp`.** Declare-as em um cabeçalho para chamá-las pelo programa do menu. Para compilar os dois arquivos juntos, o módulo de leitura precisa deixar de ter seu próprio `main()`; a inicialização que estava nele passa para o programa que você está construindo.
+3. **Confira os dados antes de abrir o menu.** Comece com arquivos pequenos e verifique pedidos e registros carregados. Se o histórico não existir, continue com a lista vazia.
+
+Dentro de cada estado, prefira **chamar uma função do módulo correspondente**, em vez de colocar toda a implementação ali. Assim, o menu continua fácil de entender conforme o jogo cresce.
+
+Por enquanto, Novo jogo e Histórico podem apenas mostrar uma mensagem e retornar ao estado `MENU`. O objetivo desta etapa é: **carregar os dados uma vez e mantê-los disponíveis enquanto você navega pelo menu**.
+
+##################################################
+
+Lucas — Prompt 5:
+onde esta esse leitura de arquivos cpp?
+
+Resposta:
+Está dentro da pasta **`src`**: [leitura_arquivos.cpp](/C:/Users/lucas/jogo-ed/src/leitura_arquivos.cpp).
+
+No Explorador do VS Code, expanda `src` e procure por `leitura_arquivos.cpp`. Você também pode pressionar **Ctrl + P**, digitar esse nome e pressionar Enter.
+
+##################################################
