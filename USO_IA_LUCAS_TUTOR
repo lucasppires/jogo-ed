@@ -525,3 +525,77 @@ A AVL entra na compilação porque o módulo de leitura também contém uma fun�
 **O comando inclui as implementações necessárias, mas os cabeçalhos de fila, pilha e lista ainda podem gerar os erros de redefinição de `Produto` e `Nodo` que identificamos.** Para testar apenas menu e histórico, retire do teste os includes dos TADs que ainda não são usados, como fila e pilha. Não alterei os arquivos.
 
 ##################################################
+
+Lucas — Prompt 17:
+estou recebendo esta mensgaem: error: You have not concluded your merge (MERGE_HEAD exists).
+hint: Please, commit your changes before merging.
+fatal: Exiting because of unfinished merge.
+
+Resposta:
+Essa mensagem significa que **o Git começou a juntar suas alterações com as do repositório remoto, mas essa mesclagem ainda não foi concluída**. Não é um erro do C++.
+
+Conferi o repositório e encontrei um detalhe importante: você já retirou os marcadores de conflito de `tests/teste_menu.cpp`, mas **a versão preparada para o commit ainda contém esses marcadores**. É preciso atualizar essa preparação antes de concluir o merge.
+
+Também aparece a exclusão de `src/leitura_arquivos.hpp`, enquanto o projeto atual usa `src/leitura_de_arquivos.hpp`. Se essa exclusão foi intencional, registre as duas alterações com:
+
+```powershell
+git add -u -- tests/teste_menu.cpp src/leitura_arquivos.hpp
+```
+
+Depois confira:
+
+```powershell
+git diff --cached --check
+git diff --cached
+git status
+```
+
+O primeiro comando não deve apontar marcadores de conflito; o segundo permite revisar exatamente o que será salvo. Estando correto, conclua a mesclagem:
+
+```powershell
+git commit -m "Conclui merge e resolve conflito no teste do menu"
+```
+
+**Não faça outro `git pull` enquanto esse merge estiver pendente.** O commit acima conclui a mesclagem local; ele não envia suas alterações ao remoto.
+
+Não alterei código, não preparei arquivos para commit e não executei o commit.
+
+##################################################
+
+Lucas — Prompt 18:
+deu esta mensagem: On branch main
+Your branch and 'origin/main' have diverged,
+and have 1 and 4 different commits each, respectively.
+  (use "git pull" if you want to integrate the remote branch with yours)
+
+All conflicts fixed but you are still merging.
+  (use "git commit" to conclude merge)
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   USO_IA_LUCAS_TUTOR
+
+Resposta:
+**Agora os conflitos estão resolvidos; falta apenas concluir o merge com um commit.** A conferência das alterações preparadas não apontou problemas.
+
+O único arquivo modificado fora do commit é `USO_IA_LUCAS_TUTOR`, porque estou registrando nossa conversa nele conforme você pediu. Isso não impede a conclusão do merge.
+
+Para incluir o registro atualizado e concluir tudo junto, execute:
+
+```powershell
+git add USO_IA_LUCAS_TUTOR
+git commit -m "Conclui merge e atualiza registro de tutoria"
+```
+
+Depois confira:
+
+```powershell
+git status
+```
+
+A mensagem **“you are still merging” deve desaparecer**. A divergência de commits é esperada enquanto a mesclagem não foi concluída; não precisa fazer outro `pull` agora.
+
+Esses comandos salvam as mudanças localmente. Não executei nenhum deles por você.
+
+##################################################
