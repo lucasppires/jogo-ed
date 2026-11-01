@@ -14,13 +14,15 @@
 #include "funcoes_menu.hpp"
 #include "leitura_de_arquivos.hpp"
 #include "timer.hpp"
+#include "sortings.hpp"
 
 using std::cout;
 using std::cin;
 using std::endl;
 using std::scanf;
 
-// compilar:g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/leitura_de_arquivos.cpp src/lista.cpp src/avl.cpp src/timer.cpp -I src -o tests/teste_menu.exe -Wall -std=c++17
+// compilar:g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/leitura_de_arquivos.cpp src/lista.cpp src/avl.cpp src/timer.cpp src/sortings.cpp -I src -o tests/teste_menu.exe -Wall -std=c++17
+
 // rodar: .\tests\teste_menu.exe src\pedidos.txt src\historico.txt
 
 int main(int argc, char *argv[])
@@ -63,7 +65,8 @@ int main(int argc, char *argv[])
         }
         else if (ESTADO_MENU == HISTORICO)
         {
-            historico(ESTADO_MENU, &lista_historico);
+            historicov3(ESTADO_MENU, &lista_historico);
+
         }
         else if (ESTADO_MENU == SAIR)
         {

@@ -5,6 +5,7 @@
 #include "cores.hpp"
 #include "leitura_de_arquivos.hpp"
 #include "lista.hpp"
+#include "sortings.hpp"
 using std::cout;
 using std::cin;
 using std::scanf;
@@ -111,6 +112,69 @@ void como_jogar(int& estado_menu)
 void historico(int& estado_menu, ListaContEst *lista_historico)
 {
     imprimir_ListaContEst(lista_historico);
+
+    cout << "\nSelecione uma opcao:\n";
+    cout << "1. Jogar\n";
+    cout << "2. Voltar ao menu\n";
+
+    int opcao;
+    cin >> opcao;
+
+    if (opcao == 1)
+    {
+        estado_menu = NOVO_JOGO;
+    }
+    else if (opcao == 2)
+    {
+        estado_menu = MENU;
+    }
+}
+
+void historicov2(int& estado_menu, ListaContEst *lista_historico)
+{
+    //imprimir_ListaContEst(lista_historico);
+    Jogador *vetor = new Jogador[lista_historico->tamanho];
+
+    int tamanhoVetor = lista_para_vetor(lista_historico, vetor);
+
+    double tempo = ordena_vetor_pelo_score_bubble_sort(vetor, tamanhoVetor);
+
+    imprime_dez_primeiros(vetor);
+    printf("\nTempo para ordenar (Bubble sort): %fs\n", tempo);
+
+    delete[] vetor;
+
+    cout << "\nSelecione uma opcao:\n";
+    cout << "1. Jogar\n";
+    cout << "2. Voltar ao menu\n";
+
+    int opcao;
+    cin >> opcao;
+
+    if (opcao == 1)
+    {
+        estado_menu = NOVO_JOGO;
+    }
+    else if (opcao == 2)
+    {
+        estado_menu = MENU;
+    }
+}
+
+//usa merge sort
+void historicov3(int& estado_menu, ListaContEst *lista_historico)
+{
+    //imprimir_ListaContEst(lista_historico);
+    Jogador *vetor = new Jogador[lista_historico->tamanho];
+
+    int tamanhoVetor = lista_para_vetor(lista_historico, vetor);
+
+    double tempo = mergeSortAdaptado(vetor, tamanhoVetor);
+
+    imprime_dez_primeiros(vetor);
+    printf("\nTempo para ordenar (Merge sort): %fs\n", tempo);
+
+    delete[] vetor;
 
     cout << "\nSelecione uma opcao:\n";
     cout << "1. Jogar\n";

@@ -35,3 +35,5 @@ while (getline(arq2, nome) && arq2 >> score){
 }
 
 4. (Mateus) Teste: Claude Code escrevendo automaticamente neste arquivo.
+5. (Mateus) Pedi pro Claude converter o código do Merge Sort (que estava em C) para C++ e colocar em src/sortings.cpp e src/sortings.hpp. O que mudou: malloc/free viraram new (std::nothrow) int[n] / delete[]; as variáveis de laço passaram a ser declaradas no próprio uso (estilo C++); e o mergeSort retorna direto se n <= 1 ou se a alocação falhar.
+6. (Mateus) Depois de adaptar o Merge Sort pra ordenar Jogador pelo score, o sortings.hpp parou de compilar ("'Jogador' was not declared in this scope"). Causa: o sortings.hpp usava o struct Jogador sem incluir o lista.hpp, onde ele é definido. Solução: adicionar #include "lista.hpp" no sortings.hpp, logo depois do #define SORTINGS_HPP.

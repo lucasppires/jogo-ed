@@ -51,5 +51,9 @@ int     buscar(const ListaContEst *l, int cod);
 bool    remover(ListaContEst *l, int pos);
 void    destruir(ListaContEst *l);
 void    imprimir_ListaContEst(const ListaContEst *l);
+int lista_para_vetor(ListaContEst *l, Jogador vetor[]);
+double ordena_vetor_pelo_score_bubble_sort(Jogador vetor[], int tamanhoVetor);
+double mergeSortAdaptado(Jogador vetor[], int tamanhoVetor);
+void imprime_dez_primeiros(Jogador vetor[]);
 
 #endif /* LISTA_HPP */

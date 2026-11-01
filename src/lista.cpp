@@ -1,10 +1,8 @@
-
-
-
 #include <iostream>
 #include <iomanip>
 #include <new>
 #include "lista.hpp"
+#include "timer.hpp"
 
 /* Imprime um produto no formato "cod - nome - preco" (preco com 2 casas),
  * sem alterar a formatacao de std::cout para o resto do programa. */
@@ -233,3 +231,50 @@ void imprimir_ListaContEst(const ListaContEst *l)
                   << ", Score: " << l->dados[i].score << '\n';
      }
 }
+
+//retorna o tamanho do vetor
+int lista_para_vetor(ListaContEst *l, Jogador vetor[]){
+    // poe a lista preenchida num vetor de Jogador
+    if (l->tamanho == 0) return -1;
+    int tamanhoVetor = 0;
+
+    
+    for (int j = 0; j < l->tamanho; j++){
+        vetor[j] = l->dados[j];
+        tamanhoVetor++;
+    }
+
+    return tamanhoVetor;
+}
+
+//bubble sort
+double ordena_vetor_pelo_score_bubble_sort(Jogador vetor[], int tamanhoVetor){
+    Timer t;
+    timer_iniciar(&t);
+    
+    for(int k = 0; k < tamanhoVetor-1; k++){
+        bool foiTrocado = false;
+
+        for (int l = 0; l < tamanhoVetor-1; l++){
+            if(vetor[l].score < vetor[l+1].score){
+                Jogador aux = vetor[l+1];
+                vetor[l+1] = vetor[l];
+                vetor[l] = aux;
+
+                foiTrocado = true;
+            }
+        }
+        if (!foiTrocado) break;
+    }
+    double tempoExecucao = timer_parar(&t);
+    return tempoExecucao;
+}
+
+void imprime_dez_primeiros(Jogador vetor[]){
+    std::cout << "RANKING (pelo score)\n";
+    for(int m = 0; m < 10; m++){
+        std::cout << m+1 << ". Nome: " << vetor[m].nome_jogador
+                  << ", Score: " << vetor[m].score << '\n';
+    }
+}
+
