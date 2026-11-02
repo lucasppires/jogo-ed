@@ -2,6 +2,8 @@
 #include <fstream>
 #include <string>
 #include <limits>
+#include <filesystem>
+#include <system_error>
 
 #include "avl.hpp"
 #include "lista.hpp"
@@ -18,6 +20,7 @@ int carregarPedidosAVL(
     NodoAvl **raiz,
     double *tempo)
 {
+
     std::ifstream arq(arquivo);
 
     if (!arq)
@@ -35,7 +38,12 @@ int carregarPedidosAVL(
 
     while (arq >> codigo >> receita)
     {
-        *raiz = avlInserir(*raiz, codigo, receita);
+        Pedido pedido;
+        pedido.cod = codigo;
+        pedido.receita = receita;
+
+        *raiz = avlInserir(*raiz, pedido);
+
         qtePedidosLidos++;
     }
 
@@ -84,7 +92,16 @@ int carregarPartidasListaContEst(
 
     if (!arq)
     {
-        std::cerr << "Nao foi possivel abrir o arquivo.\n";
+        std::error_code erro;
+        bool existe = std::filesystem::exists(arquivo, erro);
+
+        if (!erro && !existe)
+        {
+            *tempoListaContEst = 0.0;
+            return 0;
+        }
+
+        std::cerr << "Nao foi possivel abrir o historico.\n";
         return -1;
     }
 
@@ -106,8 +123,17 @@ int carregarPartidasListaContEst(
         aux.nome_jogador = nome;
         aux.score = score;
 
-        inserir(l, aux, tamanho(l));
-        qtePartidas++;
+        if (inserir(l, aux, tamanho(l)) == true)
+        {
+            qtePartidas++;
+        } 
+        else
+        {
+            std::cerr << "Erro ao inserir partida no historico.\n";
+            *tempoListaContEst = timer_parar(&t);
+            return -1;
+        }
+       
     }
 
     *tempoListaContEst = timer_parar(&t);

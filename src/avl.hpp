@@ -5,13 +5,20 @@
 
 #ifndef AVL_HPP
 #define AVL_HPP
+#include <string>
 
 /* ------------------------------------------------------------------ */
 /*  Estrutura de um nodo AVL                                            */
 /* ------------------------------------------------------------------ */
-struct NodoAvl {
-    int      dado;
+
+typedef struct
+{
+    int cod;
     std::string receita;
+} Pedido;
+
+struct NodoAvl {
+    Pedido  dado;
     int      altura;
     NodoAvl *esq;
     NodoAvl *dir;
@@ -22,9 +29,9 @@ int      avlAltura(const NodoAvl *n);
 int      avlFb(const NodoAvl *n);
 
 /* Operacoes principais (retornam a nova raiz da subarvore) */
-NodoAvl *avlBuscar(NodoAvl *raiz, int dado);
-NodoAvl *avlInserir(NodoAvl *raiz, int dado, std::string receita);
-NodoAvl *avlRemover(NodoAvl *raiz, int dado);
+NodoAvl *avlBuscar(NodoAvl *raiz, Pedido dado);
+NodoAvl *avlInserir(NodoAvl *raiz, Pedido dado);
+NodoAvl *avlRemover(NodoAvl *raiz, Pedido dado);
 NodoAvl *avlDestruir(NodoAvl *raiz);
 
 /* Caminhamento em-ordem (imprime em ordem crescente) */

@@ -4,9 +4,16 @@ Primeiramente, transformaram-se os códigos do moodle em C para C++ (.c para .cp
 
 Adaptações no TAD AVL:
 
-1. O struct NodoAvl agora possui o campo receita, do tipo string.
-2. A função AvlInserir agora recebe como parâmetro o string receita.
-3. A função criarNodo agora recebe como parâmetro o string receita.
+1. Foi criada a struct Pedido, com código e receita.
+2. O campo dado de NodoAvl passou de int para Pedido.
+3. A função criarNodo agora preenche o código e a receita do pedido.
+4. As funções avlBuscar, avlInserir e avlRemover agora recebem Pedido e comparam seu código.
+5. A remoção com dois filhos copia o pedido completo do sucessor.
+6. A função avlEmOrdem agora imprime código, receita e altura.
+7. O carregamento monta os pedidos e os insere na AVL antes do menu.
+8. A destruição da AVL foi incluída em liberar_recursos.
+
+Pendente: trocar a receita em string por lista encadeada.
 
 Alterações no TAD LISTA CONT EST:
 1. A struct ListaContEst agora possui como atribudo um array da struct Jogador, definida no início do .hpp. Não é mais um vetor de produtos.

@@ -21,7 +21,7 @@ using std::cin;
 using std::endl;
 using std::scanf;
 
-// compilar:g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/leitura_de_arquivos.cpp src/lista.cpp src/avl.cpp src/timer.cpp src/sortings.cpp -I src -o tests/teste_menu.exe -Wall -std=c++17
+// compilar: g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/leitura_de_arquivos.cpp src/lista.cpp src/avl.cpp src/timer.cpp src/sortings.cpp -I src -o tests/teste_menu.exe -Wall -std=c++17
 
 // rodar: .\tests\teste_menu.exe src\pedidos.txt src\historico.txt
 
@@ -32,15 +32,28 @@ int main(int argc, char *argv[])
       return 1;
    }
 
+    NodoAvl *raiz = nullptr;
+    double tempoPedidos = 0.0;
+
+    int pedidosLidos = carregarPedidosAVL(argv[1], &raiz, &tempoPedidos); //carrega os pedidos do arquivo para a arvore AVL
+
+    if (pedidosLidos < 0) 
+    {
+        raiz = avlDestruir(raiz); //se der erro na leitura do arquivo, destruo a arvore e retorno 1
+        return 1;
+    }
+
+    cout << pedidosLidos << " pedidos lidos em " << tempoPedidos << " segundos.\n";
+
     ListaContEst lista_historico;  //crio e inicializo a lista contígua que vai armazenar o histórico de partidas
     inicializar(&lista_historico);
 
     double tempoHistorico = 0.0;
-    int lidos = carregarPartidasListaContEst(argv[2], &lista_historico, &tempoHistorico);
+    int historicoslidos = carregarPartidasListaContEst(argv[2], &lista_historico, &tempoHistorico);
 
-    if (lidos < 0)
+    if (historicoslidos < 0)
     {
-        destruir(&lista_historico);
+        liberar_recursos(raiz, &lista_historico);
         return 1;
     }
 
@@ -57,7 +70,7 @@ int main(int argc, char *argv[])
         if (ESTADO_MENU == NOVO_JOGO)
         {
             cout << "Novo jogo selecionado.";
-            return 0;
+            ESTADO_MENU = MENU; //apenas para voltar ao menu, pois a função de jogar ainda não foi implementada
         }
         else if (ESTADO_MENU == COMO_JOGAR)
         {
@@ -70,7 +83,7 @@ int main(int argc, char *argv[])
         }
         else if (ESTADO_MENU == SAIR)
         {
-            destruir(&lista_historico);
+            liberar_recursos(raiz, &lista_historico);
             return 0; //encerrar_programa();
         }
 

@@ -3,6 +3,7 @@
 
 
 #include "lista.hpp"
+#include "avl.hpp"
 
 
 typedef enum {
@@ -18,6 +19,8 @@ void imprime_linha(int n);
 void pula_linha(int n);
 
 void imprimir_menu(int& estado_menu);
+
+void liberar_recursos(NodoAvl *&raiz, ListaContEst *lista_historico);
 
 void como_jogar(int& estado_menu);
 

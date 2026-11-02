@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <new>
+#include <string>
 #include "avl.hpp"
 
 /* ------------------------------------------------------------------ */
@@ -12,11 +13,11 @@
 /* ------------------------------------------------------------------ */
 static int maximo(int a, int b) { return a > b ? a : b; }
 
-static NodoAvl *criarNodo(int dado, std::string receita) {
+static NodoAvl *criarNodo(int codigo, std::string receita) {
     NodoAvl *n = new (std::nothrow) NodoAvl;
     if (!n) return nullptr;
-    n->dado = dado;
-    n->receita = receita;
+    n->dado.cod = codigo;
+    n->dado.receita = receita;
     n->altura = 0;
     n->esq    = nullptr;
     n->dir    = nullptr;
@@ -113,19 +114,19 @@ static NodoAvl *reequilibrar(NodoAvl *raiz) {
 /* ------------------------------------------------------------------ */
 /*  Operacoes publicas                                                  */
 /* ------------------------------------------------------------------ */
-NodoAvl *avlBuscar(NodoAvl *raiz, int dado) {
+NodoAvl *avlBuscar(NodoAvl *raiz, Pedido dado) {
     if (!raiz)             return nullptr;
-    if (dado < raiz->dado) return avlBuscar(raiz->esq, dado);
-    if (dado > raiz->dado) return avlBuscar(raiz->dir, dado);
+    if (dado.cod < raiz->dado.cod) return avlBuscar(raiz->esq, dado);
+    if (dado.cod > raiz->dado.cod) return avlBuscar(raiz->dir, dado);
     return raiz;
 }
 
-NodoAvl *avlInserir(NodoAvl *raiz, int dado, std::string receita) {
-    if (!raiz) return criarNodo(dado, receita);
-    if (dado < raiz->dado)
-        raiz->esq = avlInserir(raiz->esq, dado, receita);
-    else if (dado > raiz->dado)
-        raiz->dir = avlInserir(raiz->dir, dado, receita);
+NodoAvl *avlInserir(NodoAvl *raiz, Pedido dado) {
+    if (!raiz) return criarNodo(dado.cod, dado.receita);
+    if (dado.cod < raiz->dado.cod)
+        raiz->esq = avlInserir(raiz->esq, dado);
+    else if (dado.cod > raiz->dado.cod)
+        raiz->dir = avlInserir(raiz->dir, dado);
     else
         return raiz; /* duplicatas ignoradas */
     return reequilibrar(raiz);
@@ -136,11 +137,11 @@ static NodoAvl *minimo(NodoAvl *n) {
     return n;
 }
 
-NodoAvl *avlRemover(NodoAvl *raiz, int dado) {
+NodoAvl *avlRemover(NodoAvl *raiz, Pedido dado) {
     if (!raiz) return nullptr;
-    if (dado < raiz->dado) {
+    if (dado.cod < raiz->dado.cod) {
         raiz->esq = avlRemover(raiz->esq, dado);
-    } else if (dado > raiz->dado) {
+    } else if (dado.cod > raiz->dado.cod) {
         raiz->dir = avlRemover(raiz->dir, dado);
     } else {
         /* Nodo encontrado */
@@ -168,6 +169,8 @@ NodoAvl *avlDestruir(NodoAvl *raiz) {
 void avlEmOrdem(const NodoAvl *raiz) {
     if (!raiz) return;
     avlEmOrdem(raiz->esq);
-    std::cout << raiz->dado << "(h" << raiz->altura << ") ";
+    std::cout << raiz->dado.cod << ": "
+          << raiz->dado.receita
+          << "(h" << raiz->altura << ") ";
     avlEmOrdem(raiz->dir);
 }

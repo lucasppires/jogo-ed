@@ -55,5 +55,6 @@ int lista_para_vetor(ListaContEst *l, Jogador vetor[]);
 double ordena_vetor_pelo_score_bubble_sort(Jogador vetor[], int tamanhoVetor);
 double mergeSortAdaptado(Jogador vetor[], int tamanhoVetor);
 void imprime_dez_primeiros(Jogador vetor[]);
+void imprime_de_1_a_9(Jogador vetor[], int tamanhoVetor);
 
 #endif /* LISTA_HPP */

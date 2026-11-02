@@ -599,3 +599,766 @@ A mensagem **“you are still merging” deve desaparecer**. A divergência de c
 Esses comandos salvam as mudanças localmente. Não executei nenhum deles por você.
 
 ##################################################
+
+Lucas — Prompt 19:
+analisando o codigo como esta agora e vendo tambem o plano de tarefas, qual seria o proximo passo?
+
+Resposta:
+**Eu concluiria a Fase 1 antes de começar a partida.** Vocês já avançaram também em parte da Fase 4, com a ordenação do histórico.
+
+Pela leitura do código atual:
+
+| Parte | Estado atual |
+|---|---|
+| Menu e Como jogar | Implementados no programa de teste. |
+| Histórico | Carregado antes do menu em uma lista com crescimento dinâmico. |
+| Ordenação por pontuação | A tela usa Merge Sort sobre um vetor independente, copiado antes da cronometragem. |
+| Pedidos na AVL | Existe uma função de carregamento, mas ela ainda não é chamada pelo `teste_menu.cpp`. |
+| Novo jogo | Apenas mostra uma mensagem e encerra o programa. |
+
+**Primeiro, feche dois casos do histórico**
+
+1. **Histórico com menos de dez partidas:** `imprime_dez_primeiros` sempre acessa dez posições. Se houver três registros, por exemplo, ela acessará posições fora do vetor. A função precisa receber a quantidade de registros e imprimir no máximo essa quantidade, limitada a dez. Para histórico vazio, mostre uma mensagem sem acessar elementos.
+2. **Arquivo ausente:** a leitura ainda retorna erro e encerra o programa. Esse caso deve continuar com a lista vazia. Confira também o retorno de `inserir` antes de aumentar a contagem de partidas carregadas.
+
+Esses ajustes permitem testar com arquivos pequenos e com histórico inexistente, como o trabalho exige.
+
+**Depois, conecte os pedidos ao programa do menu**
+
+Você já tem `carregarPedidosAVL`. O próximo avanço será:
+
+1. Criar a raiz da AVL, inicialmente nula.
+2. Chamar o carregamento com `argv[1]`, antes do menu.
+3. Conferir alguns pedidos e receitas usando um arquivo pequeno.
+4. Liberar a árvore, junto com o histórico, ao encerrar o programa.
+
+**O próximo marco é:** iniciar com os dois caminhos, carregar pedidos e histórico, abrir o menu e sair liberando a memória. Depois podemos começar Novo jogo com apenas um cliente.
+
+Por enquanto, eu começaria especificamente pelo **limite de impressão do histórico**, pois ele impede testar com segurança arquivos pequenos. Não é necessário acrescentar mais recursos à ordenação agora; a escolha por nome e o registro das medições continuam pendentes para uma etapa posterior.
+
+Não alterei código nem executei testes; registrei esta análise no arquivo de tutoria.
+
+##################################################
+
+Lucas — Prompt 20:
+onde esta localizada a definicao da função imprime_dez_primeiros?
+
+Resposta:
+A **definição**, com o corpo da função, está em [src/lista.cpp, linha 273](/C:/Users/lucas/jogo-ed/src/lista.cpp:273).
+
+A **declaração** está em [src/lista.hpp, linha 57](/C:/Users/lucas/jogo-ed/src/lista.hpp:57).
+
+No VS Code, você pode pressionar **Ctrl + P** e digitar `src/lista.cpp:273` para ir direto à definição.
+
+##################################################
+
+Lucas — Prompt 21:
+acho que nao precisamos tratar do caso de arquivos ausentes na impressao do historico, pois no inicio do teste menu ja conferimos se isso esta correto
+
+Resposta:
+**Você está certo sobre onde tratar: a função de impressão não precisa verificar se o arquivo existe.** Ela recebe os dados que já estão na memória.
+
+Mas a verificação inicial atual ainda não atende completamente ao requisito:
+
+- `confere_argc_e_argv` verifica apenas se você passou os dois argumentos; ela não verifica se os arquivos existem.
+- `carregarPartidasListaContEst` tenta abrir o histórico e retorna `-1` se não conseguir.
+- O `main()` encerra quando recebe esse `-1`.
+
+O trabalho pede outro comportamento para **histórico inexistente**: continuar o programa com a lista vazia.
+
+As responsabilidades ficam assim:
+
+| Parte | O que precisa tratar |
+|---|---|
+| Carregamento | Arquivo inexistente → histórico vazio, permitindo continuar. |
+| Impressão | Lista com zero registros → mostrar “Historico vazio”, sem acessar elementos. |
+| Impressão dos dez primeiros | Mostrar apenas os registros existentes, até o limite de dez. |
+
+Mesmo que o arquivo exista, ele pode estar vazio ou conter apenas três partidas. Por isso, **a impressão precisa respeitar a quantidade carregada**, independentemente da existência do arquivo.
+
+Eu deveria ter separado esses dois assuntos com mais clareza: arquivo ausente é responsabilidade da leitura; lista vazia ou pequena é responsabilidade da exibição.
+
+##################################################
+
+Lucas — Prompt 22:
+quando tento executar o teste menu aparece este erro: Falha na execução do programa 'teste_menu.exe': Uma política de Controle de 
+Aplicativo bloqueou este arquivoNo linha:1 caractere:1
++ .\tests\teste_menu.exe src\pedidos.txt src\historico.txt
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+No linha:1 caractere:1
++ .\tests\teste_menu.exe src\pedidos.txt src\historico.txt
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ResourceUnavailable: (:) [], ApplicationFaile 
+   dException
+    + FullyQualifiedErrorId : NativeCommandFailed
+
+Resposta:
+**O Windows está bloqueando o executável antes de o seu código começar a rodar.** Essa mensagem não indica um erro na lista ou no histórico.
+
+Pode ser o Controle Inteligente de Aplicativos ou outra política de controle de execução. A Microsoft orienta identificar o arquivo e a política responsáveis pelos registros do Windows. [Orientação da Microsoft](https://learn.microsoft.com/windows/security/application-security/application-control/app-control-for-business/operations/appcontrol-debugging-and-troubleshooting)
+
+Tentei consultar esses registros, mas o Windows negou acesso. Para verificar manualmente:
+
+1. Abra o menu Iniciar e procure **Visualizador de Eventos**.
+2. Acesse **Logs de Aplicativos e Serviços → Microsoft → Windows → CodeIntegrity → Operational**.
+3. Procure um evento **3077** no horário da tentativa de execução e copie aqui o texto da aba **Geral**.
+
+Isso permite saber se o bloqueio é do próprio `teste_menu.exe` ou de alguma biblioteca que ele tenta carregar. **Não precisamos alterar o código nem desativar a proteção para fazer esse diagnóstico.**
+
+Se o computador for administrado por uma instituição, a liberação poderá depender do administrador. Primeiro vamos identificar a política que bloqueou.
+
+##################################################
+
+Lucas — Prompt 23:
+Code Integrity determined that a process (\Device\HarddiskVolume3\Windows\System32\WindowsPowerShell\v1.0\powershell.exe) attempted to load \Device\HarddiskVolume3\Users\lucas\jogo-ed\tests\teste_menu.exe that did not meet the Enterprise signing level requirements or violated code integrity policy (Policy ID:{0283ac0f-fff1-49ae-ada1-8a933130cad6}).
+
+Resposta:
+**O bloqueio é do próprio `teste_menu.exe`.** Também confirmei que o Controle Inteligente de Aplicativos (*Smart App Control*) está ativo no seu Windows; o registro é compatível com esse bloqueio.
+
+Esse recurso pode impedir a execução de programas recém-compilados sem assinatura reconhecida. A Microsoft informa que ele **não oferece uma exceção individual para liberar somente um aplicativo**. [Documentação da Microsoft](https://support.microsoft.com/en-us/windows/security/threat-malware-protection/smart-app-control-frequently-asked-questions)
+
+Se este é seu computador pessoal e você optar por desativar esse recurso para desenvolver o trabalho:
+
+1. Abra **Segurança do Windows**.
+2. Entre em **Controle de aplicativos e do navegador**.
+3. Abra **Configurações do Controle Inteligente de Aplicativos**.
+4. Leia o aviso exibido pelo Windows e selecione **Desativado**, caso aceite a mudança.
+5. Tente executar novamente o mesmo comando do teste.
+
+**Isso desativa essa camada de proteção para outros aplicativos também**, não só para o jogo. As condições para reativação dependem da versão instalada; confira o aviso da sua tela. Não é necessário desativar o antivírus.
+
+Se o computador for administrado pela faculdade ou por uma empresa, peça ao responsável um ambiente autorizado para desenvolvimento.
+
+Não alterei nenhuma configuração de segurança.
+
+##################################################
+
+Lucas — Prompt 24:
+permito que o app segurança do windows faça alterações no meu dispositivo?
+
+Resposta:
+**Se o aviso apareceu após você abrir as configurações de segurança**, confira se o aplicativo é **Segurança do Windows** e se o fornecedor verificado é **Microsoft Windows** ou **Microsoft Corporation**. Se corresponder, pode clicar em **Sim** para continuar a alteração que você iniciou.
+
+Esse botão autoriza o aplicativo a fazer alterações; ele não libera apenas o jogo. Se você confirmar a desativação do Controle Inteligente de Aplicativos, a mudança afetará essa proteção para todos os aplicativos.
+
+Se o nome ou o fornecedor forem diferentes, não confirme e me diga o que aparece.
+
+##################################################
+
+Lucas — Prompt 25:
+o jogo ordena todo o historico depois do comando de execução e antes de mostrar o menu? ou é na compilaçõa
+
+Resposta:
+**No código atual, o histórico é ordenado quando você escolhe Histórico no menu.**
+
+A sequência é:
+
+```text
+Compilação → transforma o código em um executável
+
+Execução do programa:
+    1. Lê o arquivo de histórico e guarda na lista, sem ordenar.
+    2. Mostra o menu.
+    3. Você escolhe Histórico.
+    4. historicov3 cria uma cópia dos registros.
+    5. Ordena essa cópia inteira por pontuação com Merge Sort.
+    6. Mostra os dez primeiros, ou todos se houver menos de dez.
+```
+
+Portanto, **carregar e ordenar são operações diferentes**. A compilação não lê nem ordena o histórico: ela prepara o programa para realizar essas operações durante a execução.
+
+Cada vez que você acessa Histórico, uma nova cópia é criada e ordenada. A lista original e o arquivo permanecem na ordem em que estavam.
+
+##################################################
+
+Lucas — Prompt 26:
+esta de acordo com a orientação do trabalho?
+
+Resposta:
+**Sim, esse fluxo está de acordo com o enunciado.** As seções 4.2 e 5.2 determinam que:
+
+- O histórico seja carregado na inicialização, antes do menu.
+- A ordenação aconteça quando o usuário acessar Histórico.
+- Seja ordenada uma cópia independente, preservando os dados originais.
+- A criação dessa cópia fique fora do intervalo cronometrado.
+- A medição seja repetida a cada novo acesso ao Histórico.
+
+Fonte: :codex-file-citation{path="C:\\Users\\lucas\\Downloads\\trab_final.pdf" purpose="source"}
+
+**Isso confirma a sequência de carregamento e ordenação, não que toda a funcionalidade esteja concluída.** Ainda faltam a opção de ordenar por nome e o registro do tamanho e do tempo da ordenação em `medicoes.log`.
+
+Mostrar apenas os dez primeiros é uma decisão de interface de vocês; o enunciado não especifica esse limite. Para permitir consultar todo o histórico, vocês podem acrescentar paginação mais adiante.
+
+##################################################
+
+Lucas — Prompt 27:
+como que o programa ordena mais de 200 mil historicos do historicos.txt tao rapido entao?
+
+Resposta:
+**Porque o Merge Sort organiza os registros em etapas, sem comparar cada partida com todas as outras.** Além disso, quando você abre Histórico, os dados já estão na memória: o arquivo não precisa ser lido novamente.
+
+Para entender a diferença, considere 200 mil registros:
+
+| Algoritmo | Ordem de crescimento | Escala aproximada para 200 mil registros |
+|---|---|---|
+| Merge Sort | `n × log₂(n)` | Cerca de 3,5 milhões de unidades de trabalho. |
+| Bubble Sort, no pior caso | `n²` | Dezenas de bilhões de comparações. |
+
+Esses números ilustram a diferença de escala; não são uma contagem exata das operações do seu programa.
+
+O Merge Sort divide o conjunto em metades, ordena essas partes e depois as combina. Para 200 mil registros, são aproximadamente **18 níveis de divisão**. Em cada nível, o trabalho total é proporcional à quantidade de registros.
+
+No seu código também existem dois fatores que tornam a espera menor:
+
+- A ordenação compara pontuações inteiras, uma comparação simples.
+- Depois de ordenar todos os registros, você imprime somente os dez primeiros. Imprimir 200 mil linhas no terminal poderia demorar bastante.
+
+**O tempo mostrado mede a chamada de ordenação**, sem incluir a leitura inicial do arquivo, a criação da cópia em `historicov3` ou a impressão. As cópias internas feitas pelo próprio Merge Sort entram na medição.
+
+Portanto, ordenar esse volume em uma fração de segundo pode ser perfeitamente plausível. O tempo exato depende da máquina, dos dados e da compilação; ser rápido, sozinho, não indica que a ordenação deixou de acontecer.
+
+##################################################
+
+Lucas — Prompt 28:
+qual o proximo passo agora?
+
+Resposta:
+**Agora vamos carregar os pedidos na AVL antes do menu.** Conferi o `teste_menu.cpp`: ele já carrega o histórico, mas ainda não chama `carregarPedidosAVL`.
+
+A função de leitura já existe. Sua tarefa agora é conectá-la ao programa:
+
+1. **Criar uma raiz inicialmente vazia**, usando um ponteiro `NodoAvl *` com valor `nullptr`.
+2. **Criar uma variável de tempo**, assim como você fez com `tempoHistorico`.
+3. **Chamar `carregarPedidosAVL` com `argv[1]`**, passando o endereço da raiz e o endereço da variável de tempo.
+4. **Verificar o retorno:** se for negativo, liberar o que já foi inicializado e encerrar; se der certo, continuar até o menu.
+5. **Liberar a AVL ao encerrar**, usando `avlDestruir`, junto com a destruição do histórico.
+
+Coloque essa preparação fora do laço do menu, para acontecer apenas uma vez.
+
+**Comece com um arquivo de três pedidos conhecidos.** Depois da carga, busque um desses códigos e confira se a receita encontrada corresponde ao arquivo. Só depois use a base grande.
+
+Por enquanto, faça apenas o primeiro passo: **declare a raiz da AVL inicialmente nula, perto da inicialização do histórico**. Depois conferimos a chamada da função juntos. Não alterei código.
+
+##################################################
+
+Lucas — Prompt 29:
+para mim isso ainda esta muito abstrato, nao teriamos que antes criar structs de cada ingrediente dos pedidos? ou decodificar cada letra do pedido no ingrediente que representa?
+
+Resposta:
+**Você identificou uma parte necessária do jogo: interpretar as letras como ingredientes. Mas isso pode ser feito depois de guardar o pedido.** Eu estava avançando para o carregamento sem explicar essa separação.
+
+Imagine que o arquivo tenha:
+
+```text
+1001
+nkmpz
+```
+
+Existem duas tarefas diferentes:
+
+**1. Guardar o pedido**
+
+Na implementação atual, um nó da AVL pode guardar:
+
+```text
+Código: 1001
+Receita: "nkmpz"
+```
+
+Nesse momento, o programa só associa um código a uma sequência de letras. Ele ainda não precisa preparar carne nem controlar estoque. É parecido com carregar nome e pontuação no histórico: primeiro você guarda os dados.
+
+**2. Interpretar a receita para jogar**
+
+Depois, essa sequência significa:
+
+```text
+n → carne
+k → ketchup
+m → mostarda
+p → picles
+z → pão de cima
+```
+
+Para cumprir o trabalho, a receita deverá ser representada por uma lista encadeada, com um ingrediente por nó, nessa ordem. A string que vocês usam hoje ainda precisa dessa adaptação.
+
+**Não é necessário criar uma struct diferente para cada ingrediente.** Podemos ter uma representação comum de ingrediente, identificada pelo símbolo ou por um `enum`. As características — nome, necessidade de preparo e validade — dependem do tipo identificado. Essa é uma decisão que vamos construir com calma.
+
+Portanto, sua ideia faz sentido: **antes de continuar conectando funções, podemos definir como representar um ingrediente e uma receita**. Isso pode tornar o restante mais concreto para você.
+
+O próximo exercício pode ser apenas desenhar este pedido:
+
+```text
+Pedido 1001
+    Receita: [n] → [k] → [m] → [p] → [z] → fim
+```
+
+Cada bloco representa um nó da lista. Para começar, ele só precisa identificar o ingrediente e apontar para o próximo nó. Estoque e vencimento ficam para outra etapa.
+
+##################################################
+
+Lucas — Prompt 30:
+acho que primeiro vou criar a struct ingrediente, que envolve o nome, se requer preparo e se é perecivel
+
+Resposta:
+**Faz sentido começar por essa representação.** Os três campos que você propôs descrevem as características de cada tipo de ingrediente:
+
+- **Nome:** o que será mostrado ao jogador.
+- **Requer preparo:** um `bool`, indicando sim ou não.
+- **É perecível:** outro `bool`.
+
+Eu acrescentaria **o símbolo**, do tipo `char`, para associar o ingrediente à letra que aparece na receita.
+
+Por exemplo:
+
+| Símbolo | Nome | Requer preparo | Perecível |
+|---|---|---|---|
+| `'n'` | Carne | `true` | `true` |
+| `'q'` | Queijo cheddar | `true` | `false` |
+| `'k'` | Ketchup | `false` | `false` |
+
+Você define **uma única `struct Ingrediente`** e cria registros desse tipo para carne, queijo, ketchup e os demais. Não precisa de uma struct para cada um.
+
+Por enquanto, deixe quantidade em estoque e turno de vencimento fora dessa estrutura: esses campos descrevem o estoque e as unidades preparadas, enquanto os campos que você está criando descrevem **o tipo de ingrediente**.
+
+Tente escrever a struct com esses quatro campos. Depois eu confiro com você, sem alterar o arquivo.
+
+##################################################
+
+Lucas — Prompt 31:
+faz sentido criar um header com a definicao da struct ingrediente e definir cada um deles como constantes?
+
+Resposta:
+**Sim, faz sentido.** Você pode criar `ingredientes.hpp` com a definição de `Ingrediente` e os registros constantes de carne, queijo, ketchup e dos demais tipos.
+
+Essas características não mudam durante a partida: carne continua sendo perecível e ketchup continua dispensando preparo. Portanto, constantes representam bem esses dados.
+
+Como o projeto usa C++17, você pode definir esses registros no cabeçalho com **`inline const`**. O `const` impede alterações no registro; o `inline` permite que a definição seja incluída por vários arquivos `.cpp`, representando a mesma variável no programa.
+
+A organização ficaria assim:
+
+```text
+ingredientes.hpp
+    Proteção contra inclusão repetida
+    Includes necessários aos campos
+    Definição da struct Ingrediente
+    Constantes dos ingredientes
+```
+
+Se o campo nome for uma `std::string`, use `inline const` para os registros. Não precisa usar `constexpr`, pois o projeto está em C++17 e `std::string` não permite esse uso nessa versão.
+
+**Essas constantes serão o catálogo de tipos de ingredientes.** Uma receita pode identificar os itens desse catálogo pelos símbolos, enquanto o estoque controla separadamente quantas unidades estão disponíveis.
+
+Pode começar criando o cabeçalho, a struct e apenas a constante da carne. Depois conferimos antes de repetir para os demais.
+
+##################################################
+
+Lucas — Prompt 32:
+mas faz sentido criar constantes mesmo? nao vou ter que alterar nenhum campo de nenhum ingrediente durante o andamento do jogo?
+
+Resposta:
+**Com os quatro campos que você escolheu, faz sentido usar constantes.** Eles descrevem o tipo de ingrediente, e não uma unidade preparada.
+
+Por exemplo, a carne:
+
+| Característica | Muda durante a partida? |
+|---|---|
+| Nome: Carne | Não. |
+| Símbolo: `'n'` | Não. |
+| Requer preparo: `true` | Não. |
+| É perecível: `true` | Não. |
+
+Quando você prepara uma carne, ela não passa a ter `requer_preparo = false`. Esse campo significa **“esse tipo precisa ser preparado antes de usar”**, e não “esta unidade está crua”.
+
+O que muda fica no estado do jogo:
+
+```text
+Catálogo constante:
+    Carne → símbolo n, requer preparo, é perecível
+
+Estoque durante a partida:
+    Uma carne vence no turno 8
+    Outra carne vence no turno 10
+```
+
+Preparar acrescenta uma unidade ao estoque. Usar ou vencer remove uma unidade. **Isso não altera a definição de carne no catálogo.**
+
+Da mesma forma, colocar ketchup no hambúrguer não modifica a constante Ketchup; apenas acrescenta sua identificação à pilha.
+
+Se você colocasse na mesma struct campos como quantidade disponível ou turno de vencimento, esses registros precisariam ser mutáveis. Por isso estamos separando **características fixas do tipo** de **dados variáveis da partida**.
+
+Para a struct que você está planejando agora, pode manter as constantes.
+
+##################################################
+
+Lucas — Prompt 33:
+acho que vou fazer structs mais flexiveis, o que voce recomenda colocar entao
+
+Resposta:
+**Você pode manter uma struct comum e criar os ingredientes sem `const`.** Assim, poderá alterar seus campos se precisar. Não é necessário acrescentar campos só para torná-la mais flexível.
+
+Para começar, recomendo:
+
+| Campo | Tipo sugerido | Significado |
+|---|---|---|
+| `nome` | `std::string` | Nome mostrado ao jogador. |
+| `simbolo` | `char` | Letra usada na receita. |
+| `requer_preparo` | `bool` | Se esse tipo exige preparo. |
+| `perecivel` | `bool` | Se pode vencer no estoque. |
+
+Mais adiante, você pode acrescentar **`validade_turnos`**, um inteiro com a duração configurada para os perecíveis. Por exemplo, carne pode ter validade de três turnos.
+
+**Não coloque um único `turno_vencimento` no registro geral da carne.** Você pode preparar várias carnes em turnos diferentes, e cada unidade terá seu próprio vencimento:
+
+```text
+Tipo Carne: validade de 3 turnos
+
+Unidade preparada no turno 2 → vence no turno 5
+Unidade preparada no turno 4 → vence no turno 7
+```
+
+Esses vencimentos individuais serão guardados no heap da carne. Quantidades de estoque também podem ficar separadas da definição do tipo.
+
+Minha recomendação para agora é: **crie `Ingrediente` com os quatro campos iniciais, sem usar constantes se você prefere assim**. Depois vamos representar um ingrediente na receita. Não precisa decidir toda a organização do estoque neste momento.
+
+##################################################
+
+Lucas — Prompt 34:
+acho que, para me ajudar melhor, eu gostaria de me explicasse detalhadamente como funciona o jogo
+
+Resposta:
+**O jogo é um desafio de montar hambúrgueres na ordem certa antes que o cliente perca a paciência.** Você decide o que preparar, o que adicionar ao prato e o que remover, administrando o estoque e os turnos.
+
+Vou usar as regras da especificação: :codex-file-citation{path="C:\\Users\\lucas\\Downloads\\trab_final.pdf" purpose="source"}
+
+**Antes de começar uma partida**
+
+Quando você executa o programa, ele carrega dois conjuntos de dados:
+
+- **Pedidos:** um catálogo de códigos e receitas, guardado na AVL.
+- **Histórico:** resultados de partidas anteriores, guardados na lista contígua.
+
+Uma entrada de pedidos como esta:
+
+```text
+1001
+nkmpz
+```
+
+significa: o pedido de código 1001 exige carne, ketchup, mostarda, picles e pão de cima, nessa ordem.
+
+O arquivo de pedidos é um **catálogo de receitas possíveis**, não a fila de clientes da partida. O histórico também não define os clientes: ele só guarda resultados anteriores.
+
+Depois da carga, aparece o menu: Novo jogo, Como jogar e Histórico.
+
+**Ao escolher Novo jogo**
+
+O programa cria os clientes da partida e coloca todos em uma fila. A quantidade é escolhida por vocês.
+
+Por exemplo:
+
+```text
+Frente → Cliente 1 → Cliente 2 → Cliente 3
+```
+
+Você atende apenas o primeiro. Quando ele é atendido, sai da fila e o seguinte passa à frente.
+
+Para cada cliente, um código de pedido é sorteado no intervalo disponível na AVL. Para recuperar a receita:
+
+1. O programa procura primeiro na hash.
+2. Se encontrar, usa o pedido do cache.
+3. Se não encontrar, busca na AVL e coloca o resultado na hash.
+
+Essa busca é feita pelo programa; o jogador recebe o pedido para montar.
+
+**Os ingredientes têm três comportamentos**
+
+| Grupo | Ingredientes | Como usar |
+|---|---|---|
+| Sem preparo, quantidade infinita | Pão de cima, ketchup, mostarda, picles e alface | Podem ser adicionados diretamente. |
+| Precisam de preparo, não vencem | Queijos suíço e cheddar, cebola e tomate | Preparar gera uma unidade no estoque. |
+| Precisam de preparo e vencem | Carne, ovo frito e bacon | Preparar gera uma unidade com vencimento. |
+
+Isso ajuda a entender sua futura struct: **“requer preparo” é uma característica do tipo**, enquanto “há duas carnes disponíveis” é uma informação do estoque.
+
+**Montando um pedido concreto**
+
+Imagine o pedido `nkmpz`, com paciência inicial de **10 turnos**. Esse valor é apenas um exemplo; vocês definirão os parâmetros do jogo.
+
+O pão de baixo já está no prato e não faz parte da receita. No início, o hambúrguer não tem nenhum dos ingredientes exigidos.
+
+Uma sequência correta seria:
+
+| Ação | Hambúrguer, de baixo para cima | Paciência restante |
+|---|---|---|
+| Preparar uma carne | Nenhum ingrediente da receita | 9 |
+| Adicionar carne `n` | n | 8 |
+| Adicionar ketchup `k` | n → k | 7 |
+| Adicionar mostarda `m` | n → k → m | 6 |
+| Adicionar picles `p` | n → k → m → p | 5 |
+| Adicionar pão de cima `z` | n → k → m → p → z | 4 |
+
+Ao adicionar a carne, uma unidade sai do estoque. Ketchup, mostarda, picles e pão não precisam ser preparados.
+
+Ao fechar com o pão de cima, o programa compara o hambúrguer com a receita. Como a ordem corresponde exatamente, o cliente foi atendido, a pontuação aumenta e o próximo cliente passa à frente.
+
+**Onde entram lista encadeada e pilha**
+
+A receita é a referência do que deveria ser montado:
+
+```text
+Receita: [n] → [k] → [m] → [p] → [z]
+```
+
+Ela deve ser uma lista encadeada, com um ingrediente por nó.
+
+O hambúrguer é o que o jogador efetivamente montou. Ele usa uma pilha: cada ingrediente novo entra no topo, e só o topo pode ser removido.
+
+Se você colocou mostarda antes do ketchup, não pode retirar diretamente um ingrediente que ficou no meio. Precisa remover os que estão acima dele. Cada remoção gasta um turno, e o ingrediente removido é descartado.
+
+Não pode adicionar ingredientes acima do pão de cima. A comparação com a receita deve preservar a pilha.
+
+**Como funcionam turnos, validade e paciência**
+
+Preparar, adicionar e remover custam **um turno cada**. Consultar pedido ou estoque não gasta turno.
+
+No início de cada turno, o programa descarta perecíveis vencidos. O cálculo é:
+
+```text
+turno de vencimento = turno de preparo + validade
+```
+
+Se uma carne foi preparada no turno 2 e dura três turnos, vence no início do turno 5. Se não foi usada antes, sai do estoque.
+
+Cada perecível tem seu próprio heap mínimo: um de carne, um de ovo e um de bacon. O topo contém a unidade que vence primeiro. Ao usar o ingrediente, é essa unidade que sai. Se não houver estoque válido, a adição não pode ser realizada.
+
+A validade descrita pelo enunciado controla o estoque. Um ingrediente já colocado no hambúrguer não continua dentro do heap.
+
+Somente o cliente da frente perde paciência após ações que gastam turno. Os demais aguardam sem perder paciência. Se ela chegar a zero antes de concluir o pedido, a partida termina imediatamente.
+
+**Como termina e o que fica salvo**
+
+- **Vitória:** todos os clientes foram atendidos.
+- **Derrota:** um cliente perdeu a paciência antes de ter seu pedido concluído.
+- **Saída voluntária:** o jogador encerra a partida.
+
+A pontuação é o número de clientes atendidos. Ao terminar, o programa registra nome e pontuação no histórico e apresenta o Relatório de Desempenho, também gravado em `medicoes.log`. Depois retorna ao menu.
+
+Na tela Histórico, o usuário pode escolher ordenação por nome ou por pontuação decrescente. A ordenação usa uma cópia, preservando a ordem dos registros originais.
+
+**O que vocês precisam escolher**
+
+Paciência dos clientes, quantidade de clientes por partida e validade dos perecíveis são escolhas do grupo, que precisam ser testadas e justificadas. Os valores do meu exemplo não são exigências.
+
+Para você começar a construir a partida, uma meta pequena e concreta é: **mostrar uma receita conhecida, permitir adicionar e remover ingredientes de uma pilha e conferir a montagem**. Primeiro entendemos essa interação; depois conectamos estoque, clientes e os demais controles.
+
+##################################################
+
+Lucas — Prompt 35:
+entao eu poderia criar apenas a struct ingrediente com std::string nome;
+    char simbolo;
+    bool perecivel;
+    bool preparado;
+    int validade; e em algum outro arquivo com funcoes ou no main de fato criar os ingredientes usando essa struct, ate pq a validade deles muda e o bool preparado? tambem muda.
+
+Resposta:
+**Você pode definir a struct no cabeçalho e criar os ingredientes em outro arquivo ou no `main`.** Mas precisamos esclarecer dois campos: `preparado` e `validade`.
+
+**`preparado` descreve uma unidade; `requer_preparo` descreve o tipo.**
+
+Imagine que você preparou duas carnes e usou uma. Um único registro chamado `carne`, com um `bool preparado`, não consegue representar quantas unidades sobraram nem quando cada uma vence.
+
+Por isso, para o cadastro dos tipos, recomendo:
+
+```cpp
+struct Ingrediente {
+    std::string nome;
+    char simbolo;
+    bool perecivel;
+    bool requer_preparo;
+    int validade_turnos;
+};
+```
+
+Aqui, carne sempre tem `requer_preparo = true`. Prepará-la significa **acrescentar uma unidade ao estoque**, não mudar essa característica para `false`.
+
+**A duração da validade também é diferente do turno de vencimento.**
+
+```text
+Tipo Carne: validade_turnos = 3
+
+Carne preparada no turno 2 → vence no turno 5
+Carne preparada no turno 4 → vence no turno 7
+```
+
+A duração de três turnos é uma configuração do tipo. Ela não diminui a cada turno. O que muda entre as unidades é o turno de vencimento, guardado no heap correspondente. Se vocês quiserem mudar a duração conforme a dificuldade, podem configurar esse valor antes da partida.
+
+Você poderia usar `preparado` em registros separados para cada unidade, mas isso exigiria distinguir essas unidades do cadastro geral. Para o jogo proposto, **a presença no estoque já representa uma unidade preparada**, então esse booleano pode ser desnecessário.
+
+Minha sugestão é: **comece com a struct acima, criando os registros sem `const` se preferir**. Assim você mantém a flexibilidade para configurar os tipos, sem misturar o cadastro com as unidades do estoque.
+
+##################################################
+
+Lucas — Prompt 36:
+sobre o preparo, se a carne ja esta preparada o bool vai de false para true, e se o ingrediente nao rquer preparo o bool sera sempre true
+
+Resposta:
+**Sim, essa interpretação de `preparado` faz sentido:** ele significaria “esta unidade está pronta para ser adicionada ao hambúrguer”.
+
+Nesse modelo:
+
+- Uma carne ainda crua começa com `false` e passa para `true` após o preparo.
+- Ketchup e outros ingredientes que dispensam preparo já são considerados prontos.
+
+**O cuidado é que esse estado pertence a cada unidade, não ao tipo inteiro.** Se você tiver uma carne pronta e outra crua, precisará de dois registros:
+
+```text
+Carne A: preparado = true
+Carne B: preparado = false
+```
+
+Um único registro `carne` não representaria as duas situações ao mesmo tempo. E, para perecíveis, cada unidade preparada também teria seu próprio vencimento.
+
+Portanto, sua ideia pode funcionar **se cada registro representar uma unidade**. O que eu estava propondo antes era uma struct para representar o **tipo de ingrediente**, por isso falava em `requer_preparo`. Estávamos usando a palavra “ingrediente” para duas coisas diferentes.
+
+Para este trabalho, existe uma simplificação possível: a ação Preparar já cria uma unidade pronta no estoque. Assim, não é obrigatório armazenar carnes cruas nem mudar um booleano; preparar acrescenta uma unidade e usar remove uma.
+
+**Você não está errado sobre o booleano.** Só precisamos decidir se sua struct vai representar um tipo ou uma unidade, para usar os campos de forma consistente.
+
+##################################################
+
+Lucas — Prompt 37:
+mas, se a struct representar um tipo, como que vou mexer com variaveis que mudam ao decorrer da partida?
+
+Resposta:
+**Você vai mexer nessas variáveis em outras estruturas que representam o estado da partida.** A struct do tipo de ingrediente não precisa guardar tudo sozinha.
+
+Pense em duas informações diferentes:
+
+```text
+Cadastro da carne:
+    nome: Carne
+    símbolo: n
+    requer preparo: sim
+    perecível: sim
+    validade: 3 turnos
+
+Estoque de carne:
+    unidades preparadas e seus vencimentos
+```
+
+O cadastro explica **o que é carne e quais regras ela segue**. O estoque informa **o que você tem disponível agora**.
+
+Veja uma sequência:
+
+| Momento | Cadastro da carne | Heap de carne |
+|---|---|---|
+| Início | Validade de 3 turnos | Vazio. |
+| Prepara no turno 2 | Continua igual | Uma unidade que vence no turno 5. |
+| Prepara no turno 3 | Continua igual | Unidades que vencem nos turnos 5 e 6. |
+| Usa uma no turno 4 | Continua igual | Sobra a unidade que vence no turno 6. |
+
+**As informações mudaram no heap**, enquanto o cadastro continuou descrevendo o tipo corretamente.
+
+Para um ingrediente preparado que não vence, como queijo cheddar, o estado pode ser mais simples: um contador de unidades disponíveis. Preparar aumenta esse contador; adicionar ao hambúrguer diminui.
+
+Então, você terá:
+
+- **Cadastro dos ingredientes:** nome, símbolo e regras.
+- **Estoque:** quantidades ou heaps, conforme o ingrediente.
+- **Partida:** turno atual, pontuação e clientes.
+
+Você pode alterar campos do cadastro se o deixar sem `const`, mas **não precisa colocar todos os dados variáveis nele**. O jogador prepara uma unidade de carne; ele não transforma o tipo Carne inteiro em “preparado”.
+
+Para implementar a ação Preparar carne, por exemplo, você consulta a validade no cadastro, calcula o vencimento usando o turno atual e insere esse vencimento no heap de carne.
+
+##################################################
+
+Lucas — Prompt 38:
+mas como vou saber se a carne esta preparada se nao posso mudar o booleano
+
+Resposta:
+**Você pode mudar um booleano. A questão é que um único booleano não informa quantas carnes estão preparadas.** Eu deixei isso parecer uma proibição, mas é uma escolha de representação.
+
+Na solução com estoque, **estar no heap significa estar preparada**:
+
+```text
+Heap de carne vazio
+    → nenhuma carne preparada disponível
+
+Você escolhe Preparar carne
+    → o programa coloca uma unidade no heap
+    → agora existe uma carne preparada disponível
+
+Você escolhe Adicionar carne
+    → o programa retira uma unidade do heap
+    → essa unidade vai para o hambúrguer
+```
+
+Portanto, para saber se pode adicionar carne, você consulta: **“o heap de carne está vazio?”**
+
+- Se estiver vazio, não há carne preparada disponível.
+- Se tiver uma unidade válida, pode retirá-la e adicionar ao hambúrguer.
+
+Não é necessário guardar carne crua: pelo enunciado, a ação Preparar já produz uma unidade pronta no estoque. Os vencidos são descartados no início do turno.
+
+Se você também mantivesse `preparado = true`, precisaria atualizar esse campo junto com o estoque, embora o próprio estoque já dê essa informação. **O booleano seria redundante nessa abordagem.**
+
+A struct de cadastro pode ter `requer_preparo = true` para carne; o heap informa quantas unidades já foram preparadas e ainda estão disponíveis.
+
+##################################################
+
+Lucas — Prompt 39:
+depois de criado o ingredientes.hpp, o que faço?
+
+Resposta:
+**Agora vamos criar um ingrediente e conferir se os campos estão corretos**, antes de conectá-lo ao jogo.
+
+Conferi seu `ingredientes.hpp`: a struct está definida, mas faltam o include de `std::string` e a proteção contra inclusão repetida. Envolva sua definição assim:
+
+```cpp
+#ifndef INGREDIENTES_HPP
+#define INGREDIENTES_HPP
+
+#include <string>
+
+// Sua definição de Ingrediente fica aqui.
+
+#endif
+```
+
+A forma `typedef struct { ... } Ingrediente;` que você usou é válida em C++, pode mantê-la.
+
+**Depois, crie `tests/teste_ingredientes.cpp`** para experimentar o cadastro. Dentro do `main()`, crie uma carne atribuindo os campos pelo nome:
+
+```cpp
+Ingrediente carne;
+carne.nome = "Carne";
+carne.simbolo = 'n';
+carne.perecivel = true;
+carne.requer_preparo = true;
+carne.validade_turnos = 3;
+```
+
+Inclua `ingredientes.hpp` e `<iostream>` nesse teste e use `std::cout` para mostrar os campos. Isso permite conferir a representação sem depender de AVL, pilha ou estoque.
+
+Depois de funcionar, crie também cheddar e ketchup. Eles ajudam a conferir os três comportamentos:
+
+- Carne: precisa de preparo e vence.
+- Cheddar: precisa de preparo e não vence.
+- Ketchup: não precisa de preparo e não vence.
+
+**O passo seguinte será relacionar uma letra da receita ao cadastro correspondente:** receber `'n'` e identificar Carne, por exemplo. Assim começaremos a interpretar os pedidos.
+
+Por enquanto, faça apenas o cabeçalho completo e o teste com a carne. Não alterei arquivos de código.
+
+##################################################
+
+Lucas — Prompt 40:
+antes disso, registro no arquivo de alterações as alterações que foram feitas na avl
+
+Resposta:
+Atualizei a seção da AVL em [ADAPTACOES.md](/C:/Users/lucas/jogo-ed/ADAPTACOES.md), substituindo as anotações antigas pela descrição atual: `Pedido`, mudanças nas funções, carregamento e liberação da árvore.
+
+Também registrei que **a receita ainda é uma string e sua conversão para lista encadeada permanece pendente**. Nenhum código foi alterado.
+
+##################################################
