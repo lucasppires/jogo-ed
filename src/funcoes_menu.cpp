@@ -45,6 +45,7 @@ void imprimir_menu(int& estado_menu)
             cin >> estado_menu;
 }
 
+//destroi a avl e a lista contígua de histórico, né? 
 void liberar_recursos(NodoAvl *&raiz, ListaContEst *lista_historico)
 {
     raiz = avlDestruir(raiz);

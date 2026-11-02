@@ -127,6 +127,7 @@ int main(int argc, char *argv[]) {
 
     cout << lidos2 << " partidas lidas em " << tempoCargaListaContEst << " s\n";
     
+    destruir(l);
     delete l;
     return 0;
 }

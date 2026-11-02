@@ -123,6 +123,10 @@ int carregarPartidasListaContEst(
         aux.nome_jogador = nome;
         aux.score = score;
 
+        if (!nome.empty() && nome.back() == '\r')
+            nome.pop_back();
+
+
         if (inserir(l, aux, tamanho(l)) == true)
         {
             qtePartidas++;
