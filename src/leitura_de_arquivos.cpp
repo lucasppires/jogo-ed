@@ -20,6 +20,7 @@ int carregarPedidosAVL(
     NodoAvl **raiz,
     double *tempo)
 {
+
     std::ifstream arq(arquivo);
 
     if (!arq)
@@ -37,7 +38,12 @@ int carregarPedidosAVL(
 
     while (arq >> codigo >> receita)
     {
-        *raiz = avlInserir(*raiz, codigo, receita);
+        Pedido pedido;
+        pedido.cod = codigo;
+        pedido.receita = receita;
+
+        *raiz = avlInserir(*raiz, pedido);
+
         qtePedidosLidos++;
     }
 

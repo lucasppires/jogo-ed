@@ -6,6 +6,8 @@
 #include "leitura_de_arquivos.hpp"
 #include "lista.hpp"
 #include "sortings.hpp"
+#include "avl.hpp"
+#include "timer.hpp"
 using std::cout;
 using std::cin;
 using std::scanf;
@@ -41,6 +43,12 @@ void imprimir_menu(int& estado_menu)
             cout << "Digite a opcao desejada: ";
 
             cin >> estado_menu;
+}
+
+void liberar_recursos(NodoAvl *&raiz, ListaContEst *lista_historico)
+{
+    raiz = avlDestruir(raiz);
+    destruir(lista_historico);
 }
 
 void como_jogar(int& estado_menu)

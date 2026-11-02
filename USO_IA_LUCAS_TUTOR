@@ -1352,3 +1352,13 @@ Depois de funcionar, crie também cheddar e ketchup. Eles ajudam a conferir os t
 Por enquanto, faça apenas o cabeçalho completo e o teste com a carne. Não alterei arquivos de código.
 
 ##################################################
+
+Lucas — Prompt 40:
+antes disso, registro no arquivo de alterações as alterações que foram feitas na avl
+
+Resposta:
+Atualizei a seção da AVL em [ADAPTACOES.md](/C:/Users/lucas/jogo-ed/ADAPTACOES.md), substituindo as anotações antigas pela descrição atual: `Pedido`, mudanças nas funções, carregamento e liberação da árvore.
+
+Também registrei que **a receita ainda é uma string e sua conversão para lista encadeada permanece pendente**. Nenhum código foi alterado.
+
+##################################################
