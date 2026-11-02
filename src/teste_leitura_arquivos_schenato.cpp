@@ -3,7 +3,7 @@
 #include <fstream>
 #include "avl.hpp"
 #include "timer.hpp" 
-#include "lista.hpp"
+#include "listacontest.hpp"
 
 using namespace std;
 

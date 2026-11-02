@@ -6,16 +6,11 @@
 #ifndef AVL_HPP
 #define AVL_HPP
 #include <string>
+#include "pedido.hpp"
 
 /* ------------------------------------------------------------------ */
 /*  Estrutura de um nodo AVL                                            */
 /* ------------------------------------------------------------------ */
-
-typedef struct
-{
-    int cod;
-    std::string receita;
-} Pedido;
 
 struct NodoAvl {
     Pedido  dado;

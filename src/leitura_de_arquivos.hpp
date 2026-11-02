@@ -2,7 +2,7 @@
 #define LEITURA_ARQUIVOS_HPP
 
 #include "avl.hpp"
-#include "lista.hpp"
+#include "listacontest.hpp"
 
 int carregarPedidosAVL(
     const char *arquivo,
@@ -19,5 +19,9 @@ int carregarPartidasListaContEst(
     ListaContEst *l,
     double *tempoListaContEst
 );
+
+bool montarReceita(const std::string &texto, ListaEnc *lista);
+
+
 
 #endif

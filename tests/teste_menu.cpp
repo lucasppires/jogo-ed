@@ -6,7 +6,7 @@
 
 // TADs
 #include "avl.hpp"
-#include "lista.hpp"
+#include "listacontest.hpp"
 
 
 // Bibliotecas do jogo
@@ -21,7 +21,7 @@ using std::cin;
 using std::endl;
 using std::scanf;
 
-// compilar: g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/leitura_de_arquivos.cpp src/lista.cpp src/avl.cpp src/timer.cpp src/sortings.cpp -I src -o tests/teste_menu.exe -Wall -std=c++17
+// compilar: g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/leitura_de_arquivos.cpp src/listacontest.cpp src/listaenc.cpp src/ingredientes.cpp src/avl.cpp src/timer.cpp src/sortings.cpp -I src -o tests/teste_menu.exe -Wall -std=c++17
 
 // rodar: .\tests\teste_menu.exe src\pedidos.txt src\historico.txt
 
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
       return 1;
    }
 
-    NodoAvl *raiz = nullptr;
+    NodoAvl *raiz = nullptr; //cria a raiz da arvore AVL que vai armazenar os pedidos
     double tempoPedidos = 0.0;
 
     int pedidosLidos = carregarPedidosAVL(argv[1], &raiz, &tempoPedidos); //carrega os pedidos do arquivo para a arvore AVL

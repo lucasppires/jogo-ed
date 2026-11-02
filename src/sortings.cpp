@@ -1,7 +1,7 @@
 #include <new>
 #include "sortings.hpp"
 #include "timer.hpp"
-#include "lista.hpp"
+#include "listacontest.hpp"
 
 void merge(int a[], int aux[], int ini, int meio, int fim) {
     for (int t = ini; t <= fim; t++)      /* linhas 1-2: copia para Aux */

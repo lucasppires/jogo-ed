@@ -2,7 +2,7 @@
 #define FUNCOES_MENU_HPP
 
 
-#include "lista.hpp"
+#include "listacontest.hpp"
 #include "avl.hpp"
 
 

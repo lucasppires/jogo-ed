@@ -1362,3 +1362,298 @@ Atualizei a seção da AVL em [ADAPTACOES.md](/C:/Users/lucas/jogo-ed/ADAPTACOES
 Também registrei que **a receita ainda é uma string e sua conversão para lista encadeada permanece pendente**. Nenhum código foi alterado.
 
 ##################################################
+
+Lucas — Prompt 41:
+para fazer a parte de transformar os igredientes em nos de uma lista, uso a simplesmente ou duplamente encadeada?
+
+Resposta:
+**Recomendo a lista simplesmente encadeada.** O enunciado pede uma lista encadeada e não exige que seja dupla.
+
+Para representar uma receita, basta percorrer os ingredientes na ordem de montagem, de baixo para cima:
+
+```text
+início → [n] → [k] → [m] → [p] → [z] → nullptr
+```
+
+Cada nó precisa guardar a identificação do ingrediente e um ponteiro para o próximo. A lista duplamente encadeada também funcionaria, mas acrescentaria um ponteiro para o anterior em cada nó, sem ser necessário para esse percurso.
+
+Use como ponto de partida o código das aulas em [listaEnc.h](/C:/Users/lucas/jogo-ed/codigos-moodle/listaEnc/listaEnc.h) e [listaEnc.c](/C:/Users/lucas/jogo-ed/codigos-moodle/listaEnc/listaEnc.c).
+
+**Ao converter a receita, preserve a ordem:** leia `"nkmpz"` da esquerda para a direita e insira cada ingrediente no final da lista. Inserir sempre no início inverteria a receita.
+
+Seu próximo passo é adaptar o dado armazenado no nó, que atualmente é um `Produto`, para representar um ingrediente. Recomendo nomes próprios, como `NodoReceita` e `ListaReceita`, para evitar conflito com os nós das outras estruturas.
+
+##################################################
+
+Lucas — Prompt 42:
+as definicoes de lista hpp e lista cpp nao valem para listas simplesmente encadeadas ne
+
+Resposta:
+**Isso: atualmente, `lista.hpp` e `lista.cpp` implementam dois tipos específicos:**
+
+- **`ListaDuplaEnc`:** lista duplamente encadeada de produtos, com ponteiros `ant` e `prox` em cada nó.
+- **`ListaContEst`:** lista contígua do histórico, que vocês adaptaram para crescer dinamicamente.
+
+As funções desses tipos **não podem ser usadas diretamente com uma lista simplesmente encadeada**. Elas recebem estruturas específicas e trabalham com seus campos.
+
+Para a receita, você pode criar um módulo próprio, por exemplo:
+
+```text
+src/lista_receita.hpp → tipos e declarações
+src/lista_receita.cpp → implementação das funções
+```
+
+Use a lista simplesmente encadeada de `codigos-moodle/listaEnc` como base e adapte o conteúdo dos nós para ingredientes.
+
+O nome `lista.hpp` não torna suas funções genéricas para qualquer lista; o que determina isso são os tipos e as implementações. Você também poderia acrescentar a nova lista nesses arquivos, mas **um módulo separado para receitas facilita a organização**.
+
+##################################################
+
+Lucas — Prompt 43:
+deu este erro: 
+src/listaenc.cpp: In function 'const Ingrediente* buscarIngrediente(char)':
+src/listaenc.cpp:127:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  127 |             return CARNE;
+      |                    ^^^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:129:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  129 |             return PAO;
+      |                    ^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:131:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  131 |             return KETCHUP;
+      |                    ^^^^^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:133:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  133 |             return MOSTARDA;
+      |                    ^^^^^^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:135:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  135 |             return PICLES;
+      |                    ^^^^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:137:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  137 |             return ALFACE;
+      |                    ^^^^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:139:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  139 |             return QUEIJO_SUICO;
+      |                    ^^^^^^^^^^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:141:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  141 |             return QUEIJO_CHEDDAR;
+      |                    ^^^^^^^^^^^^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:143:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  143 |             return CEBOLA;
+      |                    ^^^^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:145:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  145 |             return TOMATE;
+      |                    ^^^^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:147:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  147 |             return OVO_FRITO;
+      |                    ^^^^^^^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:149:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  149 |             return BACON;
+      |                    ^^^^^
+      |                    |
+      |                    const Ingrediente
+src/ingredientes.cpp:40:2: error: '#endif' without '#if'
+   40 | #endif
+      |  ^~~~~
+PS C:\Users\lucas\jogo-ed> g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/leitura_de_arquivos.cpp src/listacontest.cpp src/listaenc.cpp src/ingredientes.cpp src/avl.cpp src/timer.cpp src/sortings.cpp -I src -o tests/teste_menu.exe -Wall -std=c++17
+src/listaenc.cpp: In function 'const Ingrediente* buscarIngrediente(char)':
+src/listaenc.cpp:127:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  127 |             return CARNE;
+      |                    ^^^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:129:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  129 |             return PAO;
+      |                    ^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:131:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  131 |             return KETCHUP;
+      |                    ^^^^^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:133:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  133 |             return MOSTARDA;
+      |                    ^^^^^^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:135:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  135 |             return PICLES;
+      |                    ^^^^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:137:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  137 |             return ALFACE;
+      |                    ^^^^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:139:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  139 |             return QUEIJO_SUICO;
+      |                    ^^^^^^^^^^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:141:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  141 |             return QUEIJO_CHEDDAR;
+      |                    ^^^^^^^^^^^^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:143:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  143 |             return CEBOLA;
+      |                    ^^^^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:145:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  145 |             return TOMATE;
+      |                    ^^^^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:147:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  147 |             return OVO_FRITO;
+      |                    ^^^^^^^^^
+      |                    |
+      |                    const Ingrediente
+src/listaenc.cpp:149:20: error: cannot convert 'const Ingrediente' to 'constIngrediente*' in return
+  149 |             return BACON;
+      |                    ^^^^^
+      |                    |
+      |                    const Ingrediente
+src/ingredientes.cpp:40:2: error: '#endif' without '#if'
+   40 | #endif
+      |  ^~~~~
+PS C:\Users\lucas\jogo-ed> 
+
+Resposta:
+**São dois problemas, e a correção não exige trocar todos os retornos.**
+
+**1. `buscarIngrediente` está definida duas vezes**
+
+Ela aparece em `listaenc.cpp` e em `ingredientes.cpp`.
+
+**Apague de `listaenc.cpp` a função inteira `buscarIngrediente`, do começo da assinatura até a chave final.** Mantenha apenas a versão de `ingredientes.cpp`, que já retorna os endereços corretamente:
+
+```cpp
+return &CARNE;
+```
+
+A diferença é:
+
+- `CARNE`: o registro do ingrediente.
+- `&CARNE`: o endereço dele, compatível com o retorno `const Ingrediente *`.
+
+Não apague a função `buscar(const ListaEnc *lista, char simbolo)`: ela é outra função, usada para procurar dentro de uma lista.
+
+**2. Remova o `#endif` do final de `ingredientes.cpp`**
+
+Ele ficou sem um `#if` correspondente. O arquivo deve terminar na chave `}` da função. A proteção `#ifndef` / `#define` / `#endif` continua em `ingredientes.hpp`.
+
+Depois salve os dois arquivos e repita o mesmo comando de compilação. Não alterei seus arquivos.
+
+##################################################
+
+Lucas — Prompt 44:
+ e esse erro: src/ingredientes.cpp:40:2: error: '#endif' without '#if'
+   40 | #endif
+      |  ^~~~~
+
+Resposta:
+Esse erro é o segundo ponto da resposta anterior: **apague a linha `#endif` no final de `src/ingredientes.cpp`**.
+
+O arquivo `.cpp` deve terminar assim:
+
+```cpp
+        default:
+            return nullptr;
+    }
+}
+```
+
+O `#endif` fecha um bloco iniciado por `#if` ou `#ifndef`. Como esse bloco não existe mais no `.cpp`, o fechamento ficou sobrando.
+
+**Mantenha o `#endif` de `ingredientes.hpp`.** Depois salve e recompile.
+
+##################################################
+
+Lucas — Prompt 45:
+aparece isso: Pedido 1001:                                                                 
+Carne - n - 1 - 1 - 3
+Ketchup - k - 0 - 0 - 0
+Mostarda - m - 0 - 0 - 0
+Picles - p - 0 - 0 - 0
+Pao de cima - z - 0 - 0 - 0
+
+Pedido 1002:
+Queijo cheddar - q - 0 - 1 - 0
+Alface - a - 0 - 0 - 0
+Mostarda - m - 0 - 0 - 0
+Picles - p - 0 - 0 - 0
+Pao de cima - z - 0 - 0 - 0
+
+Pedido 1003:
+Carne - n - 1 - 1 - 3
+Bacon - b - 1 - 1 - 3
+Ovo frito - o - 1 - 1 - 2
+Ketchup - k - 0 - 0 - 0
+Pao de cima - z - 0 - 0 - 0
+
+3 pedidos lidos em 0.0001133 segundos.
+############################################
+                DADO BURGER
+
+                1. Novo jogo
+                2. Como jogar
+                3. Historico
+                4. Sair
+
+############################################
+
+Digite a opcao desejada: 
+
+Resposta:
+**Esse resultado corresponde ao esperado para os três pedidos.** Ele confirma que, nesse exemplo:
+
+- Os códigos aparecem em ordem crescente: **1001, 1002 e 1003**.
+- Cada receita foi convertida em ingredientes na ordem correta.
+- Código e receita permaneceram associados corretamente.
+- A carga terminou e o programa chegou ao menu.
+
+Os campos impressos seguem esta ordem:
+
+```text
+Nome - simbolo - perecivel - requer_preparo - validade_turnos
+```
+
+Por exemplo:
+
+```text
+Carne - n - 1 - 1 - 3
+```
+
+Significa: carne, símbolo `n`, perecível (`true`), exige preparo (`true`) e tem validade configurada de três turnos. **Isso não significa que essa carne já está preparada**; são as características cadastradas do tipo.
+
+Os `0` e `1` são a forma padrão de imprimir `false` e `true` com `cout`.
+
+Agora escolha **4 — Sair** para conferir que o programa encerra normalmente. Depois pode retirar a chamada temporária de `avlEmOrdem(raiz)` antes de voltar ao arquivo grande.
+
+Esse exemplo valida a integração básica; ainda não verifica todas as situações de balanceamento e gerenciamento de memória.
+
+##################################################

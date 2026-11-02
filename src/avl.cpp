@@ -13,14 +13,17 @@
 /* ------------------------------------------------------------------ */
 static int maximo(int a, int b) { return a > b ? a : b; }
 
-static NodoAvl *criarNodo(int codigo, std::string receita) {
+static NodoAvl *criarNodo(const Pedido &pedido) {
     NodoAvl *n = new (std::nothrow) NodoAvl;
-    if (!n) return nullptr;
-    n->dado.cod = codigo;
-    n->dado.receita = receita;
+
+    if (!n)
+        return nullptr;
+
+    n->dado = pedido;
     n->altura = 0;
-    n->esq    = nullptr;
-    n->dir    = nullptr;
+    n->esq = nullptr;
+    n->dir = nullptr;
+
     return n;
 }
 
@@ -122,7 +125,7 @@ NodoAvl *avlBuscar(NodoAvl *raiz, Pedido dado) {
 }
 
 NodoAvl *avlInserir(NodoAvl *raiz, Pedido dado) {
-    if (!raiz) return criarNodo(dado.cod, dado.receita);
+    if (!raiz) return criarNodo(dado);
     if (dado.cod < raiz->dado.cod)
         raiz->esq = avlInserir(raiz->esq, dado);
     else if (dado.cod > raiz->dado.cod)
@@ -136,41 +139,67 @@ static NodoAvl *minimo(NodoAvl *n) {
     while (n->esq) n = n->esq;
     return n;
 }
-
 NodoAvl *avlRemover(NodoAvl *raiz, Pedido dado) {
-    if (!raiz) return nullptr;
+    if (!raiz)
+        return nullptr;
+
     if (dado.cod < raiz->dado.cod) {
         raiz->esq = avlRemover(raiz->esq, dado);
     } else if (dado.cod > raiz->dado.cod) {
         raiz->dir = avlRemover(raiz->dir, dado);
     } else {
-        /* Nodo encontrado */
+        // No sem filhos ou com apenas um filho.
         if (!raiz->esq || !raiz->dir) {
             NodoAvl *filho = raiz->esq ? raiz->esq : raiz->dir;
+
+            destruir(&raiz->dado.receita);
             delete raiz;
+
             return filho;
         }
-        /* Dois filhos: substitui pelo menor da subarvore direita */
-        NodoAvl *suc = minimo(raiz->dir);
-        raiz->dado = suc->dado;
-        raiz->dir  = avlRemover(raiz->dir, suc->dado);
+
+        // No com dois filhos.
+        NodoAvl *sucessor = minimo(raiz->dir);
+
+        // Libera a receita antiga do no atual.
+        destruir(&raiz->dado.receita);
+
+        // Transfere o pedido completo do sucessor.
+        raiz->dado = sucessor->dado;
+
+        // A receita passa a pertencer ao no atual.
+        sucessor->dado.receita.ini = nullptr;
+
+        // Remove o sucessor sem destruir a receita transferida.
+        raiz->dir = avlRemover(raiz->dir, sucessor->dado);
     }
+
     return reequilibrar(raiz);
 }
 
 NodoAvl *avlDestruir(NodoAvl *raiz) {
-    if (!raiz) return nullptr;
+    if (!raiz)
+        return nullptr;
+
     avlDestruir(raiz->esq);
     avlDestruir(raiz->dir);
+
+    destruir(&raiz->dado.receita);
     delete raiz;
+
     return nullptr;
 }
 
+
 void avlEmOrdem(const NodoAvl *raiz) {
-    if (!raiz) return;
+    if (!raiz)
+        return;
+
     avlEmOrdem(raiz->esq);
-    std::cout << raiz->dado.cod << ": "
-          << raiz->dado.receita
-          << "(h" << raiz->altura << ") ";
+
+    std::cout << "Pedido " << raiz->dado.cod << ":\n";
+    imprimir(&raiz->dado.receita);
+    std::cout << '\n';
+
     avlEmOrdem(raiz->dir);
 }

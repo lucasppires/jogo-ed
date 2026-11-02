@@ -4,7 +4,7 @@
 #include "funcoes_menu.hpp"
 #include "cores.hpp"
 #include "leitura_de_arquivos.hpp"
-#include "lista.hpp"
+#include "listacontest.hpp"
 #include "sortings.hpp"
 #include "avl.hpp"
 #include "timer.hpp"

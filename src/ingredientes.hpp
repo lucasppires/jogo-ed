@@ -1,12 +1,14 @@
 #ifndef INGREDIENTES_HPP
 #define INGREDIENTES_HPP
 
+
 #include <string>
+using std::string;
 
 
 typedef struct
 {
-    std::string nome;
+    string nome;
     char simbolo;
     bool perecivel;
     bool requer_preparo;
@@ -64,5 +66,8 @@ inline const Ingrediente OVO_FRITO{
 inline const Ingrediente BACON{
     "Bacon", 'b', true, true, 3
 };
+
+
+const Ingrediente *buscarIngrediente(char simbolo);
 
 #endif

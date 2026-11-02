@@ -499,3 +499,47 @@ if (lidos < 0)
 Esse trecho substitui a inicialização e a chamada atuais. Antes de encerrar o programa, libere a lista com `destruir(&lista_historico);`.
 
 ############################################################
+
+## Lucas — Prompt 11
+
+o que significa o std::nothrow
+
+## Resposta do assistente
+
+### Atualização de andamento
+
+Vou explicar como `std::nothrow` funciona com `new` e registrar esta interação no relatório.
+
+### Resposta final
+
+`std::nothrow` é usado com `new` para que uma **falha na alocação de memória retorne `nullptr`**, em vez de lançar a exceção `std::bad_alloc`.
+
+```cpp
+#include <new>
+#include <iostream>
+
+int* numero = new (std::nothrow) int;
+
+if (numero == nullptr)
+{
+    std::cerr << "Nao foi possivel alocar memoria.\n";
+}
+else
+{
+    *numero = 10;
+    delete numero;
+}
+```
+
+A diferença é:
+
+```cpp
+new int;                 // Se faltar memória, lança std::bad_alloc
+new (std::nothrow) int;   // Se faltar memória, retorna nullptr
+```
+
+Isso permite tratar a falha com um `if`, parecido com o que se faz com `malloc` em C. A memória continua sendo liberada com `delete` (ou `delete[]`, para vetores).
+
+O nome não significa que nenhuma exceção possa acontecer: se o construtor do objeto lançar uma exceção, ela ainda será propagada.
+
+############################################################
