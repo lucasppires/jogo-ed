@@ -19,3 +19,9 @@ Alterações no TAD LISTA CONT EST:
 8. A função inserir na ListaContEst agora não retorna mais false quando a lista esta cheia, mas sim dobra a capacidade da lista, dinamicamente.
 9. A função destruir agora também anula o ponteiro pro vetor e zera a capacidade.
 10. Foi criada a função para imprimir uma ListaContEst
+
+Alterações no Merge Sort
+1. Foi adaptado para C++;
+2. Agora as três funcoes que compoem o mergeSort (merge, mergeSortRec e mergeSort) foram adaptadas para receber e ordenar um vetor da struct Jogador. Isso porque queremos ordenar o historico em ordem decrescente, para imprimir o top 10 melhores escores.
+3. A funcao mergeSort também registra o tempo de execucao e retorna uma variavel do tipo doublefloat indicando o tempo.
+
