@@ -21,7 +21,7 @@ using std::cin;
 using std::endl;
 using std::scanf;
 
-// compilar:g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/leitura_de_arquivos.cpp src/lista.cpp src/avl.cpp src/timer.cpp src/sortings.cpp -I src -o tests/teste_menu.exe -Wall -std=c++17
+// compilar: g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/leitura_de_arquivos.cpp src/lista.cpp src/avl.cpp src/timer.cpp src/sortings.cpp -I src -o tests/teste_menu.exe -Wall -std=c++17
 
 // rodar: .\tests\teste_menu.exe src\pedidos.txt src\historico.txt
 

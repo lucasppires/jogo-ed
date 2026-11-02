@@ -164,6 +164,14 @@ void historicov2(int& estado_menu, ListaContEst *lista_historico)
 //usa merge sort
 void historicov3(int& estado_menu, ListaContEst *lista_historico)
 {
+
+    if (lista_historico->tamanho == 0)
+    {
+        cout << "Historico vazio.\n";
+        estado_menu = MENU;
+        return;
+    }
+
     //imprimir_ListaContEst(lista_historico);
     Jogador *vetor = new Jogador[lista_historico->tamanho];
 
@@ -171,7 +179,18 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico)
 
     double tempo = mergeSortAdaptado(vetor, tamanhoVetor);
 
-    imprime_dez_primeiros(vetor);
+
+
+    
+    if (lista_historico->tamanho < 10) 
+    {
+        imprime_de_1_a_9(vetor, tamanhoVetor); //se tiver entre 1 e 9 jogadores, imprimimos todos eles
+    }
+    else
+    {
+       imprime_dez_primeiros(vetor); //se tiver 10 ou mais, imprimimos apenas os top 10
+    }
+
     printf("\nTempo para ordenar (Merge sort): %fs\n", tempo);
 
     delete[] vetor;

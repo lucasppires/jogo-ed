@@ -270,11 +270,23 @@ double ordena_vetor_pelo_score_bubble_sort(Jogador vetor[], int tamanhoVetor){
     return tempoExecucao;
 }
 
-void imprime_dez_primeiros(Jogador vetor[]){
+void imprime_dez_primeiros(Jogador vetor[])
+{
     std::cout << "RANKING (pelo score)\n";
     for(int m = 0; m < 10; m++){
         std::cout << m+1 << ". Nome: " << vetor[m].nome_jogador
                   << ", Score: " << vetor[m].score << '\n';
     }
 }
+
+void imprime_de_1_a_9(Jogador vetor[], int tamanhoVetor)
+{
+    std::cout << "RANKING (pelo score)\n";
+    for(int m = 0; m < tamanhoVetor; m++){
+        std::cout << m+1 << ". Nome: " << vetor[m].nome_jogador
+                  << ", Score: " << vetor[m].score << '\n';
+    }
+}
+
+
 
