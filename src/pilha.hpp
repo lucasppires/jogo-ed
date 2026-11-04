@@ -9,7 +9,7 @@ struct Produto {
 
 struct Nodo {
     Nodo   *prox;
-    Produto dado;
+    Ingrediente dado;
 };
 
 struct PilhaEnc {
@@ -18,7 +18,7 @@ struct PilhaEnc {
 
 void inicializa(PilhaEnc *p);
 bool estaVazia(PilhaEnc *p);
-bool empilha(PilhaEnc *p, Produto valor);
+bool empilha(PilhaEnc *p, Ingrediente adicionado);
 bool desempilha(PilhaEnc *p, Produto *valorRemovido);
 bool topo(PilhaEnc *p, Produto *valor);
 int  tamanho(PilhaEnc *p);

@@ -1,5 +1,6 @@
 #include <new>
 #include "pilha.hpp"
+#include "ingredientes.hpp"
 
 void inicializa(PilhaEnc *p) {
     p->topo = nullptr;
@@ -9,12 +10,12 @@ bool estaVazia(PilhaEnc *p) {
     return p->topo == nullptr;
 }
 
-bool empilha(PilhaEnc *p, Produto valor) {
+bool empilha(PilhaEnc *p, Ingrediente adicionado) {
     Nodo *novo = new (std::nothrow) Nodo;
     if (novo == nullptr)
         return false;
 
-    novo->dado = valor;
+    novo->dado = adicionado;
     novo->prox = p->topo; // aponta para o antigo topo
     p->topo = novo;       // o novo nodo passa a ser o topo
     return true;
@@ -52,3 +53,4 @@ int tamanho(PilhaEnc *p) {
 
     return contador;
 }
+
