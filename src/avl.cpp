@@ -7,6 +7,9 @@
 #include <new>
 #include <string>
 #include "avl.hpp"
+#include "pedido.hpp"
+#include "jogo.hpp"
+#include "leitura_de_arquivos.hpp"
 
 /* ------------------------------------------------------------------ */
 /*  Auxiliares internos                                                 */
@@ -124,6 +127,14 @@ NodoAvl *avlBuscar(NodoAvl *raiz, Pedido dado) {
     return raiz;
 }
 
+NodoAvl *buscarPorCodigo(NodoAvl *raiz, int codigo)
+ {
+    if (!raiz) return nullptr;
+    if (codigo < raiz->dado.cod) return buscarPorCodigo(raiz->esq, codigo);
+    if (codigo > raiz->dado.cod) return buscarPorCodigo(raiz->dir, codigo);
+    return raiz;
+}
+
 NodoAvl *avlInserir(NodoAvl *raiz, Pedido dado) {
     if (!raiz) return criarNodo(dado);
     if (dado.cod < raiz->dado.cod)
@@ -202,4 +213,27 @@ void avlEmOrdem(const NodoAvl *raiz) {
     std::cout << '\n';
 
     avlEmOrdem(raiz->dir);
+}
+
+const Pedido *sortearPedido(NodoAvl *raiz, char *argv[]) //const pq o pedido sorteado nao deve ser modificado
+{
+    if (raiz == nullptr)
+        return nullptr;
+
+    int linhas = contarLinhas(argv[1]);
+
+    // Falha na abertura ou nenhum registro completo.
+    if (linhas < 2)
+        return nullptr;
+
+    int num_pedidos = linhas / 2;
+
+    int codigo_sorteado = numero_aleatorio(1, num_pedidos);
+
+    NodoAvl *nodo_pedido = buscarPorCodigo(raiz, codigo_sorteado);
+
+    if (nodo_pedido == nullptr)
+        return nullptr;
+
+    return &nodo_pedido->dado;
 }

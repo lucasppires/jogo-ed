@@ -1,15 +1,11 @@
 #ifndef FILA_HPP
 #define FILA_HPP
 
-struct Produto {
-    int   cod;
-    char  nome[50];
-    float preco;
-};
+#include "pedido.hpp"
 
 struct Nodo {
     Nodo   *prox;
-    Produto dado;
+    Cliente dado;
 };
 
 struct FilaEnc {
@@ -19,8 +15,12 @@ struct FilaEnc {
 
 void inicializa(FilaEnc *f);
 bool estaVazia(FilaEnc *f);
-bool enfileira(FilaEnc *f, Produto valor);
-bool desenfileira(FilaEnc *f, Produto *valorRemovido);
+bool enfileira(FilaEnc *f, Cliente valor);
+bool desenfileira(FilaEnc *f, Cliente *valorRemovido);
 int  tamanho(FilaEnc *f);
+void destruir(FilaEnc *fila);
+
+bool criarClientes(FilaEnc *fila, int quantidade, int pacienciaInicial);
+Cliente *clienteDaFrente(FilaEnc *fila);
 
 #endif /* FILA_HPP */

@@ -1657,3 +1657,166 @@ Agora escolha **4 — Sair** para conferir que o programa encerra normalmente. D
 Esse exemplo valida a integração básica; ainda não verifica todas as situações de balanceamento e gerenciamento de memória.
 
 ##################################################
+
+Lucas — Prompt 46:
+sobre as filas, fiquei meio confuso, existem algum arquivo ou alguma definicao para cliente? pq nao acho nenhum arquivo com nomes nem nada, e o pedidostxt apenas possui codigos e receitas
+
+Resposta:
+**Você não está deixando passar um arquivo: o enunciado não fornece um arquivo de clientes.** Os clientes devem ser criados pelo próprio programa quando uma partida começa.
+
+Conferi o projeto: **ainda não existe uma definição de `Cliente`**. Em [fila.hpp](/C:/Users/lucas/jogo-ed/src/fila.hpp), a fila continua guardando `Produto`, com código, nome e preço, como no exemplo das aulas. Ela ainda precisa ser adaptada.
+
+São três coisas diferentes:
+
+| Informação | De onde vem | Para que serve |
+|---|---|---|
+| Pedidos | `pedidos.txt` | Catálogo de códigos e receitas possíveis. |
+| Clientes | Criados pelo programa | Pessoas que serão atendidas na partida. |
+| Resultados anteriores | `historico.txt` | Nome do jogador e pontuação de partidas anteriores. |
+
+Ao começar uma partida, vocês podem definir, por exemplo, **três clientes**, todos com uma paciência inicial escolhida pelo grupo:
+
+```text
+Frente → Cliente 1 → Cliente 2 → Cliente 3
+```
+
+Não é obrigatório dar nomes próprios a eles; identificadores como Cliente 1 são suficientes para representá-los na interface.
+
+Quando o primeiro passa a ser atendido, o programa sorteia um código e recupera a receita pela hash ou pela AVL. O cliente recebe, por exemplo, o pedido 1001. Ao concluir esse pedido, ele sai da fila e o próximo passa à frente.
+
+Uma struct `Cliente` pode começar com:
+
+- **Identificador:** para distinguir os clientes.
+- **Paciência restante:** quantos turnos ele ainda aceita esperar durante o atendimento.
+- **Código do pedido:** se vocês decidirem guardar essa associação no próprio cliente.
+
+A quantidade de clientes, a paciência e a criação da fila pertencem à preparação de **cada partida**, não ao carregamento de `pedidos.txt`.
+
+O próximo passo nessa parte é definir `Cliente` e adaptar os nós e as operações de `fila.hpp/.cpp` para guardar clientes em vez de produtos.
+
+##################################################
+
+Lucas — Prompt 47:
+verifique se minha funcao de sortear pedido na avl ficou correta
+
+Resposta:
+**Ainda não está correta para todos os arquivos.** A ideia de sortear um código e buscar o pedido faz sentido, mas há quatro problemas em `sortearPedido`.
+
+**1. Quantidade de pedidos não é o intervalo dos códigos**
+
+Você faz:
+
+```cpp
+int num_pedidos = contarLinhas("pedidos.txt") / 2;
+int numero_do_pedido = numero_aleatorio(1, num_pedidos);
+```
+
+Um arquivo com os códigos **1001, 1002 e 1003** tem três pedidos. Seu sorteio escolheria **1, 2 ou 3**, que não existem nessa árvore.
+
+O intervalo deve considerar os códigos disponíveis, e não apenas a quantidade. Mesmo entre o menor e o maior código pode haver lacunas, que precisam ser tratadas.
+
+**2. O caminho está fixo e o arquivo é relido a cada sorteio**
+
+O programa carregou o caminho recebido em `argv[1]`, que pode ser `src/pedidos.txt` ou outro arquivo. Usar `"pedidos.txt"` ignora isso e ainda pode falhar ao abrir o arquivo.
+
+Depois da carga, use informações da árvore ou dados guardados durante o carregamento. Não é necessário contar novamente as linhas para cada cliente.
+
+**3. A busca pode não encontrar o código**
+
+Antes desta linha:
+
+```cpp
+return nodo_pedido->dado;
+```
+
+você precisa verificar se `nodo_pedido` é `nullptr`. Acessar `->dado` de um ponteiro nulo pode encerrar o programa por acesso inválido.
+
+**4. O retorno copia apenas o ponteiro da receita**
+
+Retornar `Pedido` por valor não duplica os nós da lista. O resultado compartilha a receita com a AVL. Portanto, ele não pode ser destruído como se possuísse uma receita independente.
+
+Para consultar o pedido sem modificá-lo, um retorno `const Pedido *` pode deixar essa relação mais clara. Esse ponteiro só permanece válido enquanto o pedido existir na AVL.
+
+**Também encontrei impedimentos na compilação:**
+
+- Falta `;` depois da declaração de `buscarPorCodigo` em `avl.hpp`.
+- `numero_aleatorio` está definida em `jogo.cpp` e `funcoes_menu.cpp`; mantenha uma única implementação.
+- `novoJogo` recebe dois parâmetros no `.cpp`, mas sua declaração em `jogo.hpp` recebe apenas um.
+
+**Minha recomendação:** primeiro separe o sorteio do código da recuperação do pedido. No fluxo final, o código sorteado deve ser procurado na hash antes da AVL. Como próximo ajuste, podemos obter o menor e o maior código da árvore e definir o tratamento dos códigos ausentes.
+
+Não alterei arquivos nem compilei.
+
+##################################################
+
+Lucas — Prompt 48:
+devo tirar o nodo da avl depois de ser sorteado? pra nao ter o mesmo pedido duas vezes no mesmo jogo
+
+Resposta:
+**Não retire o nó da AVL depois do sorteio. O mesmo pedido pode aparecer mais de uma vez na partida.**
+
+A AVL representa o catálogo de receitas disponíveis. Sortear um pedido significa consultar esse catálogo, não consumir a receita.
+
+Essa repetição também dá utilidade à hash:
+
+```text
+Cliente 1 recebe pedido 1001
+    → nao esta na hash
+    → busca na AVL e guarda na hash
+
+Cliente 2 recebe pedido 1001
+    → ja esta na hash
+    → recupera sem consultar a AVL
+```
+
+O próprio exemplo do enunciado apresenta dois clientes recebendo o pedido 1001. Fonte: :codex-file-citation{path="C:\\Users\\lucas\\Downloads\\trab_final.pdf" purpose="source"}
+
+Além disso, sua função retorna um ponteiro para o pedido que está na árvore. Se você remover esse nó, o ponteiro ficará inválido e a receita será liberada.
+
+**Quem sai da estrutura após o atendimento é o cliente da fila. O pedido permanece na AVL.**
+
+Se vocês quiserem impedir repetições como uma regra adicional, podem controlar os códigos já usados separadamente, sem apagar o catálogo. Mas isso não é exigido pelo trabalho e não precisamos acrescentar agora.
+
+##################################################
+
+Lucas — Prompt 49:
+como ligamos um cliente com um pedido?
+
+Resposta:
+**No seu código atual, essa ligação é mantida pelas duas variáveis do atendimento:**
+
+```cpp
+Cliente *atual = clienteDaFrente(&clientes);
+const Pedido *pedidoAtual = sortearPedido(raiz, argv);
+```
+
+Depois de verificar que os dois ponteiros são válidos, você interpreta esse par assim:
+
+```text
+Cliente apontado por atual
+    esta sendo atendido com
+Pedido apontado por pedidoAtual
+```
+
+Por exemplo:
+
+```text
+atual → Cliente 1, paciencia 15
+pedidoAtual → Pedido 1001, receita nkmpz
+```
+
+**Não existe uma ligação automática entre as structs:** é a lógica de `novoJogo` que guarda qual pedido pertence ao atendimento atual.
+
+Durante a montagem, você mantém esse mesmo `pedidoAtual`. A cada ação, consulta sua receita e atualiza a paciência de `atual`. Não sorteia novamente a cada turno.
+
+Quando o hambúrguer estiver correto:
+
+1. Desenfileira o cliente atendido.
+2. Obtém novamente o cliente da frente.
+3. Se existir outro cliente, sorteia o pedido dele.
+
+**Você não precisa adicionar um campo à struct Cliente para isso**, pois atende apenas um cliente por vez. Se preferir registrar a associação explicitamente, pode acrescentar `int codigo_pedido` ao cliente e preenchê-lo com `pedidoAtual->cod`, mas esse campo não é necessário para a abordagem atual.
+
+O próximo ponto na implementação é manter esse par de variáveis dentro do atendimento de um cliente, até ele terminar ou a partida encerrar.
+
+##################################################

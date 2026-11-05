@@ -25,11 +25,14 @@ int      avlFb(const NodoAvl *n);
 
 /* Operacoes principais (retornam a nova raiz da subarvore) */
 NodoAvl *avlBuscar(NodoAvl *raiz, Pedido dado);
+NodoAvl *buscarPorCodigo(NodoAvl *raiz, int codigo);
 NodoAvl *avlInserir(NodoAvl *raiz, Pedido dado);
 NodoAvl *avlRemover(NodoAvl *raiz, Pedido dado);
 NodoAvl *avlDestruir(NodoAvl *raiz);
 
 /* Caminhamento em-ordem (imprime em ordem crescente) */
 void     avlEmOrdem(const NodoAvl *raiz);
+
+const Pedido *sortearPedido(NodoAvl *raiz, char *argv[]);
 
 #endif /* AVL_HPP */

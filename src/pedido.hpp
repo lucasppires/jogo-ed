@@ -8,4 +8,10 @@ struct Pedido {
     ListaEnc receita;
 };
 
+struct Cliente
+{
+    int id;
+    int paciencia_restante;
+};
+
 #endif

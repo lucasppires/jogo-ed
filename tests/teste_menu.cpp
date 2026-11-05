@@ -15,6 +15,7 @@
 #include "leitura_de_arquivos.hpp"
 #include "timer.hpp"
 #include "sortings.hpp"
+#include "jogo.hpp"
 
 using std::cout;
 using std::cin;
@@ -62,15 +63,15 @@ int main(int argc, char *argv[])
     while (ESTADO_MENU != SAIR)
         {
 
-        while (ESTADO_MENU == MENU)
+        if (ESTADO_MENU == MENU)
         {
             imprimir_menu(ESTADO_MENU);
         }
 
         if (ESTADO_MENU == NOVO_JOGO)
         {
-            cout << "Novo jogo selecionado.";
-            ESTADO_MENU = MENU; //apenas para voltar ao menu, pois a função de jogar ainda não foi implementada
+            novoJogo(raiz, ESTADO_MENU, argv);
+            ESTADO_MENU = MENU;
         }
         else if (ESTADO_MENU == COMO_JOGAR)
         {

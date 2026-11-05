@@ -1,16 +1,19 @@
 #include <new>
 #include "fila.hpp"
 
-void inicializa(FilaEnc *f) {
+void inicializa(FilaEnc *f) 
+{
     f->frente = nullptr;
     f->final  = nullptr;
 }
 
-bool estaVazia(FilaEnc *f) {
+bool estaVazia(FilaEnc *f) 
+{
     return f->frente == nullptr;
 }
 
-bool enfileira(FilaEnc *f, Produto valor) {
+bool enfileira(FilaEnc *f, Cliente valor) 
+{
     Nodo *novo = new (std::nothrow) Nodo;
     if (novo == nullptr)
         return false;
@@ -27,7 +30,8 @@ bool enfileira(FilaEnc *f, Produto valor) {
     return true;
 }
 
-bool desenfileira(FilaEnc *f, Produto *valorRemovido) {
+bool desenfileira(FilaEnc *f, Cliente *valorRemovido) 
+{
     Nodo *removido;
 
     if (estaVazia(f)) // underflow
@@ -44,7 +48,8 @@ bool desenfileira(FilaEnc *f, Produto *valorRemovido) {
     return true;
 }
 
-int tamanho(FilaEnc *f) {
+int tamanho(FilaEnc *f) 
+{
     Nodo *aux = f->frente;
     int contador = 0;
 
@@ -54,4 +59,37 @@ int tamanho(FilaEnc *f) {
     }
 
     return contador;
+}
+
+void destruir(FilaEnc *fila)
+{
+    Cliente temp;
+    while (!estaVazia(fila)) 
+    {
+        desenfileira(fila, &temp);
+    }
+}
+
+bool criarClientes( FilaEnc *fila, int quantidade, int pacienciaInicial)
+{
+    for (int i = 0; i < quantidade; ++i) 
+    {
+        Cliente cliente;
+        cliente.id = i + 1; // ids começam em 1
+        cliente.paciencia_restante = pacienciaInicial;
+
+        if (!enfileira(fila, cliente)) 
+        {
+            return false; // falha ao enfileirar
+        }
+    }
+    return true;
+}
+
+Cliente *clienteDaFrente(FilaEnc *fila) 
+{
+    if (estaVazia(fila))
+        return nullptr;
+
+    return &fila->frente->dado;
 }

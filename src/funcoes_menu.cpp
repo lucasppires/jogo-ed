@@ -7,7 +7,10 @@
 #include "listacontest.hpp"
 #include "sortings.hpp"
 #include "avl.hpp"
+#include "fila.hpp"
 #include "timer.hpp"
+#include <random>
+#include <stdexcept>
 using std::cout;
 using std::cin;
 using std::scanf;
@@ -219,4 +222,23 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico)
     {
         estado_menu = MENU;
     }
+}
+
+
+bool novo_jogo(int& estado_menu)
+{
+        FilaEnc fila_clientes;
+        inicializa(&fila_clientes);
+
+
+        bool criou = criarClientes(&fila_clientes, 3, numero_aleatorio(9, 15));
+
+        if (!criou)
+        {
+            std::cerr << "Erro ao criar clientes.\n";
+            destruir(&fila_clientes);
+            return false;
+        }
+
+
 }

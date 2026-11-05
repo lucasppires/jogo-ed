@@ -15,6 +15,32 @@ Adaptações no TAD AVL:
 9. A struct Pedido foi movida para pedido.hpp, e receita passou de string para ListaEnc.
 10. A função avlDestruir agora libera a lista da receita antes de apagar cada nó.
 11. A função avlRemover também libera a receita removida. No caso de dois filhos, transfere a lista do sucessor e deixa seu ponteiro nulo para evitar liberar a mesma lista duas vezes.
+12. Foi criada buscarPorCodigo, que recebe apenas o código e retorna o nó encontrado ou nullptr.
+13. Foi criada sortearPedido, que recebe a raiz e argv, sorteia um código e retorna const Pedido *, sem remover o pedido nem copiar os nós da receita. Retorna nullptr se não conseguir obter um pedido.
+
+Pendente no sorteio: substituir a contagem de linhas a cada chamada e o intervalo de 1 até a quantidade de registros por informações dos códigos disponíveis; integrar a consulta à hash antes da AVL.
+
+Alterações no TAD Fila (04/11/2026):
+1. Foi criada a struct Cliente em pedido.hpp, com id e paciencia restante.
+2. O dado dos nós passou de Produto para Cliente, para representar a ordem de atendimento.
+3. As funções enfileira e desenfileira foram adaptadas para receber e devolver Cliente.
+4. Foi criada criarClientes, que gera os identificadores, define a paciência inicial e enfileira todos os clientes. Retorna false se uma inserção falhar.
+5. Foi criada clienteDaFrente, que retorna um ponteiro para o cliente sem removê-lo, permitindo consultar e atualizar sua paciência. Retorna nullptr se a fila estiver vazia.
+6. Foi criada destruir para esvaziar a fila usando desenfileira, liberando os clientes restantes.
+
+Integração dos clientes ao jogo (04/11/2026):
+1. A função novoJogo passou a preparar uma fila própria por partida, com três clientes e paciência provisória sorteada entre 9 e 15, igual para todos na mesma partida.
+2. O cliente da frente é consultado e recebe um pedido sorteado da AVL, exibindo identificador, paciência, código e receita.
+3. A fila é liberada ao retornar da função, inclusive em falhas de criação ou obtenção do pedido.
+4. A raiz da AVL e argv são passados à função novoJogo pela opção Novo jogo do menu.
+
+Pendente: implementar o atendimento, o desconto de paciência e a retirada dos clientes atendidos. A função atual apenas prepara e exibe o primeiro atendimento.
+
+Alterações no TAD Pilha, em andamento (04/11/2026):
+1. O dado do nó passou de Produto para Ingrediente, para representar o hambúrguer.
+2. A função empilha passou a receber um Ingrediente.
+
+Pendente: adaptar desempilha e topo, que ainda usam Produto, incluir a definição de Ingrediente no cabeçalho e distinguir o nome do nó da pilha do nó da fila.
 
 Alterações no TAD LISTA CONT EST:
 1. A struct ListaContEst agora possui como atribudo um array da struct Jogador, definida no início do .hpp. Não é mais um vetor de produtos.
