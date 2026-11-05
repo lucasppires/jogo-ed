@@ -1,5 +1,6 @@
 #ifndef PILHA_HPP
 #define PILHA_HPP
+#include "ingredientes.hpp"
 
 struct Produto {
     int   cod;
@@ -19,8 +20,8 @@ struct PilhaEnc {
 void inicializa(PilhaEnc *p);
 bool estaVazia(PilhaEnc *p);
 bool empilha(PilhaEnc *p, Ingrediente adicionado);
-bool desempilha(PilhaEnc *p, Produto *valorRemovido);
-bool topo(PilhaEnc *p, Produto *valor);
+bool desempilha(PilhaEnc *p, Ingrediente *removido);
+bool topo(PilhaEnc *p, Ingrediente *valor);
 int  tamanho(PilhaEnc *p);
 
 #endif /* PILHA_HPP */

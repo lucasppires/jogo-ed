@@ -21,20 +21,20 @@ bool empilha(PilhaEnc *p, Ingrediente adicionado) {
     return true;
 }
 
-bool desempilha(PilhaEnc *p, Produto *valorRemovido) {
-    Nodo *removido;
+bool desempilha(PilhaEnc *p, Ingrediente *removido) {
+    Nodo *aux;
 
     if (estaVazia(p)) // underflow
         return false;
 
-    removido = p->topo;
-    *valorRemovido = removido->dado;
-    p->topo = removido->prox;
-    delete removido;
+    *removido = p->topo->dado;
+    aux = p->topo;
+    p->topo = p->topo->prox;
+    delete aux;
     return true;
 }
 
-bool topo(PilhaEnc *p, Produto *valor) {
+bool topo(PilhaEnc *p, Ingrediente *valor) {
     if (estaVazia(p))
         return false;
 

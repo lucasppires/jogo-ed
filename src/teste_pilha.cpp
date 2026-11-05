@@ -5,9 +5,7 @@
 
 using namespace std;
 
-void adicionar_ingrediente(){
-    PilhaEnc p;
-    inicializa(&p);
+void adicionar_ingrediente(PilhaEnc *p){
     char adicionado;
     Ingrediente aux;
 
@@ -128,10 +126,17 @@ inline const Ingrediente BACON{
 
     }
 
+    // verifica se o topo da pilha é o ingrediente PAO, se sim, nao pode adicionar mais ingredientes
+    // tambem verifico se a pilha esta vazia; se sim, entao nao posso acessar a regiao da memoria do topo, q ainda nao foi alocada
+    if (topo(p, &(p->topo->dado)) && p->topo->dado.simbolo == PAO.simbolo) {
+        cout << "Tu nao pode adicionar mais ingredientes, pois o hamburguer ja tem o pao de cima.\n";
+        return;
+    }
+
     // se eh perecivel, entao ele sai do heap. se o heap estiver vazio, nao pode realizar a acao.
     // heap ainda nao foi feito
 
-    bool resultadoAdicao = empilha(&p, aux);
+    bool resultadoAdicao = empilha(p, aux);
 
     if (resultadoAdicao) 
         cout << "Empilhaste o ingrediente: " << aux.nome << endl;
@@ -139,9 +144,70 @@ inline const Ingrediente BACON{
     return;
 }
 
+void remover_ingrediente(PilhaEnc *p){
+    Ingrediente aux;
+
+    bool resultadoRemocao = desempilha(p, &aux);
+
+    
+    if (resultadoRemocao) 
+        cout << "Desempilhaste o ingrediente: " << aux.nome << endl;
+    else
+        cout << "Nao foi possivel remover o ingrediente. O hamburguer esta vazio." << endl;
+
+    return;
+}
+
+
 
 
 int main(){
-    adicionar_ingrediente();
+    PilhaEnc p;
+    inicializa(&p);
+
+    adicionar_ingrediente(&p);
+
+    remover_ingrediente(&p);
     return 0;
+}
+
+bool corrige_pedido(PilhaEnc *p, ListaEnc *receita){
+    // primeiro vamos colocar os ingredientes da pilha em uma vetor de ingredientes, para depois comparar com a receita, que é uma lista enc.
+
+
+    Ingrediente vetorCorrecao[tamanho(p)];   // o tamanho do vetor é o tamanho da pilha
+    int n = tamanho(p);
+    int i = tamanho(p) - 1;
+
+    // vê se ambas as estruturas - array e lista - tem o mesmo tamanho, se nn tiver, deu merda no pedido
+
+    if (n != tamanho(receita)) {
+        cout << "Montaste o pedido com a quantidade errada de ingredientes!" << endl;
+        return false;
+    }
+
+
+
+    while (!estaVazia(p)) {
+        Ingrediente aux;
+        desempilha(p, &aux);
+
+        vetorCorrecao[i] = aux;
+        i--;
+    }
+
+    i = 0;
+
+    NodoReceita *aux = receita->ini;
+
+    while(aux != nullptr){
+        if(aux->dado.simbolo != vetorCorrecao[i].simbolo){
+            cout << "Seu idiota, montaste o pedido na ordem errada!" << endl;
+            return false;
+        }
+
+        aux = aux->prox;
+        i++;
+    }
+    return true;
 }
