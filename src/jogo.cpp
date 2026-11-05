@@ -5,6 +5,7 @@
 #include "pedido.hpp"
 #include "timer.hpp"
 #include "listacontest.hpp"
+#include "funcoes_menu.hpp"
 #include <random>
 #include <stdexcept>
 
