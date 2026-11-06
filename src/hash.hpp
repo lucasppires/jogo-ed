@@ -7,6 +7,8 @@
 #ifndef HASH_HPP
 #define HASH_HPP
 
+#include "pedido.hpp"
+
 /* ================================================================
  * Funções de hash (aula 19)
  * ================================================================ */
@@ -34,7 +36,7 @@ int hashString(const char *s, int m);
 
 struct No {
     int chave;
-    int valor;
+    const Pedido *valor;
     No *prox;
 };
 
@@ -45,8 +47,8 @@ struct TabelaEnc {
 };
 
 void encInicializar(TabelaEnc *t, int m);
-void encInserir(TabelaEnc *t, int chave, int valor);
-int  encBuscar(const TabelaEnc *t, int chave);
+void encInserir(TabelaEnc *t, int chave, const Pedido *valor);
+const Pedido* encBuscar(const TabelaEnc *t, int chave);
 bool encRemover(TabelaEnc *t, int chave);
 void encDestruir(TabelaEnc *t);
 
@@ -82,8 +84,8 @@ struct TabelaLinear {
 };
 
 void linInicializar(TabelaLinear *t, int m);
-bool linInserir(TabelaLinear *t, int chave, int valor);
-int  linBuscar(const TabelaLinear *t, int chave);
+bool linInserir(TabelaLinear *t, int chave, const Pedido *valor);
+const Pedido *linBuscar(const TabelaLinear *t, int chave);
 bool linRemover(TabelaLinear *t, int chave);
 void linDestruir(TabelaLinear *t);
 
@@ -104,8 +106,8 @@ struct TabelaQuad {
 };
 
 void quadInicializar(TabelaQuad *t, int m);
-bool quadInserir(TabelaQuad *t, int chave, int valor);
-int  quadBuscar(const TabelaQuad *t, int chave);
+bool quadInserir(TabelaQuad *t, int chave, const Pedido *valor);
+const Pedido *quadBuscar(const TabelaQuad *t, int chave);
 bool quadRemover(TabelaQuad *t, int chave);
 void quadDestruir(TabelaQuad *t);
 

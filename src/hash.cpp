@@ -34,14 +34,20 @@ int hashString(const char *s, int m) {
  * ================================================================ */
 
 void encInicializar(TabelaEnc *t, int m) {
-    t->m      = m;
-    t->n      = 0;
+    t->m = m;
+    t->n = 0;
+
+    t->hits = 0;
+    t->misses = 0;
+    t->colisoes = 0;
+
     t->tabela = new No*[m];
+
     for (int i = 0; i < m; i++)
         t->tabela[i] = nullptr;
 }
 
-void encInserir(TabelaEnc *t, int chave, int valor) {
+void encInserir(TabelaEnc *t, int chave, const Pedido *valor) {
     int i    = hashDivisao(chave, t->m);
     No *novo = new No;
     novo->chave  = chave;
@@ -51,14 +57,14 @@ void encInserir(TabelaEnc *t, int chave, int valor) {
     t->n++;
 }
 
-int encBuscar(const TabelaEnc *t, int chave) {
+const Pedido* encBuscar(const TabelaEnc *t, int chave) {
     int i = hashDivisao(chave, t->m);
     No *p = t->tabela[i];
     while (p != nullptr) {
         if (p->chave == chave) return p->valor;
         p = p->prox;
     }
-    return -1;
+    return nullptr;
 }
 
 bool encRemover(TabelaEnc *t, int chave) {

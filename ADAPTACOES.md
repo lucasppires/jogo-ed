@@ -86,3 +86,25 @@ Alterações no Merge Sort
 2. Agora as três funcoes que compoem o mergeSort (merge, mergeSortRec e mergeSort) foram adaptadas para receber e ordenar um vetor da struct Jogador. Isso porque queremos ordenar o historico em ordem decrescente, para imprimir o top 10 melhores escores.
 3. A funcao mergeSort também registra o tempo de execucao e retorna uma variavel do tipo doublefloat indicando o tempo.
 
+
+Alterações de 06/11/2026:
+
+Cliente e fila:
+1. A struct Cliente ganhou pedido_cliente, do tipo const Pedido *, para associar o cliente ao pedido da AVL sem duplicar a receita.
+2. A função criarClientes foi substituída por criarCliente, que recebe identificador, paciência e ponteiro do pedido e devolve um Cliente.
+3. O enfileiramento passou a ser feito em novoJogo, verificando o retorno de enfileira. Destruir a fila não libera os pedidos, que continuam pertencendo à AVL.
+
+Preparação da partida:
+1. Cada cliente passou a receber um sorteio próprio de paciência entre 9 e 15; os valores podem se repetir.
+2. O pedido é sorteado e associado ao cliente antes de ele ser enfileirado.
+3. O atendimento consulta o pedido pelo campo pedido_cliente do cliente da frente, em vez de manter apenas uma variável separada.
+4. A fila parcial é liberada se a obtenção do pedido ou o enfileiramento falhar.
+
+Alterações no TAD Hash:
+1. A adaptação foi concentrada no encadeamento separado, mantendo as outras implementações com valores inteiros.
+2. O campo valor de No passou de int para const Pedido *, para guardar referências aos pedidos da AVL.
+3. A função encInserir passou a receber esse ponteiro, mantendo o código do pedido como chave.
+4. A função encBuscar passou a devolver const Pedido * ou nullptr quando não encontra a chave. A hash não possui nem libera as receitas apontadas.
+5. Foi iniciada a preparação das métricas, zerando hits, misses e colisoes em encInicializar.
+
+Pendente na hash: os campos dos contadores ainda não aparecem em TabelaEnc no arquivo salvo. Também faltam os incrementos em encBuscar e encInserir e a integração da consulta à hash antes da AVL. As orientações para registrar hits e misses foram discutidas, mas essa mudança ainda não consta na implementação salva.
