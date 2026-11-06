@@ -3,7 +3,8 @@
 
 #include "listaenc.hpp"
 
-struct Pedido {
+struct Pedido 
+{
     int cod;
     ListaEnc receita;
 };
@@ -12,6 +13,7 @@ struct Cliente
 {
     int id;
     int paciencia_restante;
+    const Pedido *pedido_cliente = nullptr;
 };
 
 #endif

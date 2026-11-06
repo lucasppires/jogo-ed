@@ -1820,3 +1820,111 @@ Quando o hambúrguer estiver correto:
 O próximo ponto na implementação é manter esse par de variáveis dentro do atendimento de um cliente, até ele terminar ou a partida encerrar.
 
 ##################################################
+
+Lucas — Prompt 50:
+nao podemos colocar o pedido dentro da struct do cliente?
+
+Resposta:
+**Podemos, sim.** Isso deixa explícito qual pedido está associado a cada cliente.
+
+Para a representação atual, recomendo guardar **um ponteiro para o pedido da AVL**, assim:
+
+```cpp
+struct Cliente {
+    int id;
+    int paciencia_restante;
+    const Pedido *pedido = nullptr;
+};
+```
+
+Quando começar o atendimento do cliente da frente:
+
+```cpp
+Cliente *atual = clienteDaFrente(&clientes);
+
+if (atual != nullptr) {
+    atual->pedido = sortearPedido(raiz, argv);
+
+    if (atual->pedido == nullptr) {
+        // Tratar a falha ao obter o pedido.
+    } else {
+        std::cout << "Pedido: " << atual->pedido->cod << '\n';
+        imprimir(&atual->pedido->receita);
+    }
+}
+```
+
+O `const` permite consultar o pedido por esse ponteiro; você continua podendo mudar a paciência do cliente e atribuir o ponteiro quando o atendimento começa.
+
+**Evite apenas colocar `Pedido pedido;` achando que isso duplicará a receita.** Como `Pedido` contém uma lista com ponteiros, uma cópia comum compartilha os mesmos nós, não cria outra lista.
+
+Com o ponteiro, a responsabilidade fica clara:
+
+- **AVL:** guarda o pedido e libera sua receita ao ser destruída.
+- **Cliente:** apenas aponta para o pedido durante o atendimento.
+- **Desenfileirar:** libera o cliente, sem destruir o pedido.
+
+A AVL precisa continuar existindo enquanto esses ponteiros forem usados. Isso combina com a organização atual: os pedidos ficam carregados durante toda a execução, e os clientes existem por partida.
+
+É uma escolha válida e pode facilitar sua compreensão da associação. Não alterei código.
+
+##################################################
+
+Lucas — Prompt 51:
+se eu criar um vetor de numeros aleatorios, eles vao ser diferentes entre si?
+
+Resposta:
+**Não necessariamente.** Um vetor apenas guarda os números; ele não impede repetições.
+
+Se você sortear cinco números entre 1 e 10, pode obter:
+
+```text
+[3, 8, 3, 1, 8]
+```
+
+Cada sorteio pode repetir um resultado anterior.
+
+Para garantir números diferentes, você precisa escolher uma estratégia:
+
+- **Conferir antes de inserir:** sorteia, verifica se o número já está no vetor e só guarda se ainda não apareceu.
+- **Embaralhar valores distintos:** monta um vetor com os números permitidos, embaralha e pega a quantidade desejada.
+
+Se quiser cinco números distintos, o intervalo precisa conter pelo menos cinco valores possíveis.
+
+**Para os pedidos do jogo, a repetição é permitida**, então você só precisa impedir números repetidos se decidir acrescentar essa regra.
+
+##################################################
+
+Lucas — Prompt 52:
+ok, mas eles nao sempre sempre iguais ne, os numeros do vetor, se por exemplo eu criar int pacienciaInicial[3];
+    
+    for (int i = 0; i < 3; i++) {
+        pacienciaInicial[i] = numero_aleatorio(9, 15);
+    }
+
+Resposta:
+**Isso: esse código faz três sorteios separados**, um para cada posição. Os valores não precisam ser iguais.
+
+Por exemplo, você pode obter:
+
+```cpp
+{10, 15, 12}
+```
+
+Ou valores repetidos:
+
+```cpp
+{11, 11, 14}
+```
+
+Até os três iguais podem acontecer por coincidência:
+
+```cpp
+{13, 13, 13}
+```
+
+A diferença para `criarClientes(&clientes, 3, numero_aleatorio(9, 15))` é que essa chamada faz **um único sorteio** e passa o mesmo valor para todos os clientes.
+
+Com seu vetor, você pode dar a cada cliente o valor de `pacienciaInicial[i]`. Para isso, a criação dos clientes também precisa usar cada posição do vetor; apenas criar o vetor não altera a função atual.
+
+##################################################

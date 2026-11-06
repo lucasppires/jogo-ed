@@ -70,20 +70,14 @@ void destruir(FilaEnc *fila)
     }
 }
 
-bool criarClientes( FilaEnc *fila, int quantidade, int pacienciaInicial)
+Cliente criarCliente(int index, int pacienciaInicial, const Pedido *pedido)
 {
-    for (int i = 0; i < quantidade; ++i) 
-    {
         Cliente cliente;
-        cliente.id = i + 1; // ids começam em 1
+        cliente.id = index; // ids começam em 1
         cliente.paciencia_restante = pacienciaInicial;
+        cliente.pedido_cliente = pedido;
 
-        if (!enfileira(fila, cliente)) 
-        {
-            return false; // falha ao enfileirar
-        }
-    }
-    return true;
+        return cliente;
 }
 
 Cliente *clienteDaFrente(FilaEnc *fila) 

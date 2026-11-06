@@ -20,7 +20,7 @@ bool desenfileira(FilaEnc *f, Cliente *valorRemovido);
 int  tamanho(FilaEnc *f);
 void destruir(FilaEnc *fila);
 
-bool criarClientes(FilaEnc *fila, int quantidade, int pacienciaInicial);
+Cliente criarCliente(int index, int pacienciaInicial, const Pedido *pedido);
 Cliente *clienteDaFrente(FilaEnc *fila);
 
 #endif /* FILA_HPP */

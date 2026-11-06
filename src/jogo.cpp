@@ -14,9 +14,10 @@ using std::cin;
 using std::scanf;
 using std::endl;
 
-void novoJogo(NodoAvl *raiz, int &estado_menu, char *argv[]) 
+define N_MAX_CLIENTES 10
+
+void novoJogo(NodoAvl *raiz, int &estado_menu, char *argv[])
 {
-    // Ao terminar esta funcao, o programa volta ao menu.
     estado_menu = MENU;
 
     if (raiz == nullptr)
@@ -28,32 +29,57 @@ void novoJogo(NodoAvl *raiz, int &estado_menu, char *argv[])
     FilaEnc clientes;
     inicializa(&clientes);
 
+    int numeroClientes = 3; // Número de clientes a serem criados
+
     // Valores provisorios: tres clientes com paciencias aleatorias.
-    int pacienciaInicial = numero_aleatorio(9, 15);
+    int pacienciaInicial[N_MAX_CLIENTES];
 
-    if (!criarClientes(&clientes, 3, pacienciaInicial)) {
-        cout << "Erro ao criar os clientes.\n";
-        destruir(&clientes);
-        return;
-    }
-
-    cout << "Partida iniciada com " << tamanho(&clientes) << " clientes.\n";
-
-    Cliente *atual = clienteDaFrente(&clientes);
-
-    if (atual != nullptr) 
+    for (int i = 0; i < numeroClientes; i++)
     {
+        // sorteia um pedido e guarda na variavel
         const Pedido *pedidoAtual = sortearPedido(raiz, argv);
 
-        if (pedidoAtual == nullptr) 
+        if (pedidoAtual == nullptr) // Se não houver pedidos disponíveis
         {
             cout << "Nao foi possivel obter um pedido.\n";
             destruir(&clientes);
             return;
         }
 
+        // vetor de numeros aleatorios, sorteamos uma paciencia para cada cliente, mas os valores podem se repetir
+        pacienciaInicial[i] = numero_aleatorio(9, 15);
+
+        // criamos o cliente
+        Cliente cliente_atual = criarCliente(i+1, pacienciaInicial[i], pedidoAtual);
+
+        // enfileiramos o cliente na fila
+        if (!enfileira(&clientes, cliente_atual))
+        {
+            cout << "Erro ao enfileirar os clientes.\n";
+            destruir(&clientes);
+            return;
+        }
+    }
+
+    cout << "Partida iniciada com "
+         << tamanho(&clientes) << " clientes.\n";
+
+    Cliente *atual = clienteDaFrente(&clientes);
+
+    if (atual != nullptr) // Se houver clientes na fila
+    {
+        const Pedido *pedidoAtual = atual->pedido_cliente;
+
+        if (pedidoAtual == nullptr)
+        {
+            cout << "Cliente sem pedido associado.\n";
+            destruir(&clientes);
+            return;
+        }
+
         cout << "\nCliente: " << atual->id << '\n';
-        cout << "Paciencia: " << atual->paciencia_restante << " turnos.\n";
+        cout << "Paciencia: "
+             << atual->paciencia_restante << " turnos.\n";
 
         cout << "Pedido: " << pedidoAtual->cod << '\n';
         imprimir(&pedidoAtual->receita);
@@ -64,7 +90,6 @@ void novoJogo(NodoAvl *raiz, int &estado_menu, char *argv[])
 
     destruir(&clientes);
 }
-
 
 int numero_aleatorio(int minimo, int maximo)
 {
