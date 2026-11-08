@@ -109,6 +109,51 @@ bool prepararIngredientePerene(int contadorDeQuantidadesDisponiveis[]){
 
 }
 
+// remove ingrediente cuja validade ja passou
+bool removeIngredienteEstragado(int turnoAtual, FilaPrioridade* turnosDeVencimento){
+    // se o turno de vencimento for <= turno atual, então a unidade é removida
+    int vencimento; // variavel que vai receber o valor do turno de vencimento atual
+
+    while(fpMinimo(turnosDeVencimento, &vencimento) and (vencimento <= turnoAtual)){
+        fpRemoverMinimo(turnosDeVencimento, &vencimento);
+    }
+}
+
+
+bool usaIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons){
+    char codigo;
+    cout << "Informe o codigo do ingrediente que queres usar:" << endl;
+    cin >> codigo;
+
+    const Ingrediente *usado = buscarIngrediente(codigo);
+
+    // digitou uma letra invalida
+    if(preparado == nullptr) return false;
+
+    if (preparado->perecivel == true){
+        // se o campo perecivel do ingrediente é true, entao devemos armazenar esse ingrediente numa heap. Temos três ingreidentes pereciveis: carne, ovo frito e bacon.
+
+        switch(preparado->simbolo){
+            case 'n':
+
+            break;
+
+            case 'o':
+
+            break;
+
+            case 'b':
+
+            break;
+        }
+    }
+}
+
+
+
+
+
+
 
 
 

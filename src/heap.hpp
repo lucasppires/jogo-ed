@@ -40,7 +40,7 @@ struct FilaPrioridade {
 void fpInicializar(FilaPrioridade *fp);
 bool fpEstaVazia(const FilaPrioridade *fp);
 bool fpInserir(FilaPrioridade *fp, int valor);
-bool fpMaximo(const FilaPrioridade *fp, int *valor);
-bool fpRemoverMaximo(FilaPrioridade *fp, int *valor);
+bool fpMinimo(const FilaPrioridade *fp, int *valor);
+bool fpRemoverMinimo(FilaPrioridade *fp, int *valor);
 
 #endif /* HEAP_HPP */
