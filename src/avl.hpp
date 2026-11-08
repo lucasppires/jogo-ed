@@ -33,6 +33,6 @@ NodoAvl *avlDestruir(NodoAvl *raiz);
 /* Caminhamento em-ordem (imprime em ordem crescente) */
 void     avlEmOrdem(const NodoAvl *raiz);
 
-const Pedido *sortearPedido(NodoAvl *raiz, char *argv[]);
+
 
 #endif /* AVL_HPP */

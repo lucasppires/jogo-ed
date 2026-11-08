@@ -24,7 +24,7 @@ using std::cin;
 using std::endl;
 using std::scanf;
 
-// compilar: g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/jogo.cpp src/fila.cpp src/leitura_de_arquivos.cpp src/listacontest.cpp src/listaenc.cpp src/ingredientes.cpp src/avl.cpp src/timer.cpp src/sortings.cpp -I src -o tests/teste_menu.exe -Wall -std=c++17
+// compilar: g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/jogo.cpp src/fila.cpp src/leitura_de_arquivos.cpp src/listacontest.cpp src/listaenc.cpp src/ingredientes.cpp src/avl.cpp src/hash.cpp src/timer.cpp src/sortings.cpp -I src -o tests/teste_menu.exe -Wall -std=c++17
 
 // rodar: .\tests\teste_menu.exe src\pedidos.txt src\historico.txt
 
@@ -60,8 +60,8 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    TabelaEnc cache;
-    encInicializar(&cache, 101);
+    TabelaEnc cache; 
+    encInicializar(&cache, 101); //cria e inicializa a tabela hash que vai armazenar os pedidos mais recentes
 
     int ESTADO_MENU = MENU; //variavel que armazena o estado atual do menu, inicializado como MENU
 
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 
         if (ESTADO_MENU == NOVO_JOGO)
         {
-            novoJogo(raiz, ESTADO_MENU, argv);
+            novoJogo(raiz, &cache, ESTADO_MENU, argv);
             ESTADO_MENU = MENU;
         }
         else if (ESTADO_MENU == COMO_JOGAR)

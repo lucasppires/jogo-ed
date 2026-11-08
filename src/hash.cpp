@@ -124,6 +124,33 @@ void encDestruir(TabelaEnc *t) {
     t->m = t->n = 0;
 }
 
+
+void exibirEstatisticasHash(const TabelaEnc *cache)
+{
+    std::cout << "Estatísticas da tabela hash:\n";
+    std::cout << "Tamanho da tabela: " << cache->m << "\n";
+    std::cout << "Número de elementos: " << cache->n << "\n";
+    std::cout << "Hits: " << cache->hits << "\n";
+    std::cout << "Misses: " << cache->misses << "\n";
+    std::cout << "Colisões: " << cache->colisoes << "\n";
+    std::cout << "Fator de carga (n/m): " << static_cast<double>(cache->n) / cache->m << "\n"; //static_cast é pq o n e o m sao inteiros, entao transformamos o n em double para a divisao poder ter valores decimais
+    
+   double totalBuscas = static_cast<double>(cache->hits) + static_cast<double>(cache->misses);
+
+    double taxaAcerto;
+
+    if (totalBuscas > 0) 
+    {
+        taxaAcerto = 100.0 * static_cast<double>(cache->hits) / totalBuscas;
+    } 
+    else 
+    {
+        taxaAcerto = 0.0;
+    }
+
+    std::cout << "Taxa de acerto: " << taxaAcerto << "%\n";
+}
+
 /* ================================================================
  * Sondagem linear
  * ================================================================ */
