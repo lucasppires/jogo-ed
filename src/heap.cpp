@@ -1,9 +1,10 @@
 /* heap.cpp
- * Heap maximo e fila de prioridade (max-heap sobre array).
+ * Heap MINIMO (adaptado por Mateus em 8/11) e fila de prioridade (MIN-heap sobre array).
  * INF01203 - Estruturas de Dados - UFRGS
  */
 
 #include "heap.hpp"
+#include "sortings.hpp"
 
 /* ------------------------------------------------------------------ */
 /*  Auxiliar                                                            */
@@ -23,8 +24,8 @@ void heapify(int a[], int n, int i) {
     int esq   = 2 * i + 1;
     int dir   = 2 * i + 2;
 
-    if (esq < n && a[esq] > a[maior]) maior = esq;
-    if (dir < n && a[dir] > a[maior]) maior = dir;
+    if (esq < n && a[esq] < a[maior]) maior = esq;
+    if (dir < n && a[dir] < a[maior]) maior = dir;
 
     if (maior != i) {
         trocar(a, i, maior);
@@ -38,7 +39,7 @@ void heapify(int a[], int n, int i) {
 void siftUp(int a[], int i) {
     while (i > 0) {
         int pai = (i - 1) / 2;
-        if (a[i] > a[pai]) {
+        if (a[i] < a[pai]) {
             trocar(a, i, pai);
             i = pai;
         } else {
@@ -48,7 +49,7 @@ void siftUp(int a[], int i) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  buildHeap: constroi um max-heap in-place em O(n).                  */
+/*  buildHeap: constroi um min-heap in-place em O(n).                  */
 /*  Aplica heapify de baixo para cima, comecando no ultimo no interno. */
 /* ------------------------------------------------------------------ */
 void buildHeap(int a[], int n) {
@@ -67,6 +68,12 @@ void heapSort(int a[], int n) {
         trocar(a, 0, i);
         heapify(a, i, 0);
     }
+
+    // o array esta, apos as adaptaçoes pra transformar em min heap, ordenado em ordem decrescente.
+    for (int j = 0, k = n - 1; j < k; j++, k--){
+        trocar(a, j, k)
+    }
+
 }
 
 /* ------------------------------------------------------------------ */
@@ -88,13 +95,13 @@ bool fpInserir(FilaPrioridade *fp, int valor) {
     return true;
 }
 
-bool fpMaximo(const FilaPrioridade *fp, int *valor) {
+bool fpMinimo(const FilaPrioridade *fp, int *valor) {
     if (fpEstaVazia(fp)) return false;
     *valor = fp->dados[0];
     return true;
 }
 
-bool fpRemoverMaximo(FilaPrioridade *fp, int *valor) {
+bool fpRemoverMinimo(FilaPrioridade *fp, int *valor) {
     if (fpEstaVazia(fp)) return false;
     *valor = fp->dados[0];
     fp->tamanho--;

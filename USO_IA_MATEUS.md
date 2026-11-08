@@ -60,3 +60,9 @@ g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/leitura_de_arquivos.cpp src/li
    - Dúvida: perguntei onde estava a função montar, e o Claude explicou que ela não existia no meu código, pois tinha sido criada por ele para o teste.
    - Comando de compilação (dentro de src): g++ teste_pilha.cpp pilha.cpp ingredientes.cpp listaenc.cpp -o teste_pilha -Wall -std=c++17
    - Ainda pendente: "Pao de baixo" continua sendo impresso duas vezes em imprimir_hamburguer; montarPilhaViaSimbolos não verifica se buscarIngrediente devolveu nullptr em caso de letra inválida.
+11. (Mateus) Perguntei ao Claude o que precisava mudar no src/heap.cpp para operar sobre uma min-heap em vez de max-heap. O que foi explicado e feito:
+   - Sugestão implementada: trocar > por < nas três comparações, duas em heapify (a[esq] < a[maior] e a[dir] < a[maior]) e uma em siftUp (a[i] < a[pai]).
+   - Fila de prioridade: a lógica não muda, pois ela só chama heapify e siftUp. Apenas renomeei fpMaximo para fpMinimo e fpRemoverMaximo para fpRemoverMinimo.
+   - Efeito colateral apontado pelo Claude: com min-heap, o heapSort passa a ordenar em ordem decrescente. O Claude sugeriu inverter o array no final ou remover a função, caso não fosse usada.
+   - Por minha conta, coloquei uma chamada a mergeSort no final do heapSort. Na revisão, o Claude confirmou que o resultado fica em ordem crescente, mas apontou que o trabalho do heap sort é descartado e que isso exige O(n) de memória extra.
+   - Ainda pendente na revisão: decidir entre inverter o array ou remover o heapSort, que não é chamado em src/; a variável maior em heapify agora guarda o menor; o comentário do heapSort ainda fala em "maximo".
