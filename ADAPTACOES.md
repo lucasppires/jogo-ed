@@ -127,3 +127,18 @@ Alterações no TAD Pilha e nos ingredientes (08/11/2026):
 7. O main de teste_pilha.cpp passou a testar adicionar_ingrediente, remover_ingrediente, corrige_pedido e imprimir_hamburguer. A compilação do teste agora precisa de listaenc.cpp.
 
 Pendente na pilha: ajustar a impressão do "Pao de baixo", que aparece no início e no fim do hambúrguer; levar as funções de teste_pilha.cpp para o jogo; distinguir o nome do nó da pilha do nó da fila, pois ambos se chamam Nodo.
+
+Alterações no TAD Heap (08/11/2026):
+1. O heap passou de máximo para mínimo: as comparações de heapify e siftUp foram invertidas, de > para <. Assim, o topo guarda o menor valor.
+2. Na fila de prioridade, a lógica foi mantida, pois ela usa heapify e siftUp. Em heap.cpp, fpMaximo passou a se chamar fpMinimo e fpRemoverMaximo passou a se chamar fpRemoverMinimo.
+3. Como o min-heap deixa o heapSort em ordem decrescente, foi adicionada ao final da função uma inversão do vetor, que devolve a ordem crescente.
+
+Pendente no heap: atualizar heap.hpp, que ainda declara fpMaximo e fpRemoverMaximo e descreve um heap máximo; remover o include de sortings.hpp em heap.cpp, que não é mais necessário; renomear a variável maior de heapify, que agora guarda o índice do menor elemento; corrigir o comentário do heapSort que ainda cita o máximo.
+
+Preparo de ingredientes, em andamento em teste_heap.cpp (08/11/2026):
+1. Cada perecível usa um min-heap próprio (carne, ovo frito e bacon), organizado pelo turno de vencimento, de modo que a unidade mais próxima de vencer fique no topo.
+2. Foi criada calculaTurnoVencimento, que soma o turno atual à validade do ingrediente.
+3. Foi criada prepararIngredientePerecivel, que lê o código, insere o vencimento no heap correspondente e retorna false em código inválido, ingrediente de outro tipo ou heap cheio.
+4. Foi criada prepararIngredientePerene, que lê o código e soma uma unidade no vetor de contadores, cujas posições 0 a 3 são queijo suíço, queijo cheddar, cebola e tomate. Retorna false em código inválido e para ingredientes perecíveis ou que não precisam de preparo.
+
+Pendente no preparo: ler o código uma única vez e decidir qual das duas funções chamar; levar as funções para o jogo, gastando o turno apenas quando o preparo der certo; dar baixa no estoque ao usar o ingrediente e descartar os perecíveis vencidos no início de cada turno; testar as funções, pois o main de teste_heap.cpp ainda está vazio.

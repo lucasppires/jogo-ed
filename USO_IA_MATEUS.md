@@ -66,3 +66,20 @@ g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/leitura_de_arquivos.cpp src/li
    - Efeito colateral apontado pelo Claude: com min-heap, o heapSort passa a ordenar em ordem decrescente. O Claude sugeriu inverter o array no final ou remover a função, caso não fosse usada.
    - Por minha conta, coloquei uma chamada a mergeSort no final do heapSort. Na revisão, o Claude confirmou que o resultado fica em ordem crescente, mas apontou que o trabalho do heap sort é descartado e que isso exige O(n) de memória extra.
    - Ainda pendente na revisão: decidir entre inverter o array ou remover o heapSort, que não é chamado em src/; a variável maior em heapify agora guarda o menor; o comentário do heapSort ainda fala em "maximo".
+12. (Mateus) Pedi ajuda com a função preparar_ingrediente, no src/teste_heap.cpp. O que foi explicado e feito:
+   - cout e endl não funcionavam porque faltava #include <iostream>. O using namespace std não declara esses nomes, só evita escrever std::.
+   - Erro na linha de buscarIngrediente: a função retorna const Ingrediente *, e eu guardava em uma variável Ingrediente. Solução: declarar const Ingrediente *preparado, o que também permite testar o ponteiro no if.
+   - Dúvidas: o Claude explicou que buscarIngrediente retorna um endereço para poder devolver nullptr em letra inválida e evitar cópia da struct, e que isso é seguro porque as constantes são globais.
+   - Sugestões implementadas: calculaTurnoVencimento passou a receber o ponteiro já validado, e o turno de vencimento é inserido com fpInserir na fila de cada perecível.
+   - Por minha conta, escrevi a função, com os parâmetros turnoAtual e as três filas e o switch pelo símbolo do ingrediente.
+   - Ainda pendente na revisão: tratar ingredientes com preparo não perecíveis e rejeitar os que não precisam de preparo; informar a quem chama se o turno deve ser gasto; o heap.hpp ainda declara fpMaximo e fpRemoverMaximo.
+13. (Mateus) Pedi ao Claude uma revisão da divisão do preparo em duas funções, prepararIngredientePerecivel e prepararIngredienePerene, no src/teste_heap.cpp. O que foi feito e apontado:
+   - Sugestões implementadas: as funções passaram a retornar bool, para indicar se o preparo deu certo, e os ingredientes não perecíveis passaram a usar contadores de quantidade.
+   - Por minha conta, decidi dividir em duas funções e guardar os contadores em um vetor de 4 posições.
+   - Ainda pendente na revisão: a função perene retorna true para ingredientes sem preparo (ketchup, por exemplo) sem preparar nada; a função perecível retorna true mesmo quando fpInserir falha; cada função lê o código do ingrediente, então quem chama não sabe qual delas usar sem pedir o código duas vezes (sugestão: ler o código uma vez em prepararIngrediente e passar o ponteiro para as duas); o nome prepararIngredienePerene está sem o "t".
+14. (Mateus) Depois das revisões dos itens 11 e 13, corrigi alguns pontos no src/heap.cpp e no src/teste_heap.cpp e pedi ao Claude para registrar as adaptações no ADAPTACOES.md e as ajudas neste arquivo. O que foi feito:
+   - No heapSort, troquei a chamada a mergeSort pela inversão do vetor sugerida pelo Claude, que custa O(n) e não usa memória extra.
+   - Em prepararIngredientePerecivel, a função agora retorna false quando fpInserir falha.
+   - Em prepararIngredientePerene, adicionei a verificação de requer_preparo, então ingredientes como o ketchup retornam false. Essa foi uma alternativa minha ao default no switch sugerido pelo Claude. Também corrigi o nome da função.
+   - O Claude conferiu o código atual e escreveu as seções de Heap e de preparo de ingredientes no ADAPTACOES.md.
+   - Ainda pendente: cada função de preparo continua lendo o código por conta própria; o heap.hpp ainda declara fpMaximo e fpRemoverMaximo; o include de sortings.hpp em heap.cpp não é mais necessário; a variável maior em heapify agora guarda o menor; o comentário do heapSort ainda fala em "maximo"; o main de teste_heap.cpp ainda está vazio, então as funções de preparo não foram testadas.

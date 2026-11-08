@@ -4,7 +4,6 @@
  */
 
 #include "heap.hpp"
-#include "sortings.hpp"
 
 /* ------------------------------------------------------------------ */
 /*  Auxiliar                                                            */
@@ -71,7 +70,8 @@ void heapSort(int a[], int n) {
 
     // o array esta, apos as adaptaçoes pra transformar em min heap, ordenado em ordem decrescente.
     for (int j = 0, k = n - 1; j < k; j++, k--){
-        trocar(a, j, k)
+        // n é o tamanho do vetor.
+        trocar(a, j, k);
     }
 
 }
