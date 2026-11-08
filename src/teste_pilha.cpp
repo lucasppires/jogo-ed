@@ -3,6 +3,11 @@
 #include "ingredientes.hpp"
 #include <iostream>
 
+// comando de compilação:
+// g++ teste_pilha.cpp pilha.cpp ingredientes.cpp listaenc.cpp -o teste_pilha -Wall -std=c++17
+// .\teste_pilha.exe
+
+
 using namespace std;
 
 void adicionar_ingrediente(PilhaEnc *p){
@@ -128,7 +133,7 @@ inline const Ingrediente BACON{
 
     // verifica se o topo da pilha é o ingrediente PAO, se sim, nao pode adicionar mais ingredientes
     // tambem verifico se a pilha esta vazia; se sim, entao nao posso acessar a regiao da memoria do topo, q ainda nao foi alocada
-    if (topo(p, &(p->topo->dado)) && p->topo->dado.simbolo == PAO.simbolo) {
+    if (!estaVazia(p) && p->topo->dado.simbolo == PAO.simbolo) {
         cout << "Tu nao pode adicionar mais ingredientes, pois o hamburguer ja tem o pao de cima.\n";
         return;
     }
@@ -158,18 +163,6 @@ void remover_ingrediente(PilhaEnc *p){
     return;
 }
 
-
-
-
-int main(){
-    PilhaEnc p;
-    inicializa(&p);
-
-    adicionar_ingrediente(&p);
-
-    remover_ingrediente(&p);
-    return 0;
-}
 
 bool corrige_pedido(PilhaEnc *p, ListaEnc *receita){
     // primeiro vamos colocar os ingredientes da pilha em uma vetor de ingredientes, para depois comparar com a receita, que é uma lista enc.
@@ -210,4 +203,80 @@ bool corrige_pedido(PilhaEnc *p, ListaEnc *receita){
         i++;
     }
     return true;
+}
+
+void imprimir_hamburguer(PilhaEnc *p){
+    Nodo* aux = p->topo;
+
+    if (aux == nullptr) {
+        cout << "Teu hamburguer esta vazio" << endl;
+        return;
+    }
+
+    cout << "Teu hamburguer tem os seguintes ingredientes: " << endl;
+
+    // sim, pode acessar a esturtura interna da pilha, a especificacao nao proibe.
+    while (aux != nullptr) {
+        cout << aux->dado.cor << aux->dado.nome << cores::RESET << endl;
+        aux = aux->prox;
+    }
+
+    cout << "Pao de baixo" << endl;
+    return;
+}
+
+
+
+// ia gerou um main pra eu testar
+int main(){
+    PilhaEnc p;
+    inicializa(&p);
+
+    // receita de exemplo, da base para o topo: bacon, carne, cheddar, pao
+    ListaEnc receita;
+    inicializar(&receita);
+    const char *simbolosReceita = "bnqz";
+    for (int i = 0; simbolosReceita[i] != '\0'; i++)
+        inserirFim(&receita, *buscarIngrediente(simbolosReceita[i]));
+
+    cout << "\n--- 1. pilha vazia ---\n";
+    imprimir_hamburguer(&p);
+    remover_ingrediente(&p);
+
+    cout << "\n--- 2. pilha de exemplo ---\n";
+    montarPilhaViaSimbolos(&p, "bnq");
+    imprimir_hamburguer(&p);
+
+    cout << "\n--- 3. adicionar: digite a (alface) ---\n";
+    adicionar_ingrediente(&p);
+    imprimir_hamburguer(&p);
+
+    cout << "\n--- 4. remover (sai a alface) ---\n";
+    remover_ingrediente(&p);
+    imprimir_hamburguer(&p);
+
+    cout << "\n--- 5. adicionar: digite z (pao de cima) ---\n";
+    adicionar_ingrediente(&p);
+
+    cout << "\n--- 6. adicionar: digite t (deve bloquear) ---\n";
+    adicionar_ingrediente(&p);
+
+    cout << "\n--- 7. adicionar: digite x (invalido) ---\n";
+    adicionar_ingrediente(&p);
+    imprimir_hamburguer(&p);
+
+    cout << "\n--- 8. corrigir: pedido certo (esperado 1) ---\n";
+    cout << corrige_pedido(&p, &receita) << endl;
+
+    cout << "\n--- 9. corrigir: ordem errada (esperado 0) ---\n";
+    montarPilhaViaSimbolos(&p, "nbqz");
+    cout << corrige_pedido(&p, &receita) << endl;
+
+    cout << "\n--- 10. corrigir: quantidade errada (esperado 0) ---\n";
+    montarPilhaViaSimbolos(&p, "bn");
+    cout << corrige_pedido(&p, &receita) << endl;
+
+    esvaziarPilha(&p);
+    destruir(&receita);
+    return 0;
 }

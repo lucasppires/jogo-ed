@@ -23,5 +23,7 @@ bool empilha(PilhaEnc *p, Ingrediente adicionado);
 bool desempilha(PilhaEnc *p, Ingrediente *removido);
 bool topo(PilhaEnc *p, Ingrediente *valor);
 int  tamanho(PilhaEnc *p);
+void esvaziarPilha(PilhaEnc *p);
+void montarPilhaViaSimbolos(PilhaEnc *p, const char *simbolos);
 
 #endif /* PILHA_HPP */

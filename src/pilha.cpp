@@ -54,3 +54,13 @@ int tamanho(PilhaEnc *p) {
     return contador;
 }
 
+void esvaziarPilha(PilhaEnc *p){
+    Ingrediente lixo;
+    while (desempilha(p, &lixo)) {}
+}
+
+void montarPilhaViaSimbolos(PilhaEnc *p, const char *simbolos){
+    esvaziarPilha(p);
+    for (int i = 0; simbolos[i] != '\0'; i++)
+        empilha(p, *buscarIngrediente(simbolos[i]));
+}

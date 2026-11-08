@@ -40,3 +40,23 @@ while (getline(arq2, nome) && arq2 >> score){
 7. (Mateus) Ao compilar o teste_menu deu erro de linkagem: "undefined reference to `mergeSortAdaptado(Jogador*, int)'". Causa: o src/sortings.cpp (onde a função está implementada) não estava no comando do g++. Solução: adicionar src/sortings.cpp na lista de arquivos:
 
 g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/leitura_de_arquivos.cpp src/lista.cpp src/avl.cpp src/timer.cpp src/sortings.cpp -I src -o tests/teste_menu.exe -Wall -std=c++17
+
+8. (Mateus) Pedi ajuda com o src/teste_pilha.cpp (teste da pilha de ingredientes do hambúrguer). Problemas encontrados e soluções:
+   - Faltava #include <iostream> e o cout estava com o operador invertido (cout >> em vez de cout <<). O >> é usado com cin.
+   - O arquivo não tinha main(), então não dava pra compilar sozinho. Comando de compilação (dentro de src): g++ teste_pilha.cpp pilha.cpp ingredientes.cpp -o teste_pilha
+   - O switch que converte a letra no Ingrediente não tinha break em cada case, então qualquer letra válida caía até o default ("caractere invalido"). Solução: break; no fim de cada case (alternativa: usar a função buscarIngrediente, que já existe em ingredientes.cpp).
+   - A pilha guardava Produto (cod, nome, preco), que veio do código do moodle. Adaptei pra guardar Ingrediente: o Nodo passou a ter Ingrediente dado, e empilha/desempilha/topo passaram a receber Ingrediente.
+   - Depois disso deu "'Ingrediente' does not name a type" no pilha.hpp. Causa: o pilha.hpp usava Ingrediente sem incluir o ingredientes.hpp (nos .cpp o pilha.hpp era incluído antes). Solução: adicionar #include "ingredientes.hpp" no pilha.hpp, logo depois do #define PILHA_HPP.
+9. (Mateus) Pedi ao Claude um resumo dos últimos commits do Lucas e ajuda com a função imprimir_hamburguer, do src/teste_pilha.cpp, para imprimir o hambúrguer colorido usando o cores.hpp. O que foi feito e explicado:
+   - Sugestão implementada: adicionar o campo const char *cor na struct Ingrediente e incluir o cores.hpp no ingredientes.hpp. Cada constante de ingrediente recebe sua cor como último valor. Como a pilha guarda cópias dessas constantes, a cor vai junto, sem precisar de switch.
+   - Impressão: cout << aux->dado.cor << aux->dado.nome << cores::RESET << endl; O RESET no fim da linha evita que a cor vaze para o texto seguinte.
+   - Por minha conta, escolhi as cores de cada ingrediente, criei as cores MARROM e LARANJA no cores.hpp e usei using namespace cores no ingredientes.hpp.
+   - Dúvida sobre os ponteiros da pilha: eu achava que o prox apontava para cima e que o do topo era nulo. O Claude explicou que, em empilha, novo->prox = p->topo faz cada nodo apontar para o de baixo, então dá para percorrer do topo até a base, e só o nodo da base tem prox nulo. Confirmamos rodando a função com o pilha.cpp e imprimindo o prox de cada nodo.
+   - Revisão do código, com pontos apontados e ainda não corrigidos: o "Pao de baixo" é impresso antes do laço, ou seja, aparece em cima do hambúrguer; o comentário no início da função ainda diz que os ponteiros vão para cima; o main ainda não chama imprimir_hamburguer; a linha que verifica o topo em adicionar_ingrediente acessa p->topo->dado mesmo com a pilha vazia.
+10. (Mateus) Pedi ao Claude uma pilha de exemplo para testar as funções adicionar_ingrediente, remover_ingrediente, corrige_pedido e imprimir_hamburguer. O que foi feito:
+   - O Claude gerou um main de teste com 10 cenários: pilha vazia, adicionar e remover ingrediente, bloqueio depois do pão de cima, letra inválida, pedido certo, ordem errada e quantidade errada. Também gerou uma receita de exemplo (bnqz) e duas funções auxiliares, esvaziar e montar.
+   - Por minha conta, levei essas funções para o TAD Pilha (pilha.cpp e pilha.hpp) com os nomes esvaziarPilha e montarPilhaViaSimbolos.
+   - Corrigi os pontos da revisão do item 9: a verificação do topo agora usa !estaVazia(p), o comentário errado sobre os ponteiros foi removido, e o main agora chama imprimir_hamburguer, definida antes dele.
+   - Dúvida: perguntei onde estava a função montar, e o Claude explicou que ela não existia no meu código, pois tinha sido criada por ele para o teste.
+   - Comando de compilação (dentro de src): g++ teste_pilha.cpp pilha.cpp ingredientes.cpp listaenc.cpp -o teste_pilha -Wall -std=c++17
+   - Ainda pendente: "Pao de baixo" continua sendo impresso duas vezes em imprimir_hamburguer; montarPilhaViaSimbolos não verifica se buscarIngrediente devolveu nullptr em caso de letra inválida.

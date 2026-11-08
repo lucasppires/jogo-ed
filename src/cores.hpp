@@ -20,6 +20,8 @@ namespace cores {
     constexpr const char* MAGENTA_CLARO  = "\033[95m";
     constexpr const char* CIANO_CLARO    = "\033[96m";
     constexpr const char* BRANCO_CLARO   = "\033[97m";
+    constexpr const char* MARROM   = "\033[38;5;94m";
+    constexpr const char* LARANJA  = "\033[38;5;208m";
 }
 
 #endif

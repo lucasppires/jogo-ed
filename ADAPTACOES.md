@@ -116,3 +116,14 @@ Atualização do TAD Hash (08/11/2026):
 11. A função liberar_recursos ganhou um parâmetro opcional para a hash, liberando o cache antes da AVL. O valor padrão nullptr permite usá-la nos erros anteriores à criação do cache.
 
 Pendente na hash: passar o cache para novoJogo e usar obterPedido após sortear apenas o código, substituindo a busca direta na AVL. Também faltam a apresentação e o registro das métricas em medicoes.log e a justificativa do tamanho escolhido.
+
+Alterações no TAD Pilha e nos ingredientes (08/11/2026):
+1. A struct Ingrediente ganhou o campo cor, do tipo const char *, e cada constante de ingrediente passou a ter sua cor. Assim, a cor acompanha as cópias guardadas na pilha.
+2. O ingredientes.hpp passou a incluir cores.hpp, e foram criadas as cores MARROM e LARANJA.
+3. Foi criada esvaziarPilha, que desempilha todos os ingredientes, liberando os nós.
+4. Foi criada montarPilhaViaSimbolos, que esvazia a pilha e empilha os ingredientes de uma string de símbolos, da base para o topo. É usada no teste e supõe que todos os símbolos sejam válidos.
+5. Em teste_pilha.cpp, foi criada imprimir_hamburguer, que percorre a pilha do topo até a base e imprime cada ingrediente na sua cor.
+6. A verificação do pão de cima em adicionar_ingrediente passou a usar estaVazia antes de acessar p->topo, evitando acesso por ponteiro nulo com a pilha vazia.
+7. O main de teste_pilha.cpp passou a testar adicionar_ingrediente, remover_ingrediente, corrige_pedido e imprimir_hamburguer. A compilação do teste agora precisa de listaenc.cpp.
+
+Pendente na pilha: ajustar a impressão do "Pao de baixo", que aparece no início e no fim do hambúrguer; levar as funções de teste_pilha.cpp para o jogo; distinguir o nome do nó da pilha do nó da fila, pois ambos se chamam Nodo.
