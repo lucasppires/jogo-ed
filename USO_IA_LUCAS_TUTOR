@@ -1928,3 +1928,32 @@ A diferença para `criarClientes(&clientes, 3, numero_aleatorio(9, 15))` é que 
 Com seu vetor, você pode dar a cada cliente o valor de `pacienciaInicial[i]`. Para isso, a criação dos clientes também precisa usar cada posição do vetor; apenas criar o vetor não altera a função atual.
 
 ##################################################
+
+Lucas — Prompt 53:
+qual deve ser feito primeiro, hash ou heap
+
+Resposta:
+**No seu estágio atual, recomendo terminar a hash primeiro.** Você já começou sua adaptação, e ela completa o caminho de obter o pedido de cada cliente.
+
+A sequência fica:
+
+```text
+Fila de clientes
+    → obter pedido usando hash e AVL
+    → montar hamburguer usando pilha e estoque
+    → controlar pereciveis usando heaps
+```
+
+Na hash, falta concluir:
+
+1. Os contadores de hits, misses e colisões.
+2. A inicialização e a liberação do cache.
+3. A consulta à hash antes da busca na AVL.
+
+Depois, podemos trabalhar nos heaps de carne, ovo e bacon para controlar as unidades preparadas e seus vencimentos.
+
+**Não existe uma dependência técnica que obrigue essa ordem:** hash e heap podem ser desenvolvidos separadamente. A recomendação é terminar a parte de recuperação dos pedidos antes de abrir outra frente, enquanto seu colega trabalha na pilha.
+
+Seu próximo passo concreto continua sendo concluir as métricas da hash.
+
+##################################################

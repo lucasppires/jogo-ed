@@ -49,8 +49,14 @@ void imprimir_menu(int& estado_menu)
 }
 
 //destroi a avl e a lista contígua de histórico, né? 
-void liberar_recursos(NodoAvl *&raiz, ListaContEst *lista_historico)
+void liberar_recursos(NodoAvl *&raiz, ListaContEst *lista_historico, TabelaEnc *cache)
 {
+    
+    // Libera o cache antes dos pedidos aos quais ele aponta.
+    if (cache != nullptr) {
+        encDestruir(cache);
+    }
+
     raiz = avlDestruir(raiz);
     destruir(lista_historico);
 }

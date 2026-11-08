@@ -47,23 +47,46 @@ void encInicializar(TabelaEnc *t, int m) {
         t->tabela[i] = nullptr;
 }
 
-void encInserir(TabelaEnc *t, int chave, const Pedido *valor) {
-    int i    = hashDivisao(chave, t->m);
+void encInserir(
+    TabelaEnc *t,
+    int chave,
+    const Pedido *valor
+) {
+    int i = hashDivisao(chave, t->m);
     No *novo = new No;
-    novo->chave  = chave;
-    novo->valor  = valor;
-    novo->prox   = t->tabela[i];
+
+    novo->chave = chave;
+    novo->valor = valor;
+
+    // Conta uma colisao se a posicao ja estiver ocupada.
+    if (t->tabela[i] != nullptr) {
+        t->colisoes++;
+    }
+
+    // Insere no inicio da lista dessa posicao.
+    novo->prox = t->tabela[i];
     t->tabela[i] = novo;
+
     t->n++;
 }
 
-const Pedido* encBuscar(const TabelaEnc *t, int chave) {
-    int i = hashDivisao(chave, t->m);
+const Pedido *encBuscar(TabelaEnc *t, int chave)
+{
+    int i = hashDivisao(chave, t->m); 
     No *p = t->tabela[i];
-    while (p != nullptr) {
-        if (p->chave == chave) return p->valor;
+
+    while (p != nullptr)
+    {
+        if (p->chave == chave) //vai analisando cada nodo da lista encadeada de tal posicao ate achar a chave procurada
+        {
+            t->hits++; // hits é o quando o pedido procurado está na hash
+            return p->valor;
+        }
+
         p = p->prox;
     }
+
+    t->misses++; // misses é quando o pedido ainda nao esta na hash
     return nullptr;
 }
 

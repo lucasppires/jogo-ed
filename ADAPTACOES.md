@@ -107,4 +107,12 @@ Alterações no TAD Hash:
 4. A função encBuscar passou a devolver const Pedido * ou nullptr quando não encontra a chave. A hash não possui nem libera as receitas apontadas.
 5. Foi iniciada a preparação das métricas, zerando hits, misses e colisoes em encInicializar.
 
-Pendente na hash: os campos dos contadores ainda não aparecem em TabelaEnc no arquivo salvo. Também faltam os incrementos em encBuscar e encInserir e a integração da consulta à hash antes da AVL. As orientações para registrar hits e misses foram discutidas, mas essa mudança ainda não consta na implementação salva.
+Atualização do TAD Hash (08/11/2026):
+6. Foram adicionados hits, misses e colisoes à TabelaEnc, do tipo unsigned long long.
+7. A função encBuscar passou a receber TabelaEnc sem const para atualizar os contadores: soma um hit ao encontrar o código ou um miss ao terminar sem encontrá-lo.
+8. A função encInserir passou a contar uma colisão quando a posição já está ocupada, independentemente do tamanho da lista nessa posição.
+9. Foi criada obterPedido em jogo.cpp, que consulta primeiro a hash; em um miss, busca na AVL e insere a referência encontrada no cache.
+10. O cache passou a ser inicializado uma vez no teste_menu, antes do menu, com tamanho provisório 101.
+11. A função liberar_recursos ganhou um parâmetro opcional para a hash, liberando o cache antes da AVL. O valor padrão nullptr permite usá-la nos erros anteriores à criação do cache.
+
+Pendente na hash: passar o cache para novoJogo e usar obterPedido após sortear apenas o código, substituindo a busca direta na AVL. Também faltam a apresentação e o registro das métricas em medicoes.log e a justificativa do tamanho escolhido.

@@ -7,6 +7,7 @@
 // TADs
 #include "avl.hpp"
 #include "listacontest.hpp"
+#include "hash.hpp"
 
 
 // Bibliotecas do jogo
@@ -16,6 +17,7 @@
 #include "timer.hpp"
 #include "sortings.hpp"
 #include "jogo.hpp"
+
 
 using std::cout;
 using std::cin;
@@ -58,6 +60,9 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    TabelaEnc cache;
+    encInicializar(&cache, 101);
+
     int ESTADO_MENU = MENU; //variavel que armazena o estado atual do menu, inicializado como MENU
 
     while (ESTADO_MENU != SAIR)
@@ -84,7 +89,8 @@ int main(int argc, char *argv[])
         }
         else if (ESTADO_MENU == SAIR)
         {
-            liberar_recursos(raiz, &lista_historico);
+
+            liberar_recursos(raiz, &lista_historico, &cache);
             return 0; //encerrar_programa();
         }
 

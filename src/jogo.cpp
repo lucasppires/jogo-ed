@@ -14,7 +14,7 @@ using std::cin;
 using std::scanf;
 using std::endl;
 
-define N_MAX_CLIENTES 10
+#define N_MAX_CLIENTES 10
 
 void novoJogo(NodoAvl *raiz, int &estado_menu, char *argv[])
 {
@@ -89,6 +89,26 @@ void novoJogo(NodoAvl *raiz, int &estado_menu, char *argv[])
     }
 
     destruir(&clientes);
+}
+
+const Pedido *obterPedido(NodoAvl *raiz, TabelaEnc *cache, int codigo) 
+{
+    // Primeiro procura na hash.
+    const Pedido *pedido = encBuscar(cache, codigo);
+
+    if (pedido != nullptr)
+        return pedido;
+
+    // Se nao encontrou na hash, procura na AVL.
+    NodoAvl *no = buscarPorCodigo(raiz, codigo);
+
+    if (no == nullptr)
+        return nullptr;
+
+    // Guarda a referencia no cache para consultas futuras.
+    encInserir(cache, codigo, &no->dado);
+
+    return &no->dado;
 }
 
 int numero_aleatorio(int minimo, int maximo)
