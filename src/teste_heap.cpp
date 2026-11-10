@@ -71,7 +71,7 @@ bool prepararIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPr
 }
 
 // são eles: Queijo suíço (s), Queijo cheddar (q), Cebola (c), Tomate (t)
-bool prepararIngredientePerene(int contadorDeQuantidadesDisponiveis[]){
+bool prepararIngredienteNaoPerecivel(int contadorDeQuantidadesDisponiveis[]){
     char codigo;
     cout << "Informe o codigo do ingrediente que queres preparar:" << endl;
     cin >> codigo;
@@ -130,7 +130,7 @@ bool removeIngredienteEstragado(int turnoAtual, FilaPrioridade* turnosDeVencimen
 // funcoes de usar ingredientes
 // posteriormente serao interligadas com as funcoes da pilha, que adiciona os ingredientes preparados no hamburguer.
 
-bool usaIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons){
+bool usaIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, PilhaEnc *p){
     char codigo;
     cout << "Informe o codigo do ingrediente que queres usar:" << endl;
     cin >> codigo;
@@ -152,7 +152,16 @@ bool usaIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPriorid
                 }
                 else{
                     int vencimento;
+
+                    // so tira a unidade do heap se ela realmente entrou no hamburguer
+                    bool resultado = adicionar_ingrediente(p, usado->simbolo);
+                    if (!resultado){
+                        cout << "Nao foi possivel adicionar carne." << endl;
+                        return false;
+                    }
+
                     fpRemoverMinimo(carnes, &vencimento);
+                    cout << "Adicionaste carne." << endl;
                 }
             break;
 
@@ -164,7 +173,15 @@ bool usaIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPriorid
                 }
                 else{
                     int vencimento;
+
+                    bool resultado = adicionar_ingrediente(p, usado->simbolo);
+                    if (!resultado){
+                        cout << "Nao foi possivel adicionar ovo." << endl;
+                        return false;
+                    }
+
                     fpRemoverMinimo(ovos, &vencimento);
+                    cout << "Adicionaste ovo." << endl;
                 }
 
             break;
@@ -177,7 +194,15 @@ bool usaIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPriorid
                 }
                 else{
                     int vencimento;
+
+                    bool resultado = adicionar_ingrediente(p, usado->simbolo);
+                    if (!resultado){
+                        cout << "Nao foi possivel adicionar bacon." << endl;
+                        return false;
+                    }
+
                     fpRemoverMinimo(bacons, &vencimento);
+                    cout << "Adicionaste bacon." << endl;
                 }
             break;
         }
@@ -186,7 +211,7 @@ bool usaIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPriorid
     return false;
 }
 
-bool usaIngredientePerene(int contadorDeQuantidadesDisponiveis[]){
+bool usaIngredienteNaoPerecivel(int contadorDeQuantidadesDisponiveis[], PilhaEnc *p){
     char codigo;
     cout << "Informe o codigo do ingrediente que queres usar:" << endl;
     cin >> codigo;
@@ -195,6 +220,19 @@ bool usaIngredientePerene(int contadorDeQuantidadesDisponiveis[]){
 
     // digitou uma letra invalida
     if(usado == nullptr) return false;
+
+
+    // ADICIONA INGREDIENTE QUE NAO PRECISA DE ESTOQUE!
+    // Pao de cima (z), Ketchup (k), Mostarda (m), Picles (p), Alface (a): quantidade infinita, vao direto pro hamburguer
+    if(usado->perecivel == false and usado->requer_preparo == false){
+        bool resultado = adicionar_ingrediente(p, usado->simbolo);
+        if (!resultado){
+            cout << "Nao foi possivel adicionar o ingrediente: " << usado->nome << endl;
+            return false;
+        }
+        cout << "Adicionaste o ingrediente: " << usado->nome << endl;
+        return true;
+    }
 
     if(usado->perecivel == false and usado->requer_preparo == true){
         /* 
@@ -205,8 +243,14 @@ bool usaIngredientePerene(int contadorDeQuantidadesDisponiveis[]){
             posicao 3: Tomate (t)
         */
         switch (usado->simbolo){
+            // so desconta do estoque se o ingrediente realmente entrou no hamburguer
             case 's':
                 if(contadorDeQuantidadesDisponiveis[0] > 0){
+                    bool resultado = adicionar_ingrediente(p, usado->simbolo);
+                    if (!resultado){
+                        cout << "Nao foi possivel adicionar queijo suico." << endl;
+                        return false;
+                    }
                     contadorDeQuantidadesDisponiveis[0]--;
                 }
                 else{
@@ -217,6 +261,11 @@ bool usaIngredientePerene(int contadorDeQuantidadesDisponiveis[]){
             
             case 'q':
                 if(contadorDeQuantidadesDisponiveis[1] > 0){
+                    bool resultado = adicionar_ingrediente(p, usado->simbolo);
+                    if (!resultado){
+                        cout << "Nao foi possivel adicionar queijo cheddar." << endl;
+                        return false;
+                    }
                     contadorDeQuantidadesDisponiveis[1]--;
                 }
                 else{
@@ -227,6 +276,11 @@ bool usaIngredientePerene(int contadorDeQuantidadesDisponiveis[]){
 
             case 'c':
                 if(contadorDeQuantidadesDisponiveis[2] > 0){
+                    bool resultado = adicionar_ingrediente(p, usado->simbolo);
+                    if (!resultado){
+                        cout << "Nao foi possivel adicionar cebola." << endl;
+                        return false;
+                    }
                     contadorDeQuantidadesDisponiveis[2]--;
                 }
                 else{
@@ -237,6 +291,11 @@ bool usaIngredientePerene(int contadorDeQuantidadesDisponiveis[]){
 
             case 't':
                 if(contadorDeQuantidadesDisponiveis[3] > 0){
+                    bool resultado = adicionar_ingrediente(p, usado->simbolo);
+                    if (!resultado){
+                        cout << "Nao foi possivel adicionar tomate." << endl;
+                        return false;
+                    }
                     contadorDeQuantidadesDisponiveis[3]--;
                 }
                 else{
