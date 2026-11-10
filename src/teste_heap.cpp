@@ -319,11 +319,3 @@ bool usaIngredienteNaoPerecivel(int contadorDeQuantidadesDisponiveis[], PilhaEnc
 
 
 
-
-
-
-
-int main(){
-
-return 0;
-}
