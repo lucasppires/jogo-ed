@@ -95,3 +95,7 @@ g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/leitura_de_arquivos.cpp src/li
    - O Claude adicionou o include guard (TESTE_PILHA_HPP) e os protótipos de adicionar_ingrediente, remover_ingrediente, corrige_pedido e imprimir_hamburguer. Os includes que eu já tinha colocado foram mantidos, e o ListaEnc usado em corrige_pedido vem pelo pedido.hpp.
    - O Claude compilou o header junto com o .cpp em um arquivo temporário fora do projeto, com -Wall -std=c++17, sem erros nem avisos.
    - Ainda pendente: o teste_pilha.cpp ainda não inclui o teste_pilha.hpp; o main está no teste_pilha.cpp, então ele precisa sair de lá antes de ligar essas funções ao jogo, senão haverá dois main.
+17. (Mateus) Pedi ao Claude para gerar de novo o src/teste_pilha.hpp, depois de ter apagado o conteúdo. O que foi feito:
+   - Os protótipos foram gerados a partir da versão atual do src/teste_pilha.cpp, em que adicionar_ingrediente recebe o char por parâmetro e retorna bool e remover_ingrediente também retorna bool.
+   - O Claude compilou o header junto com o .cpp em um arquivo temporário fora do projeto, com -Wall -std=c++17. Compilou, com um aviso em remover_ingrediente.
+   - Ainda pendente na revisão: em remover_ingrediente, o else não tem chaves, então o return false roda sempre e a função retorna false mesmo quando remove o ingrediente; falta retornar true no caso de sucesso.

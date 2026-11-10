@@ -6,8 +6,8 @@
 #include "ingredientes.hpp"
 #include <iostream>
 
-void adicionar_ingrediente(PilhaEnc *p);
-void remover_ingrediente(PilhaEnc *p);
+bool adicionar_ingrediente(PilhaEnc *p, char adicionado);
+bool remover_ingrediente(PilhaEnc *p);
 bool corrige_pedido(PilhaEnc *p, ListaEnc *receita);
 void imprimir_hamburguer(PilhaEnc *p);
 
