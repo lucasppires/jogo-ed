@@ -10,13 +10,12 @@
 
 using namespace std;
 
-void adicionar_ingrediente(PilhaEnc *p){
-    char adicionado;
+bool adicionar_ingrediente(PilhaEnc *p, char adicionado){
     Ingrediente aux;
 
 
-    cout << "Qual ingrediente tu quer adicionar? Informe a letra do ingrediente:";
-    cin >> adicionado;
+   // cout << "Qual ingrediente tu quer adicionar? Informe a letra do ingrediente:";
+ //   cin >> adicionado;
 
     aux.simbolo = adicionado;
 
@@ -125,17 +124,17 @@ inline const Ingrediente BACON{
         default:
         {
         cout << "Tu passou um caractere invalido.\n";
-        return;
+        return false;
         }
         break;
 
     }
 
     // verifica se o topo da pilha é o ingrediente PAO, se sim, nao pode adicionar mais ingredientes
-    // tambem verifico se a pilha esta vazia; se sim, entao nao posso acessar a regiao da memoria do topo, q ainda nao foi alocada
+    // o !estaVazia(p) é para evitar que o programa tente acessar p->topo->dado.simbolo quando a pilha estiver vazia, o que causaria um erro de segmentação.
     if (!estaVazia(p) && p->topo->dado.simbolo == PAO.simbolo) {
         cout << "Tu nao pode adicionar mais ingredientes, pois o hamburguer ja tem o pao de cima.\n";
-        return;
+        return false;
     }
 
     // se eh perecivel, entao ele sai do heap. se o heap estiver vazio, nao pode realizar a acao.
@@ -143,13 +142,16 @@ inline const Ingrediente BACON{
 
     bool resultadoAdicao = empilha(p, aux);
 
-    if (resultadoAdicao) 
+    if (resultadoAdicao) {
         cout << "Empilhaste o ingrediente: " << aux.nome << endl;
-
-    return;
+        return true;
+    } else {
+        cout << "Nao foi possivel adicionar o ingrediente. O hamburguer ja tem o pao de cima ou o ingrediente nao esta disponivel." << endl;
+        return false;
+}
 }
 
-void remover_ingrediente(PilhaEnc *p){
+bool remover_ingrediente(PilhaEnc *p){
     Ingrediente aux;
 
     bool resultadoRemocao = desempilha(p, &aux);
@@ -159,8 +161,7 @@ void remover_ingrediente(PilhaEnc *p){
         cout << "Desempilhaste o ingrediente: " << aux.nome << endl;
     else
         cout << "Nao foi possivel remover o ingrediente. O hamburguer esta vazio." << endl;
-
-    return;
+        return false;
 }
 
 
@@ -248,7 +249,7 @@ int main(){
     imprimir_hamburguer(&p);
 
     cout << "\n--- 3. adicionar: digite a (alface) ---\n";
-    adicionar_ingrediente(&p);
+    adicionar_ingrediente(&p, 'a');
     imprimir_hamburguer(&p);
 
     cout << "\n--- 4. remover (sai a alface) ---\n";
@@ -256,13 +257,13 @@ int main(){
     imprimir_hamburguer(&p);
 
     cout << "\n--- 5. adicionar: digite z (pao de cima) ---\n";
-    adicionar_ingrediente(&p);
+    adicionar_ingrediente(&p, 'z');
 
     cout << "\n--- 6. adicionar: digite t (deve bloquear) ---\n";
-    adicionar_ingrediente(&p);
+    adicionar_ingrediente(&p, 't');
 
     cout << "\n--- 7. adicionar: digite x (invalido) ---\n";
-    adicionar_ingrediente(&p);
+    adicionar_ingrediente(&p, 'x');
     imprimir_hamburguer(&p);
 
     cout << "\n--- 8. corrigir: pedido certo (esperado 1) ---\n";

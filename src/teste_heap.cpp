@@ -1,6 +1,8 @@
+#include <iostream>
 #include "heap.hpp"
 #include "ingredientes.hpp"
-#include <iostream>
+#include "teste_pilha.hpp"
+
 using namespace std;
 
 // farei uma min heap organizada em funcao do turno de vencimento!
@@ -264,7 +266,5 @@ bool usaIngredientePerene(int contadorDeQuantidadesDisponiveis[]){
 
 int main(){
 
-
-
-
+return 0;
 }
