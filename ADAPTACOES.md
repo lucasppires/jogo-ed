@@ -16,9 +16,9 @@ Adaptações no TAD AVL:
 10. A função avlDestruir agora libera a lista da receita antes de apagar cada nó.
 11. A função avlRemover também libera a receita removida. No caso de dois filhos, transfere a lista do sucessor e deixa seu ponteiro nulo para evitar liberar a mesma lista duas vezes.
 12. Foi criada buscarPorCodigo, que recebe apenas o código e retorna o nó encontrado ou nullptr.
-13. Foi criada sortearPedido, que recebe a raiz e argv, sorteia um código e retorna const Pedido *, sem remover o pedido nem copiar os nós da receita. Retorna nullptr se não conseguir obter um pedido.
+13. Foi criada sortearPedido, posteriormente movida para jogo.cpp e adaptada para consultar a hash antes da AVL, sem remover o pedido nem copiar os nós da receita.
 
-Pendente no sorteio: substituir a contagem de linhas a cada chamada e o intervalo de 1 até a quantidade de registros por informações dos códigos disponíveis; integrar a consulta à hash antes da AVL.
+
 
 Alterações no TAD Fila (04/11/2026):
 1. Foi criada a struct Cliente em pedido.hpp, com id e paciencia restante.
@@ -115,7 +115,17 @@ Atualização do TAD Hash (08/11/2026):
 10. O cache passou a ser inicializado uma vez no teste_menu, antes do menu, com tamanho provisório 101.
 11. A função liberar_recursos ganhou um parâmetro opcional para a hash, liberando o cache antes da AVL. O valor padrão nullptr permite usá-la nos erros anteriores à criação do cache.
 
-Pendente na hash: passar o cache para novoJogo e usar obterPedido após sortear apenas o código, substituindo a busca direta na AVL. Também faltam a apresentação e o registro das métricas em medicoes.log e a justificativa do tamanho escolhido.
+Integração e estatísticas da hash (08/11/2026):
+1. A função novoJogo passou a receber o cache criado no teste_menu, reutilizando a mesma hash entre partidas.
+2. A função sortearPedido foi movida da AVL para jogo.cpp e passou a receber a raiz e o cache. A declaração e a chamada foram atualizadas, removendo a versão antiga.
+3. O intervalo do sorteio passou a usar o menor e o maior código da árvore, sem reler o arquivo. Códigos inexistentes provocam outro sorteio.
+4. O pedido sorteado agora é recuperado por obterPedido: hash primeiro e AVL somente no miss.
+5. Foi criada exibirEstatisticasHash no TAD hash, mostrando m, n, hits, misses, colisões, fator de carga e taxa de acerto.
+6. O fator de carga usa conversão para double. A taxa de acerto é calculada em porcentagem com if/else, retornando zero quando não há buscas.
+7. As estatísticas passaram a ser exibidas ao final de novoJogo e representam os valores acumulados da execução.
+8. O comando de compilação do teste_menu precisa incluir hash.cpp.
+
+Pendente na hash: gravar as métricas em medicoes.log, integrar sua apresentação ao encerramento real das partidas e justificar o tamanho provisório 101. A rotina atual ainda não executa uma partida completa.
 
 Alterações no TAD Pilha e nos ingredientes (08/11/2026):
 1. A struct Ingrediente ganhou o campo cor, do tipo const char *, e cada constante de ingrediente passou a ter sua cor. Assim, a cor acompanha as cópias guardadas na pilha.

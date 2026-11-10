@@ -1957,3 +1957,145 @@ Depois, podemos trabalhar nos heaps de carne, ovo e bacon para controlar as unid
 Seu próximo passo concreto continua sendo concluir as métricas da hash.
 
 ##################################################
+
+Lucas — Prompt 54:
+me explique o que foi feito nos ultimos commits
+
+Resposta:
+**Os cinco commits mais recentes, de 8/11, avançaram principalmente no cache de pedidos e no estoque de ingredientes.** Li as alterações de cada commit; não compilei nem executei.
+
+**`39b27cc` — Hash e recuperação de pedidos**
+
+- Acrescentou os contadores de hits, misses e colisões.
+- Fez a busca e a inserção atualizarem esses contadores.
+- Criou `obterPedido`: consulta a hash e, em um miss, busca na AVL e guarda a referência no cache.
+- Incluiu a liberação da hash em `liberar_recursos`.
+
+A função de recuperação está preparada, mas a ligação com o sorteio usado pela partida ainda precisa ser concluída.
+
+**`8b5027c` — Hambúrguer colorido e funções da pilha**
+
+- Adicionou o campo `cor` a `Ingrediente` e cores para cada tipo.
+- Acrescentou `esvaziarPilha` e `montarPilhaViaSimbolos`.
+- Implementou, em `teste_pilha.cpp`, a impressão dos ingredientes coloridos, do topo para a base.
+- Ampliou o teste para conferir adição, remoção, bloqueio acima do pão e comparação da montagem com a receita.
+
+Essas verificações foram escritas no programa de teste; isso não significa que já estejam integradas à partida principal.
+
+**`1e5ffc5` — Heap máximo transformado em mínimo**
+
+As comparações foram invertidas para manter o menor valor no topo. Como o valor será o turno de vencimento, isso coloca na frente a unidade que vence primeiro.
+
+Também foram criadas as versões `fpMinimo` e `fpRemoverMinimo`. O Heap Sort ganhou uma inversão final do vetor para continuar produzindo ordem crescente.
+
+**`934b523` — Preparo e armazenamento dos ingredientes**
+
+Em `teste_heap.cpp`, foram criadas:
+
+- `calculaTurnoVencimento`: soma turno atual e validade.
+- `prepararIngredientePerecivel`: coloca o vencimento no heap correspondente à carne, ao ovo ou ao bacon.
+- `prepararIngredientePerene`: aumenta um contador no vetor de estoques de queijo suíço, cheddar, cebola e tomate.
+
+Por exemplo: preparar carne no turno 5, com validade 3, insere o valor **8** no heap de carnes. Preparar cheddar aumenta sua quantidade disponível em uma unidade.
+
+Esse commit também corrigiu um `;` que faltava no Heap Sort.
+
+**`a50f293` — Descarte de vencidos e início do consumo**
+
+- Atualizou o cabeçalho do heap para os nomes das operações de mínimo.
+- Acrescentou `removeIngredienteEstragado`, que retira unidades enquanto o menor vencimento for menor ou igual ao turno atual.
+- Começou `usaIngredientePerecivel`, para consumir unidades do estoque.
+
+**O último commit deixou essa parte em andamento.** Em `teste_heap.cpp`, `usaIngredientePerecivel` declara `usado`, mas consulta `preparado`, que não existe nesse escopo; os casos de carne, ovo e bacon ainda estão vazios. Também há funções `bool` sem retorno em todos os caminhos.
+
+A divisão do estoque ficou encaminhada assim:
+
+```text
+Perecíveis → três heaps de vencimentos
+Perenes preparados → vetor com quatro contadores
+Montagem do hambúrguer → pilha
+Receita exigida → lista encadeada do pedido
+```
+
+**O principal avanço foi preparar as peças da mecânica de ingredientes.** Ainda falta completar o consumo e conectar preparo, descarte e montagem ao laço de turnos do jogo.
+
+##################################################
+
+Lucas — Prompt 55:
+qual a diferenca de um hit para uma colisao
+
+Resposta:
+**Hit acontece na busca; colisão é contada na inserção.**
+
+- **Hit:** você procurou um código e encontrou esse pedido na hash.
+- **Colisão:** ao inserir um pedido, a posição calculada já tinha alguma entrada. No encadeamento separado, o novo pedido entra na lista dessa posição.
+
+Exemplo com `m = 10` e função `codigo % 10`:
+
+| Operação | Resultado |
+|---|---|
+| Inserir pedido 12 | Vai para a posição 2, que estava vazia. Sem colisão. |
+| Inserir pedido 22 | Também vai para a posição 2. Conta uma colisão. |
+| Buscar pedido 12 | Encontra o pedido. Conta um hit. |
+| Buscar pedido 32 | Percorre a mesma posição, mas não encontra esse código. Conta um miss. |
+
+A posição pode ficar assim:
+
+```text
+tabela[2] → [22] → [12]
+```
+
+**Ter a posição ocupada não significa hit:** precisamos encontrar exatamente o código procurado. E uma busca que percorre essa lista não aumenta o contador de colisões; no seu trabalho, esse contador é atualizado nas inserções.
+
+##################################################
+
+Lucas — Prompt 56:
+me diz se entendi o fluxo correto. é sorteado um pedido. entao, jogamos seu codigo na hash para ver se ele ja esta la. se nao esta (miss) entao executamos o probrama e o colocamos na hash. se ele ja esta na hash, o que acontece
+
+Resposta:
+**Você entendeu quase tudo. O ajuste é: sorteamos um código, e um miss faz o programa buscar o pedido na AVL.**
+
+O fluxo completo é:
+
+```text
+Sortear o codigo
+    ↓
+Procurar esse codigo na hash
+    ├── MISS → buscar o pedido na AVL
+    │          → guardar sua referencia na hash
+    │          → devolver o pedido para o atendimento
+    │
+    └── HIT  → devolver o pedido diretamente da hash
+               → sem consultar a AVL novamente
+```
+
+**Se já está na hash, o cliente recebe normalmente aquela receita.** Você monta outro hambúrguer para ele, como faria em qualquer atendimento.
+
+A hash não guarda um hambúrguer pronto nem o resultado do atendimento anterior. Ela guarda uma referência ao pedido, que contém a receita.
+
+Exemplo:
+
+1. Cliente 1 recebe código 1001: miss → busca na AVL → guarda na hash → jogador monta o hambúrguer.
+2. Cliente 2 recebe código 1001: hit → obtém a receita pela hash → jogador monta um novo hambúrguer.
+
+Nos dois casos, a jogabilidade é a mesma. **O hit apenas evita repetir a busca na árvore**, e o pedido não precisa ser inserido novamente na hash.
+
+##################################################
+
+Lucas — Prompt 57:
+qual o novo comando de compilacao do teste menu
+
+Resposta:
+Na **raiz do projeto**, compile incluindo `src/hash.cpp`:
+
+```powershell
+g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/jogo.cpp src/fila.cpp src/leitura_de_arquivos.cpp src/listacontest.cpp src/listaenc.cpp src/ingredientes.cpp src/avl.cpp src/hash.cpp src/timer.cpp src/sortings.cpp -I src -o tests/teste_menu.exe -Wall -std=c++17
+```
+
+Depois execute:
+
+```powershell
+.\tests\teste_menu.exe src\pedidos.txt src\historico.txt
+```
+
+##################################################

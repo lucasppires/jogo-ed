@@ -16,7 +16,7 @@ using std::endl;
 
 #define N_MAX_CLIENTES 10
 
-void novoJogo(NodoAvl *raiz, int &estado_menu, char *argv[])
+void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[])
 {
     estado_menu = MENU;
 
@@ -37,7 +37,7 @@ void novoJogo(NodoAvl *raiz, int &estado_menu, char *argv[])
     for (int i = 0; i < numeroClientes; i++)
     {
         // sorteia um pedido e guarda na variavel
-        const Pedido *pedidoAtual = sortearPedido(raiz, argv);
+        const Pedido *pedidoAtual = sortearPedido(raiz, cache);
 
         if (pedidoAtual == nullptr) // Se não houver pedidos disponíveis
         {
@@ -88,7 +88,10 @@ void novoJogo(NodoAvl *raiz, int &estado_menu, char *argv[])
         // O cliente continua na fila durante o atendimento.
     }
 
+
+    exibirEstatisticasHash(cache);
     destruir(&clientes);
+
 }
 
 const Pedido *obterPedido(NodoAvl *raiz, TabelaEnc *cache, int codigo) 
@@ -110,6 +113,39 @@ const Pedido *obterPedido(NodoAvl *raiz, TabelaEnc *cache, int codigo)
 
     return &no->dado;
 }
+
+// const pq o pedido sorteado nao deve ser modificado
+const Pedido *sortearPedido(NodoAvl *raiz, TabelaEnc *cache)
+{
+    if (raiz == nullptr || cache == nullptr || cache->m <= 0)
+        return nullptr;
+
+    // Encontra o menor e o maior codigo presentes na AVL.
+    const NodoAvl *menor = raiz;
+    const NodoAvl *maior = raiz;
+
+    while (menor->esq != nullptr)
+        menor = menor->esq;
+
+    while (maior->dir != nullptr)
+        maior = maior->dir;
+
+    const Pedido *pedido = nullptr;
+
+    do
+    {
+        int codigo_sorteado = numero_aleatorio(menor->dado.cod, maior->dado.cod);
+
+        // Consulta a hash e busca na AVL somente no miss.
+        pedido = obterPedido(raiz, cache, codigo_sorteado);
+
+        // Repete se o codigo sorteado nao existir.
+    } while (pedido == nullptr);
+
+    return pedido;
+}
+
+
 
 int numero_aleatorio(int minimo, int maximo)
 {

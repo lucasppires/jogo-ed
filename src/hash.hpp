@@ -34,20 +34,21 @@ int hashString(const char *s, int m);
  * Custo médio de busca: O(1 + λ).
  */
 
-struct No {
+struct No 
+{
     int chave; //codigo do pedido, ex 1001
     const Pedido *valor;
     No *prox; //proximo no da lista em caso de colisao
 };
 
-struct TabelaEnc {
+struct TabelaEnc 
+{
     No **tabela; //aponta para um vetor de listas encadeadas
     int m; //qtd de posicoes desse vetor
     int n; //quantidade de elementos inseridos na tabela
-
-    unsigned long long hits;
-    unsigned long long misses;
-    unsigned long long colisoes;
+    unsigned long long hits; // pedido procurado esta na hash
+    unsigned long long misses; // pedido nao esta na hash
+    unsigned long long colisoes; // posicao ja ocupada na hash, entao temos que inserir na lista encadeada
 };
 
 void encInicializar(TabelaEnc *t, int m);
@@ -55,6 +56,8 @@ void encInserir(TabelaEnc *t, int chave, const Pedido *valor);
 const Pedido *encBuscar(TabelaEnc *t, int chave);
 bool encRemover(TabelaEnc *t, int chave);
 void encDestruir(TabelaEnc *t);
+
+void exibirEstatisticasHash(const TabelaEnc *cache);
 
 
 /* ================================================================

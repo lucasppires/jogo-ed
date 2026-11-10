@@ -215,25 +215,3 @@ void avlEmOrdem(const NodoAvl *raiz) {
     avlEmOrdem(raiz->dir);
 }
 
-const Pedido *sortearPedido(NodoAvl *raiz, char *argv[]) //const pq o pedido sorteado nao deve ser modificado
-{
-    if (raiz == nullptr)
-        return nullptr;
-
-    int linhas = contarLinhas(argv[1]);
-
-    // Falha na abertura ou nenhum registro completo.
-    if (linhas < 2)
-        return nullptr;
-
-    int num_pedidos = linhas / 2;
-
-    int codigo_sorteado = numero_aleatorio(1, num_pedidos);
-
-    NodoAvl *nodo_pedido = buscarPorCodigo(raiz, codigo_sorteado);
-
-    if (nodo_pedido == nullptr)
-        return nullptr;
-
-    return &nodo_pedido->dado;
-}
