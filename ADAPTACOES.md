@@ -142,3 +142,16 @@ Preparo de ingredientes, em andamento em teste_heap.cpp (08/11/2026):
 4. Foi criada prepararIngredientePerene, que lê o código e soma uma unidade no vetor de contadores, cujas posições 0 a 3 são queijo suíço, queijo cheddar, cebola e tomate. Retorna false em código inválido e para ingredientes perecíveis ou que não precisam de preparo.
 
 Pendente no preparo: ler o código uma única vez e decidir qual das duas funções chamar; levar as funções para o jogo, gastando o turno apenas quando o preparo der certo; dar baixa no estoque ao usar o ingrediente e descartar os perecíveis vencidos no início de cada turno; testar as funções, pois o main de teste_heap.cpp ainda está vazio.
+
+Atualização do TAD Heap (09/11/2026):
+4. O heap.hpp passou a declarar fpMinimo e fpRemoverMinimo, acompanhando os nomes usados em heap.cpp.
+5. O include de sortings.hpp foi removido de heap.cpp, pois o heapSort não chama mais o mergeSort.
+
+Pendente no heap: atualizar os comentários do heap.hpp que ainda descrevem um heap máximo; renomear a variável maior de heapify, que agora guarda o índice do menor elemento; corrigir o comentário do heapSort que ainda cita o máximo.
+
+Descarte e uso de ingredientes, em andamento em teste_heap.cpp (09/11/2026):
+1. Foi criada removeIngredienteEstragado, que retira do min-heap as unidades com turno de vencimento menor ou igual ao turno atual. O laço usa fpMinimo e termina quando o heap esvazia ou quando o topo ainda não venceu.
+2. Foi criada usaIngredientePerecivel, que lê o código e retira do heap correspondente a unidade mais próxima de vencer. Se não houver unidade disponível, avisa o jogador e retorna false.
+3. Foi criada usaIngredientePerene, que lê o código e retira uma unidade do vetor de contadores. Retorna false em código inválido, sem unidade disponível ou para ingredientes que não precisam de preparo.
+
+Pendente no descarte e no uso: incluir os retornos que faltam em removeIngredienteEstragado e usaIngredientePerecivel, pois hoje o programa quebra ao chamar removeIngredienteEstragado; usar turnoAtual em usaIngredientePerecivel ou garantir o descarte antes do uso, para que uma unidade vencida não seja consumida; ler o código uma única vez e decidir qual função chamar; tratar à parte os ingredientes sem preparo, que têm quantidade infinita; integrar as funções à pilha do hambúrguer e ao jogo; escrever os testes no main de teste_heap.cpp, que ainda está vazio.

@@ -5,6 +5,9 @@ using namespace std;
 
 // farei uma min heap organizada em funcao do turno de vencimento!
 
+// compilar g++ src/teste_heap.cpp src/heap.cpp src/ingredientes.cpp -o src/teste_heap.exe -Wall -std=c++17
+// executar src/teste_heap.exe
+
 int calculaTurnoVencimento(int turnoAtual, const Ingrediente *ing){
     return turnoAtual + ing->validade_turnos;
 }
@@ -116,9 +119,14 @@ bool removeIngredienteEstragado(int turnoAtual, FilaPrioridade* turnosDeVencimen
 
     while(fpMinimo(turnosDeVencimento, &vencimento) and (vencimento <= turnoAtual)){
         fpRemoverMinimo(turnosDeVencimento, &vencimento);
+        cout << "Alimento com o turno de vencimento " << vencimento << " foi removido" << endl;
     }
+    return true;
 }
 
+
+// funcoes de usar ingredientes
+// posteriormente serao interligadas com as funcoes da pilha, que adiciona os ingredientes preparados no hamburguer.
 
 bool usaIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons){
     char codigo;
@@ -128,28 +136,125 @@ bool usaIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPriorid
     const Ingrediente *usado = buscarIngrediente(codigo);
 
     // digitou uma letra invalida
-    if(preparado == nullptr) return false;
+    if(usado == nullptr) return false;
 
-    if (preparado->perecivel == true){
+    if (usado->perecivel == true){
         // se o campo perecivel do ingrediente é true, entao devemos armazenar esse ingrediente numa heap. Temos três ingreidentes pereciveis: carne, ovo frito e bacon.
 
-        switch(preparado->simbolo){
+        switch(usado->simbolo){
             case 'n':
-
+                // para usar, deve existir pelo menos um ingrediente. Se existir, removemos-o da heap.
+                if(fpEstaVazia(carnes)){
+                    cout << "Nao ha carne disponivel!" << endl;
+                    return false;
+                }
+                else{
+                    int vencimento;
+                    fpRemoverMinimo(carnes, &vencimento);
+                }
             break;
 
             case 'o':
+                // para usar, deve existir pelo menos um ingrediente. Se existir, removemos-o da heap.
+                if(fpEstaVazia(ovos)){
+                    cout << "Nao ha ovo disponivel!" << endl;
+                    return false;
+                }
+                else{
+                    int vencimento;
+                    fpRemoverMinimo(ovos, &vencimento);
+                }
 
             break;
 
             case 'b':
-
+                // para usar, deve existir pelo menos um ingrediente. Se existir, removemos-o da heap.
+                if(fpEstaVazia(bacons)){
+                    cout << "Nao ha bacon disponivel!" << endl;
+                    return false;
+                }
+                else{
+                    int vencimento;
+                    fpRemoverMinimo(bacons, &vencimento);
+                }
             break;
         }
+        return true;
     }
+    return false;
 }
 
+bool usaIngredientePerene(int contadorDeQuantidadesDisponiveis[]){
+    char codigo;
+    cout << "Informe o codigo do ingrediente que queres usar:" << endl;
+    cin >> codigo;
 
+    const Ingrediente *usado = buscarIngrediente(codigo);
+
+    // digitou uma letra invalida
+    if(usado == nullptr) return false;
+
+    if(usado->perecivel == false and usado->requer_preparo == true){
+        /* 
+        o vetor possui 4 posicoes:
+            posicao 0: Queijo suíço (s)
+            poiscao 1: Queijo cheddar (q)
+            posicao 2: Cebola (c)
+            posicao 3: Tomate (t)
+        */
+        switch (usado->simbolo){
+            case 's':
+                if(contadorDeQuantidadesDisponiveis[0] > 0){
+                    contadorDeQuantidadesDisponiveis[0]--;
+                }
+                else{
+                    cout << "Nao ha queijo suico disponivel!" << endl;
+                    return false;
+                }
+            break;
+            
+            case 'q':
+                if(contadorDeQuantidadesDisponiveis[1] > 0){
+                    contadorDeQuantidadesDisponiveis[1]--;
+                }
+                else{
+                    cout << "Nao ha queijo cheddar disponivel!" << endl;
+                    return false;
+                }
+            break;
+
+            case 'c':
+                if(contadorDeQuantidadesDisponiveis[2] > 0){
+                    contadorDeQuantidadesDisponiveis[2]--;
+                }
+                else{
+                    cout << "Nao ha cebola disponivel!" << endl;
+                    return false;
+                }
+            break;
+
+            case 't':
+                if(contadorDeQuantidadesDisponiveis[3] > 0){
+                    contadorDeQuantidadesDisponiveis[3]--;
+                }
+                else{
+                    cout << "Nao ha tomate disponivel!" << endl;
+                    return false;
+                }
+            break;
+        }
+
+        return true;
+    }
+
+    return false;
+
+}
+
+// Isso aqui deve ficar no inicio de cada turno do jogo!!
+//removeIngredienteEstragado(turnoAtual, &carnes);
+//removeIngredienteEstragado(turnoAtual, &ovos);
+//removeIngredienteEstragado(turnoAtual, &bacons);
 
 
 
