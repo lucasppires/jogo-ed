@@ -4,6 +4,7 @@
 #include <string>
 #include <cstdio>
 
+
 // TADs
 #include "avl.hpp"
 #include "listacontest.hpp"
@@ -17,6 +18,11 @@
 #include "timer.hpp"
 #include "sortings.hpp"
 #include "jogo.hpp"
+#include "fila.hpp"
+#include "pilha.hpp"
+#include "teste_heap.hpp"
+#include "heap.hpp"
+
 
 
 using std::cout;
@@ -75,7 +81,16 @@ int main(int argc, char *argv[])
 
         if (ESTADO_MENU == NOVO_JOGO)
         {
-            novoJogo(raiz, &cache, ESTADO_MENU, argv);
+            PilhaEnc hamburguer;
+            inicializa(&hamburguer);
+
+            FilaPrioridade carnes, ovos, bacons;
+            fpInicializar(&carnes);
+            fpInicializar(&ovos);
+            fpInicializar(&bacons);
+
+            int quantidades[4] = {0, 0, 0, 0}; // s, q, c, t
+            novoJogo(raiz, &cache, ESTADO_MENU, argv, &hamburguer, &carnes, &ovos, &bacons, 0, quantidades);
             ESTADO_MENU = MENU;
         }
         else if (ESTADO_MENU == COMO_JOGAR)

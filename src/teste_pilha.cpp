@@ -4,7 +4,7 @@
 #include <iostream>
 
 // comando de compilação:
-// g++ teste_pilha.cpp pilha.cpp ingredientes.cpp listaenc.cpp -o teste_pilha -Wall -std=c++17
+// g++ -DTESTE_PILHA_MAIN teste_pilha.cpp pilha.cpp ingredientes.cpp listaenc.cpp -o teste_pilha -Wall -std=c++17
 // .\teste_pilha.exe
 
 
@@ -157,15 +157,18 @@ bool remover_ingrediente(PilhaEnc *p){
     bool resultadoRemocao = desempilha(p, &aux);
 
     
-    if (resultadoRemocao) 
+    if (resultadoRemocao) {
         cout << "Desempilhaste o ingrediente: " << aux.nome << endl;
-    else
+        return true;
+    }
+    else {
         cout << "Nao foi possivel remover o ingrediente. O hamburguer esta vazio." << endl;
         return false;
+    }
 }
 
 
-bool corrige_pedido(PilhaEnc *p, ListaEnc *receita){
+bool corrige_pedido(PilhaEnc *p, const ListaEnc *receita){
     // primeiro vamos colocar os ingredientes da pilha em uma vetor de ingredientes, para depois comparar com a receita, que é uma lista enc.
 
 
@@ -207,7 +210,7 @@ bool corrige_pedido(PilhaEnc *p, ListaEnc *receita){
 }
 
 void imprimir_hamburguer(PilhaEnc *p){
-    Nodo* aux = p->topo;
+    NodoPilha* aux = p->topo;
 
     if (aux == nullptr) {
         cout << "Teu hamburguer esta vazio" << endl;
@@ -229,6 +232,8 @@ void imprimir_hamburguer(PilhaEnc *p){
 
 
 // ia gerou um main pra eu testar
+// so eh compilado com -DTESTE_PILHA_MAIN (senao conflita com o main do teste_menu)
+#ifdef TESTE_PILHA_MAIN
 int main(){
     PilhaEnc p;
     inicializa(&p);
@@ -281,3 +286,4 @@ int main(){
     destruir(&receita);
     return 0;
 }
+#endif // TESTE_PILHA_MAIN

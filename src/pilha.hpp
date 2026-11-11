@@ -8,13 +8,13 @@ struct Produto {
     float preco;
 };
 
-struct Nodo {
-    Nodo   *prox;
+struct NodoPilha {
+    NodoPilha   *prox;
     Ingrediente dado;
 };
 
 struct PilhaEnc {
-    Nodo *topo;
+    NodoPilha *topo;
 };
 
 void inicializa(PilhaEnc *p);

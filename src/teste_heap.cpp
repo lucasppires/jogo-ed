@@ -71,7 +71,7 @@ bool prepararIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPr
 }
 
 // são eles: Queijo suíço (s), Queijo cheddar (q), Cebola (c), Tomate (t)
-bool prepararIngredienteNaoPerecivel(int contadorDeQuantidadesDisponiveis[]){
+bool prepararIngredienteNaoPerecivel(int quantidadesPereciveisDisponiveis[]){
     char codigo;
     cout << "Informe o codigo do ingrediente que queres preparar:" << endl;
     cin >> codigo;
@@ -91,19 +91,19 @@ bool prepararIngredienteNaoPerecivel(int contadorDeQuantidadesDisponiveis[]){
         */
         switch (preparado->simbolo){
             case 's':
-                contadorDeQuantidadesDisponiveis[0]++;
+                quantidadesPereciveisDisponiveis[0]++;
             break;
             
             case 'q':
-                contadorDeQuantidadesDisponiveis[1]++;
+                quantidadesPereciveisDisponiveis[1]++;
             break;
 
             case 'c':
-                contadorDeQuantidadesDisponiveis[2]++;
+                quantidadesPereciveisDisponiveis[2]++;
             break;
 
             case 't':
-                contadorDeQuantidadesDisponiveis[3]++;
+                quantidadesPereciveisDisponiveis[3]++;
             break;
         }
 

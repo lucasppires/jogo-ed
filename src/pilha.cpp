@@ -11,7 +11,7 @@ bool estaVazia(PilhaEnc *p) {
 }
 
 bool empilha(PilhaEnc *p, Ingrediente adicionado) {
-    Nodo *novo = new (std::nothrow) Nodo;
+    NodoPilha *novo = new (std::nothrow) NodoPilha;
     if (novo == nullptr)
         return false;
 
@@ -22,7 +22,7 @@ bool empilha(PilhaEnc *p, Ingrediente adicionado) {
 }
 
 bool desempilha(PilhaEnc *p, Ingrediente *removido) {
-    Nodo *aux;
+    NodoPilha *aux;
 
     if (estaVazia(p)) // underflow
         return false;
@@ -43,7 +43,7 @@ bool topo(PilhaEnc *p, Ingrediente *valor) {
 }
 
 int tamanho(PilhaEnc *p) {
-    Nodo *aux = p->topo;
+    NodoPilha *aux = p->topo;
     int contador = 0;
 
     while (aux != nullptr) {
