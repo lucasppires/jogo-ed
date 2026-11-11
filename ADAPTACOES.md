@@ -165,3 +165,28 @@ Descarte e uso de ingredientes, em andamento em teste_heap.cpp (09/11/2026):
 3. Foi criada usaIngredientePerene, que lê o código e retira uma unidade do vetor de contadores. Retorna false em código inválido, sem unidade disponível ou para ingredientes que não precisam de preparo.
 
 Pendente no descarte e no uso: incluir os retornos que faltam em removeIngredienteEstragado e usaIngredientePerecivel, pois hoje o programa quebra ao chamar removeIngredienteEstragado; usar turnoAtual em usaIngredientePerecivel ou garantir o descarte antes do uso, para que uma unidade vencida não seja consumida; ler o código uma única vez e decidir qual função chamar; tratar à parte os ingredientes sem preparo, que têm quantidade infinita; integrar as funções à pilha do hambúrguer e ao jogo; escrever os testes no main de teste_heap.cpp, que ainda está vazio.
+
+Alterações de 10/11/2026:
+
+TAD Pilha:
+1. A struct Nodo da pilha passou a se chamar NodoPilha, em pilha.hpp, pilha.cpp e teste_pilha.cpp, pois a fila também tem uma struct Nodo e o jogo.cpp inclui os dois cabeçalhos. Isso resolve a pendência de distinguir os dois nós.
+2. A função remover_ingrediente passou a retornar true quando a remoção dá certo. Antes, o else sem chaves fazia a função retornar false sempre.
+
+TAD Hash:
+1. Foi incluído <iostream> em hash.cpp, pois exibirEstatisticasHash usa std::cout.
+
+Organização dos módulos:
+1. O main de teste_heap.cpp foi removido, e o main de teste_pilha.cpp ficou entre #ifdef TESTE_PILHA_MAIN e #endif. Assim, as funções dos dois arquivos podem ser compiladas junto com o teste_menu, que tem o único main do jogo. Para testar a pilha sozinha, compila-se com -DTESTE_PILHA_MAIN.
+2. O comando de compilação do jogo passou a incluir heap.cpp, teste_heap.cpp, teste_pilha.cpp e pilha.cpp.
+
+Integração da pilha e dos heaps ao jogo:
+1. A função novoJogo passou a receber a pilha do hambúrguer (PilhaEnc *), os três heaps de perecíveis (carnes, ovos e bacons), o turno atual e o vetor com as quantidades dos não perecíveis preparados.
+2. O jogo.hpp passou a incluir heap.hpp e pilha.hpp, onde são definidos FilaPrioridade e PilhaEnc, e sua declaração de novoJogo foi atualizada para a nova assinatura.
+3. No teste_menu, cada partida cria e inicializa a pilha, os três heaps e o vetor de quantidades (zerado), e passa seus endereços para novoJogo.
+4. A cada turno, novoJogo chama removeEstragadosHeap, que descarta dos três heaps as unidades vencidas. Em seguida, o jogador escolhe entre adicionar ou remover ingrediente do hambúrguer, enviar o pedido, preparar perecível ou preparar não perecível.
+
+Histórico de partidas:
+1. Foi criada gravaJogoNoHistorico, que acrescenta o nome e o score ao final do arquivo, no mesmo formato do historico.txt (nome em uma linha, score na seguinte). O nome é lido com getline(cin >> ws, nome), para aceitar nomes com espaço, e o score começa em zero.
+2. Na leitura do histórico, o '\r' passou a ser removido do nome antes de copiá-lo para o Jogador. Antes, a remoção acontecia depois da cópia, e o nome guardado continuava com o '\r'.
+
+Pendente: chamar esvaziarPilha depois de cada partida, para liberar os nós do hambúrguer; atualizar o comando de compilação no comentário do teste_menu.cpp; turnoAtual é recebido por valor em novoJogo; gravaJogoNoHistorico ainda grava em um arquivo fixo (historico_teste.txt), não valida o score e não está declarada em jogo.hpp nem é chamada; a opção 1 do turno chama adicionar_ingrediente diretamente, sem passar por usaIngredientePerecivel e usaIngredienteNaoPerecivel, então o estoque dos heaps e do vetor de quantidades ainda não é consumido ao montar o hambúrguer.
