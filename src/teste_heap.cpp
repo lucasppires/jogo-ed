@@ -130,10 +130,7 @@ bool removeIngredienteEstragado(int turnoAtual, FilaPrioridade* turnosDeVencimen
 // funcoes de usar ingredientes
 // posteriormente serao interligadas com as funcoes da pilha, que adiciona os ingredientes preparados no hamburguer.
 
-bool usaIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, PilhaEnc *p){
-    char codigo;
-    cout << "Informe o codigo do ingrediente que queres usar:" << endl;
-    cin >> codigo;
+bool usaIngredientePerecivel(char codigo, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, PilhaEnc *p){
 
     const Ingrediente *usado = buscarIngrediente(codigo);
 
@@ -211,10 +208,7 @@ bool usaIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPriorid
     return false;
 }
 
-bool usaIngredienteNaoPerecivel(int contadorDeQuantidadesDisponiveis[], PilhaEnc *p){
-    char codigo;
-    cout << "Informe o codigo do ingrediente que queres usar:" << endl;
-    cin >> codigo;
+bool usaIngredienteNaoPerecivel(char codigo, int contadorDeQuantidadesDisponiveis[], PilhaEnc *p){
 
     const Ingrediente *usado = buscarIngrediente(codigo);
 

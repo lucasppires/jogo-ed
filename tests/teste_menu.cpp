@@ -30,7 +30,7 @@ using std::cin;
 using std::endl;
 using std::scanf;
 
-// compilar: g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/jogo.cpp src/fila.cpp src/leitura_de_arquivos.cpp src/listacontest.cpp src/listaenc.cpp src/ingredientes.cpp src/avl.cpp src/hash.cpp src/timer.cpp src/sortings.cpp -I src -o tests/teste_menu.exe -Wall -std=c++17
+// compilar: g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/jogo.cpp src/fila.cpp src/leitura_de_arquivos.cpp src/listacontest.cpp src/listaenc.cpp src/ingredientes.cpp src/avl.cpp src/hash.cpp src/timer.cpp src/sortings.cpp src/heap.cpp src/pilha.cpp src/teste_pilha.cpp src/teste_heap.cpp -I src -o tests/teste_menu.exe -Wall -std=c++17
 
 // rodar: .\tests\teste_menu.exe src\pedidos.txt src\historico.txt
 
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    cout << pedidosLidos << " pedidos lidos em " << tempoPedidos << " segundos.\n";
+    // cout << pedidosLidos << " pedidos lidos em " << tempoPedidos << " segundos.\n";
 
     ListaContEst lista_historico;  //crio e inicializo a lista contígua que vai armazenar o histórico de partidas
     inicializar(&lista_historico);

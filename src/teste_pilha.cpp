@@ -109,6 +109,7 @@ inline const Ingrediente BACON{
         aux = TOMATE;
         break;
 
+        // o controle de estoque (heap) eh feito em usaIngredientePerecivel (teste_heap.cpp)
         case 'n':
         aux = CARNE;
         break;

@@ -13,7 +13,7 @@ bool prepararIngredienteNaoPerecivel(int contadorDeQuantidadesDisponiveis[]);
 
 bool removeIngredienteEstragado(int turnoAtual, FilaPrioridade *turnosDeVencimento);
 
-bool usaIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, PilhaEnc *p);
-bool usaIngredienteNaoPerecivel(int contadorDeQuantidadesDisponiveis[], PilhaEnc *p);
+bool usaIngredientePerecivel(char codigo, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, PilhaEnc *p);
+bool usaIngredienteNaoPerecivel(char codigo, int contadorDeQuantidadesDisponiveis[], PilhaEnc *p);
 
 #endif /* TESTE_HEAP_HPP */

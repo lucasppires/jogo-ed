@@ -1,6 +1,8 @@
 #include <iostream>
 #include <new>
 #include "listaenc.hpp"
+#include <iostream>
+using namespace std;
 
 static void imprimirIngrediente(const Ingrediente &ing) {
     std::cout << ing.nome << " - "
@@ -29,6 +31,7 @@ int tamanho(const ListaEnc *lista) {
 void imprimir(const ListaEnc *lista) {
     const NodoReceita *aux = lista->ini;
 
+    cout << "ADICIONE:\n";
     while (aux != nullptr) {
         imprimirIngrediente(aux->dado);
         aux = aux->prox;

@@ -12,8 +12,9 @@
 #include <fstream>
 #include "avl.hpp"
 #include "hash.hpp"
-#include "heap.hpp"    // FilaPrioridade
-#include "pilha.hpp"   // PilhaEnc
+#include "heap.hpp"
+#include "pilha.hpp"
+#include "teste_pilha.hpp"
 
 
 using std::cout;
@@ -177,7 +178,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
 
         removeEstragadosHeap(turnoAtual, carnes, ovos, bacons);
 
-        printf("teste");
+        printf("\n");
 
         if (atual != nullptr) // Se houver clientes na fila
         {
@@ -203,13 +204,25 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
             cin >> opcao;
 
             switch (opcao) {
-                case 1:
-                    char adiciondo;
+                case 1: {
+                    char adicionado;
                     cout << "Informe o codigo do ingrediente que queres adicionar:" << endl;
-                    cin >> adiciondo;
+                    cin >> adicionado;
 
-                    adicionar_ingrediente(p, adiciondo);
+                    const Ingrediente *ing = buscarIngrediente(adicionado);
+                    if (ing == nullptr) {
+                        cout << "Ingrediente invalido" << endl;
+                    }
+                    else if (ing->perecivel) {
+                        // carne, ovo, bacon: so adiciona se tiver na heap (e remove de la)
+                        usaIngredientePerecivel(adicionado, carnes, ovos, bacons, p);
+                    }
+                    else {
+                        // resto: infinitos ou com contador de estoque
+                        usaIngredienteNaoPerecivel(adicionado, quantidadesPereciveisDisponiveis, p);
+                    }
                     break;
+                }
 
                 case 2:
                     remover_ingrediente(p);
