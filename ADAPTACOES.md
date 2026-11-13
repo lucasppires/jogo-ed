@@ -190,3 +190,15 @@ Histórico de partidas:
 2. Na leitura do histórico, o '\r' passou a ser removido do nome antes de copiá-lo para o Jogador. Antes, a remoção acontecia depois da cópia, e o nome guardado continuava com o '\r'.
 
 Pendente: chamar esvaziarPilha depois de cada partida, para liberar os nós do hambúrguer; atualizar o comando de compilação no comentário do teste_menu.cpp; turnoAtual é recebido por valor em novoJogo; gravaJogoNoHistorico ainda grava em um arquivo fixo (historico_teste.txt), não valida o score e não está declarada em jogo.hpp nem é chamada; a opção 1 do turno chama adicionar_ingrediente diretamente, sem passar por usaIngredientePerecivel e usaIngredienteNaoPerecivel, então o estoque dos heaps e do vetor de quantidades ainda não é consumido ao montar o hambúrguer.
+
+Alterações nos TADs e no estoque (13/11/2026):
+
+TAD Lista Enc:
+1. A função `imprimir` passou a mostrar a receita em colunas, com larguras compartilhadas com `imprimirIngrediente` via `std::setw`. As colunas mostram nome, código, perecibilidade, necessidade de preparo e validade em turnos.
+2. A função `imprimirIngrediente` mostra `Sim` e `Nao` para os campos booleanos e `-` quando a validade é zero.
+
+Integração do estoque com o heap e a pilha:
+1. A opção de adicionar ingrediente passou a ler o código uma vez e encaminhá-lo a `usaIngredientePerecivel` ou `usaIngredienteNaoPerecivel`. As duas funções agora recebem o código por parâmetro.
+2. O estoque é baixado depois que o ingrediente entra na pilha. Para perecíveis, retira-se do heap a unidade com o menor turno de vencimento. Para não perecíveis que exigem preparo, reduz-se o contador correspondente. Ingredientes ilimitados são adicionados diretamente.
+3. A opção Consultar estoque usa `mostrarEstoque` e `mostrarPerecivel` para exibir quantidades e, em cada heap não vazio, quanto falta para o próximo vencimento (`turnoVencimento - turnoAtual`). A leitura usa `fpMinimo` e mantém a unidade no heap.
+4. A consulta compensa o avanço do turno e o desconto de paciência feitos pelo laço para voltar ao menu no mesmo turno.

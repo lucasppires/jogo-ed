@@ -120,6 +120,43 @@ void gravaJogoNoHistorico(){
 
 }
 
+static void mostrarPerecivel(const char *nome,
+                             const FilaPrioridade *estoque,
+                             int turnoAtual)
+{
+    std::cout << nome << ": " << estoque->tamanho;
+
+    int turnoVencimento;
+    if (fpMinimo(estoque, &turnoVencimento))
+    {
+        int turnosRestantes = turnoVencimento - turnoAtual;
+        std::cout << " | proximo vencimento em "
+                  << turnosRestantes << " turno(s)";
+    }
+
+    std::cout << '\n';
+}
+
+static void mostrarEstoque(const FilaPrioridade *carnes,
+                           const FilaPrioridade *ovos,
+                           const FilaPrioridade *bacons,
+                           const int quantidadesNaoPereciveis[],
+                           int turnoAtual)
+{
+    std::cout << "\nESTOQUE - Turno " << turnoAtual << '\n';
+
+    mostrarPerecivel("Carne", carnes, turnoAtual);
+    mostrarPerecivel("Ovo frito", ovos, turnoAtual);
+    mostrarPerecivel("Bacon", bacons, turnoAtual);
+
+    std::cout << "Queijo suico: " << quantidadesNaoPereciveis[0] << '\n'
+              << "Queijo cheddar: " << quantidadesNaoPereciveis[1] << '\n'
+              << "Cebola: " << quantidadesNaoPereciveis[2] << '\n'
+              << "Tomate: " << quantidadesNaoPereciveis[3] << '\n'
+              << "Ilimitados: Pao de cima, Ketchup, "
+              << "Mostarda, Picles e Alface\n";
+}
+
 void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], PilhaEnc *p, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, int turnoAtual, int quantidadesPereciveisDisponiveis[]) {
     estado_menu = MENU;
 
@@ -150,7 +187,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
         }
 
         // vetor de numeros aleatorios, sorteamos uma paciencia para cada cliente, mas os valores podem se repetir
-        pacienciaInicial[i] = numero_aleatorio(9, 15);
+        pacienciaInicial[i] = numero_aleatorio(9, 15); //talvez criar algum algortimo para determinar a paciencia de forma mais adequada!!
 
         // criamos o cliente
         Cliente cliente_atual = criarCliente(i+1, pacienciaInicial[i], pedidoAtual);
@@ -174,15 +211,28 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
         Cliente *atual = clienteDaFrente(&clientes);
 
         turnoAtual++;
-        cout << "\nTurno " << turnoAtual << "\n";
+
+        if (atual->paciencia_restante == 0)
+        {
+            //implementar game over
+        }
+
+        cout << "\nTurno " << turnoAtual;
+
+        if (atual->paciencia_restante == 1)
+        {
+            cout << " (ultimo!)\n";
+        }
+        else
+        {
+            cout << "\n";
+        }
 
         removeEstragadosHeap(turnoAtual, carnes, ovos, bacons);
 
-        printf("\n");
-
         if (atual != nullptr) // Se houver clientes na fila
         {
-            const Pedido *pedidoAtual = atual->pedido_cliente;
+            const Pedido *pedidoAtual = atual->pedido_cliente; //atribui o pedido do cliente ao pedido atual
 
             if (pedidoAtual == nullptr)
             {
@@ -192,8 +242,10 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
             }
 
             cout << "\nCliente: " << atual->id << '\n';
-            cout << "Paciencia: "
+            cout << "Paciencia restante: "
                 << atual->paciencia_restante << " turnos.\n";
+
+            atual->paciencia_restante = atual->paciencia_restante - 1;  
 
             cout << "Pedido: " << pedidoAtual->cod << '\n';
             imprimir(&pedidoAtual->receita);
@@ -205,7 +257,8 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                     << "2 - Remover ingrediente\n"
                     << "3 - Enviar pedido\n"
                     << "4 - Preparar ingrediente perecivel\n"
-                    << "5 - Preparar ingrediente nao perecivel\n";
+                    << "5 - Preparar ingrediente nao perecivel\n"
+                    << "6 - Consultar estoque\n";
             cin >> opcao;
 
             switch (opcao) {
@@ -264,8 +317,14 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                     prepararIngredienteNaoPerecivel(quantidadesPereciveisDisponiveis);
                 break;
 
+                case 6:
+                    mostrarEstoque(carnes, ovos, bacons, quantidadesPereciveisDisponiveis, turnoAtual);
+                    turnoAtual--;  //como consultar estoque nao gasta um turno, e em todo laço é acrescentado 1 ao turno, diminuimos 1 aqui para corrigir
+                    atual->paciencia_restante++; //mesma coisa do turno
+                break;
+
                 default:
-                    cout << "Opcao invalida" << endl;
+                    cout << "Opcao invalida" << endl;   //as vezes da um bug que faz o laço ficar em loop quando apertamos alguma opcao invalida
                 break;
 
             }

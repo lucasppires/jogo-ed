@@ -63,7 +63,7 @@ inline const Ingrediente CARNE{
 };
 
 inline const Ingrediente OVO_FRITO{
-    "Ovo frito", 'o', true, true, 2, BRANCO
+    "Ovo frito", 'o', true, true, 3, BRANCO
 };
 
 inline const Ingrediente BACON{
