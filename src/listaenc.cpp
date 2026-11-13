@@ -2,15 +2,27 @@
 #include <new>
 #include "listaenc.hpp"
 #include <iostream>
+#include <iomanip>
 using namespace std;
 
-static void imprimirIngrediente(const Ingrediente &ing) {
-    std::cout << ing.nome << " - "
-              << ing.simbolo << " - "
-              << ing.perecivel << " - "
-              << ing.requer_preparo << " - "
-              << ing.validade_turnos << '\n';
+namespace 
+{
+constexpr int larguraIngrediente = 22;
+constexpr int larguraSimbolo = 10;
+constexpr int larguraPerecivel = 12;
+constexpr int larguraPreparo = 18;
 }
+
+static void imprimirIngrediente(const Ingrediente &ing)
+{
+    std::cout << std::setw(larguraIngrediente) << ing.nome
+              << std::setw(larguraSimbolo) << ing.simbolo
+              << std::setw(larguraPerecivel) << (ing.perecivel ? "Sim" : "Nao") //operador ternario, se ing.perecivel for true, imprime "Sim", senao imprime "Nao"
+              << std::setw(larguraPreparo) << (ing.requer_preparo ? "Sim" : "Nao")
+              << (ing.validade_turnos ? std::to_string(ing.validade_turnos) : "-") << '\n';
+}
+
+
 
 void inicializar(ListaEnc *lista) {
     lista->ini = nullptr;
@@ -28,16 +40,28 @@ int tamanho(const ListaEnc *lista) {
     return contador;
 }
 
-void imprimir(const ListaEnc *lista) {
+void imprimir(const ListaEnc *lista)
+{
     const NodoReceita *aux = lista->ini;
+    const auto formatoAnterior = std::cout.flags();
 
-    cout << "ADICIONE:\n";
-    while (aux != nullptr) {
+    std::cout << "ADICIONE:\n\n"
+              << std::left
+              << std::setw(larguraIngrediente) << "Ingrediente"
+              << std::setw(larguraSimbolo) << "Codigo"
+              << std::setw(larguraPerecivel) << "Perecivel?"
+              << std::setw(larguraPreparo) << "Requer preparo?"
+              << "Validade (turnos)\n\n";
+
+    while (aux != nullptr)
+    {
         imprimirIngrediente(aux->dado);
         aux = aux->prox;
     }
-}
 
+    std::cout << '\n';
+    std::cout.flags(formatoAnterior);
+}
 Ingrediente buscar(const ListaEnc *lista, char simbolo) {
     const NodoReceita *aux = lista->ini;
 

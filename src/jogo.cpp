@@ -200,13 +200,18 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
 
             // A montagem do hamburguer sera implementada aqui.
             int opcao;
-            cout << "Informe a opcao desejada: (1 - adicionar ingrediente ao hamburguer,2 - remover ingrediente, 3 - enviar pedido, 4 - preparar ingrediente perecivel, 5 - preparar ingrediente nao perecivel): ";
+            cout << "Informe a opcao desejada:\n"
+                    << "1 - Adicionar ingrediente ao hamburguer\n"
+                    << "2 - Remover ingrediente\n"
+                    << "3 - Enviar pedido\n"
+                    << "4 - Preparar ingrediente perecivel\n"
+                    << "5 - Preparar ingrediente nao perecivel\n";
             cin >> opcao;
 
             switch (opcao) {
                 case 1: {
                     char adicionado;
-                    cout << "Informe o codigo do ingrediente que queres adicionar:" << endl;
+                    cout << "Informe o codigo do ingrediente que queres adicionar: " << endl;
                     cin >> adicionado;
 
                     const Ingrediente *ing = buscarIngrediente(adicionado);

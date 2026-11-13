@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     }
 
     TabelaEnc cache; 
-    encInicializar(&cache, 101); //cria e inicializa a tabela hash que vai armazenar os pedidos mais recentes
+    encInicializar(&cache, 101); //cria e inicializa a tabela hash que vai armazenar os pedidos sorteados
 
     int ESTADO_MENU = MENU; //variavel que armazena o estado atual do menu, inicializado como MENU
 
