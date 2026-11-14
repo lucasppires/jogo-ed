@@ -202,3 +202,29 @@ Integração do estoque com o heap e a pilha:
 2. O estoque é baixado depois que o ingrediente entra na pilha. Para perecíveis, retira-se do heap a unidade com o menor turno de vencimento. Para não perecíveis que exigem preparo, reduz-se o contador correspondente. Ingredientes ilimitados são adicionados diretamente.
 3. A opção Consultar estoque usa `mostrarEstoque` e `mostrarPerecivel` para exibir quantidades e, em cada heap não vazio, quanto falta para o próximo vencimento (`turnoVencimento - turnoAtual`). A leitura usa `fpMinimo` e mantém a unidade no heap.
 4. A consulta compensa o avanço do turno e o desconto de paciência feitos pelo laço para voltar ao menu no mesmo turno.
+
+Alterações de 14/11/2026:
+
+Medições e medicoes.log:
+1. Foi criado o módulo medicoes.hpp/.cpp, com a struct Metricas (carregamento da AVL e do histórico, buscas na AVL, hash e ordenação) e as funções iniciaLog, geraRelatorio, registraOrdenacao e zeraMetricasPartida. O medicoes.hpp tem include guard e declara extern Metricas met, definida no teste_menu.cpp.
+2. iniciaLog abre o medicoes.log sem std::ios::app, recriando o arquivo a cada execução. As demais gravações usam std::ios::app.
+3. geraRelatorio monta o Relatório de Desempenho uma vez e envia o mesmo texto para a tela e para o log, ao final de novoJogo. Média de comparações, fator de carga e taxa de acerto valem zero quando o divisor é zero.
+
+TAD AVL:
+1. reequilibrar passou a receber int *rotacoes, com padrão nullptr: soma 1 nas rotações simples (LL e RR) e 2 nas duplas (LR e RL). avlRemover continua chamando sem contador, então só as rotações da inserção são contadas.
+2. avlInserir passou a receber int &rotacoes e repassá-lo nas chamadas recursivas e em reequilibrar. O carregamento passa met.rotacoes.
+3. buscarPorCodigo passou a receber int &comparacoes, somando 1 a cada nó visitado.
+4. A altura registrada é avlAltura(raiz) + 1, pois avlAltura usa -1 para árvore vazia e a especificação usa 0.
+
+Jogo e hash:
+1. obterPedido e sortearPedido passaram a receber Metricas &met. No miss da hash, obterPedido cronometra buscarPorCodigo e acumula totalBuscas, totalComparacoes e tempoBuscas.
+2. exibirEstatisticasHash passou a copiar m, n, hits, misses e colisoes do cache para a Metricas.
+3. O jogo.hpp ganhou a declaração antecipada struct ListaContEst;, pois o listacontest.hpp inclui o jogo.hpp e incluir o contrário formaria um ciclo.
+
+Histórico:
+1. gravaJogoNoHistorico passou a receber a lista_historico e, além de gravar no arquivo, insere o novo Jogador no fim da lista. novoJogo recebe a lista do teste_menu e a repassa.
+2. Foi criada medirOrdenacaoHistorico em funcoes_menu.cpp, chamada logo após iniciaLog. Ela copia a lista para um vetor fora do intervalo cronometrado, ordena com mergeSortAdaptado e guarda tamanho e tempo na Metricas.
+3. historicov3 também atualiza tamanhoOrdenacao e tempoOrdenacao a cada acesso ao Histórico, e o Relatório de Desempenho mostra a ordenação abaixo de "Total de colisoes".
+4. O comando de compilação passou a incluir src/medicoes.cpp.
+
+Pendente: gravaJogoNoHistorico ainda grava em "src/historico.txt", e não no arquivo recebido em argv[2]; zeraMetricasPartida não é chamada no início de cada partida, e as estatísticas da hash vêm do cache reutilizado entre partidas; medir a ordenação com pelo menos 3 tamanhos de histórico para o relatório.
