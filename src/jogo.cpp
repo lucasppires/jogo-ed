@@ -104,18 +104,14 @@ int numero_aleatorio(int minimo, int maximo)
 }
 
 // teremos que trocar o nome pra argv[2]
-void gravaJogoNoHistorico(){
-    ofstream arq("historico_teste.txt", ios::app);
+void gravaJogoNoHistorico(int score){
+    ofstream arq("src/historico.txt", ios::app);
     if (!arq.is_open()) return;
 
     string nome;
-    int score = 0;
 
     cout << "Nome:";
     getline(cin >> ws, nome);   // ws descarta o '\n' que sobrou de leituras anteriores
-
-    cout << "Score:";
-    cin >> score;
 
     arq << nome << '\n';                // linha 1: nome
     arq << score << '\n';               // linha 2: score
@@ -382,6 +378,9 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
 
     pula_linha(1);
     cout << cores::VERDE_CLARO << "Sua pontuacao: " << player->score << cores::RESET;
+
+    cout << '\n';
+    gravaJogoNoHistorico(player->score);
 
     exibirEstatisticasHash(cache);
     destruir(&clientes);
