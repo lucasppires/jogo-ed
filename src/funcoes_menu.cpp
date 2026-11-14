@@ -43,9 +43,27 @@ void imprimir_menu(int& estado_menu)
             imprime_linha(44);
             pula_linha(2);
 
-            cout << "Digite a opcao desejada: ";
+            
+    std::string opcao;
 
-            cin >> estado_menu;
+    while (true) 
+    {  
+        cout << "Digite a opcao desejada: ";
+
+        if (!(cin >> opcao)) {
+            estado_menu = 4; // Sair se a entrada for encerrada.
+            break;
+        }
+
+        if (opcao.size() == 1 && opcao[0] >= '1' && opcao[0] <= '4') {
+            estado_menu = opcao[0] - '0';
+            break;
+        }
+
+        cout << "Opcao invalida! Escolha de 1 a 4.\n";  
+    }
+            
+            
 }
 
 //destroi a avl e a lista contígua de histórico, né? 

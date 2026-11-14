@@ -128,12 +128,12 @@ void encDestruir(TabelaEnc *t) {
 
 void exibirEstatisticasHash(const TabelaEnc *cache)
 {
-    std::cout << "Estatísticas da tabela hash:\n";
+    std::cout << "Estatisticas da tabela hash:\n";
     std::cout << "Tamanho da tabela: " << cache->m << "\n";
-    std::cout << "Número de elementos: " << cache->n << "\n";
+    std::cout << "Numero de elementos: " << cache->n << "\n";
     std::cout << "Hits: " << cache->hits << "\n";
     std::cout << "Misses: " << cache->misses << "\n";
-    std::cout << "Colisões: " << cache->colisoes << "\n";
+    std::cout << "Colisoes: " << cache->colisoes << "\n";
     std::cout << "Fator de carga (n/m): " << static_cast<double>(cache->n) / cache->m << "\n"; //static_cast é pq o n e o m sao inteiros, entao transformamos o n em double para a divisao poder ter valores decimais
     
    double totalBuscas = static_cast<double>(cache->hits) + static_cast<double>(cache->misses);

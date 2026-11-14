@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "jogo.hpp"
 #include "fila.hpp"
 #include "avl.hpp"
@@ -259,7 +260,24 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                     << "4 - Preparar ingrediente perecivel\n"
                     << "5 - Preparar ingrediente nao perecivel\n"
                     << "6 - Consultar estoque\n";
-            cin >> opcao;
+            
+            std::string entrada;
+
+            while (true)  //equivale ao cin >> opcao, mas o cin da erro se for digitado um caractere no lugar de um int
+            {
+                if (!(cin >> entrada)) {
+                    esvaziarPilha(p);
+                    destruir(&clientes);
+                    return;
+                }
+
+                if (entrada.size() == 1 && entrada[0] >= '1' && entrada[0] <= '6') {
+                    opcao = entrada[0] - '0';
+                    break;
+                }
+
+                cout << "Opcao invalida! Escolha de 1 a 6: ";
+            }
 
             switch (opcao) {
                 case 1: {
