@@ -16,6 +16,10 @@
 #include "heap.hpp"
 #include "pilha.hpp"
 #include "teste_pilha.hpp"
+#include "medicoes.hpp"
+#include "timer.hpp"
+#include "sortings.hpp"
+#include "listaContEst.hpp"
 
 
 using std::cout;
@@ -39,19 +43,25 @@ void removeEstragadosHeap(int turnoAtual, FilaPrioridade *carnes, FilaPrioridade
 
 
 
-const Pedido *obterPedido(NodoAvl *raiz, TabelaEnc *cache, int codigo) 
+const Pedido *obterPedido(NodoAvl *raiz, TabelaEnc *cache, int codigo, Metricas &met) 
 {
     // Primeiro procura na hash.
     const Pedido *pedido = encBuscar(cache, codigo);
 
-    if (pedido != nullptr)
-        return pedido;
+    if (pedido != nullptr) return pedido;
+
+    int comparacoes = 0;
+    Timer t;
+    timer_iniciar(&t);
 
     // Se nao encontrou na hash, procura na AVL.
-    NodoAvl *no = buscarPorCodigo(raiz, codigo);
+    NodoAvl *no = buscarPorCodigo(raiz, codigo, comparacoes);
 
-    if (no == nullptr)
-        return nullptr;
+    met.tempoBuscas += timer_parar(&t);
+    met.totalBuscas++;
+    met.totalComparacoes += comparacoes;
+
+    if (no == nullptr) return nullptr;
 
     // Guarda a referencia no cache para consultas futuras.
     encInserir(cache, codigo, &no->dado);
@@ -60,7 +70,7 @@ const Pedido *obterPedido(NodoAvl *raiz, TabelaEnc *cache, int codigo)
 }
 
 // const pq o pedido sorteado nao deve ser modificado
-const Pedido *sortearPedido(NodoAvl *raiz, TabelaEnc *cache)
+const Pedido *sortearPedido(NodoAvl *raiz, TabelaEnc *cache, Metricas &met)
 {
     if (raiz == nullptr || cache == nullptr || cache->m <= 0)
         return nullptr;
@@ -82,7 +92,7 @@ const Pedido *sortearPedido(NodoAvl *raiz, TabelaEnc *cache)
         int codigo_sorteado = numero_aleatorio(menor->dado.cod, maior->dado.cod);
 
         // Consulta a hash e busca na AVL somente no miss.
-        pedido = obterPedido(raiz, cache, codigo_sorteado);
+        pedido = obterPedido(raiz, cache, codigo_sorteado, met);
 
         // Repete se o codigo sorteado nao existir.
     } while (pedido == nullptr);
@@ -104,7 +114,7 @@ int numero_aleatorio(int minimo, int maximo)
 }
 
 // teremos que trocar o nome pra argv[2]
-void gravaJogoNoHistorico(int score){
+void gravaJogoNoHistorico(int score, ListaContEst *lista_historico){
     ofstream arq("src/historico.txt", ios::app);
     if (!arq.is_open()) return;
 
@@ -115,6 +125,11 @@ void gravaJogoNoHistorico(int score){
 
     arq << nome << '\n';                // linha 1: nome
     arq << score << '\n';               // linha 2: score
+
+    Jogador novo;
+    novo.nome_jogador = nome;      // ajuste aos campos reais do seu struct Jogador
+    novo.score = score;
+    inserir(lista_historico, novo, lista_historico->tamanho);   // posição = fim
 
 }
 
@@ -155,7 +170,7 @@ static void mostrarEstoque(const FilaPrioridade *carnes,
               << "Mostarda, Picles e Alface\n";
 }
 
-void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], PilhaEnc *p, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, int turnoAtual, int quantidadesPereciveisDisponiveis[], Jogador *player) {
+void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], PilhaEnc *p, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, int turnoAtual, int quantidadesPereciveisDisponiveis[], Jogador *player, Metricas &met, ListaContEst *lista_historico) {
     estado_menu = MENU;
 
     if (raiz == nullptr)
@@ -175,7 +190,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
     for (int i = 0; i < numeroClientes; i++)
     {
         // sorteia um pedido e guarda na variavel
-        const Pedido *pedidoAtual = sortearPedido(raiz, cache);
+        const Pedido *pedidoAtual = sortearPedido(raiz, cache, met);
 
         if (pedidoAtual == nullptr) // Se não houver pedidos disponíveis
         {
@@ -380,9 +395,9 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
     cout << cores::VERDE_CLARO << "Sua pontuacao: " << player->score << cores::RESET;
 
     cout << '\n';
-    gravaJogoNoHistorico(player->score);
-
-    exibirEstatisticasHash(cache);
+    gravaJogoNoHistorico(player->score, lista_historico);
+    exibirEstatisticasHash(cache, &met);
+    geraRelatorio("medicoes.log", met);
     destruir(&clientes);
 
 }

@@ -7,7 +7,8 @@
 int carregarPedidosAVL(
     const char *arquivo,
     NodoAvl **raiz,
-    double *tempo
+    double *tempo,
+    Metricas &met
 );
 
 int confere_argc_e_argv(int argc, char *argv[]);
@@ -21,7 +22,5 @@ int carregarPartidasListaContEst(
 );
 
 bool montarReceita(const std::string &texto, ListaEnc *lista);
-
-
 
 #endif

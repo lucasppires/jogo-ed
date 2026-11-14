@@ -8,6 +8,7 @@
 #define HASH_HPP
 
 #include "pedido.hpp"
+#include "medicoes.hpp"
 
 /* ================================================================
  * Funções de hash (aula 19)
@@ -57,7 +58,7 @@ const Pedido *encBuscar(TabelaEnc *t, int chave);
 bool encRemover(TabelaEnc *t, int chave);
 void encDestruir(TabelaEnc *t);
 
-void exibirEstatisticasHash(const TabelaEnc *cache);
+void exibirEstatisticasHash(const TabelaEnc *cache, Metricas *met);
 
 
 /* ================================================================
@@ -141,4 +142,4 @@ int  dblBuscar(const TabelaDouble *t, int chave);
 bool dblRemover(TabelaDouble *t, int chave);
 void dblDestruir(TabelaDouble *t);
 
-#endif /* HASH_HPP */
+#endif/* HASH_HPP */

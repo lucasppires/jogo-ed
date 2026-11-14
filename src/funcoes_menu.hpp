@@ -31,4 +31,6 @@ void historicov2(int& estado_menu, ListaContEst *lista_historico);
 
 void historicov3(int& estado_menu, ListaContEst *lista_historico);
 
+void medirOrdenacaoHistorico(ListaContEst *lista_historico, Metricas &met); 
+
 #endif

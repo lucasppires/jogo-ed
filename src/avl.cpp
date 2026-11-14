@@ -90,26 +90,32 @@ static NodoAvl *rotEsq(NodoAvl *x) {
 /* ------------------------------------------------------------------ */
 /*  Reequilibrio: detecta o caso e aplica a rotacao adequada           */
 /* ------------------------------------------------------------------ */
-static NodoAvl *reequilibrar(NodoAvl *raiz) {
+static NodoAvl *reequilibrar(NodoAvl *raiz, int *rotacoes = nullptr) {
     atualizarAltura(raiz);
     int fb = avlFb(raiz);
 
     /* Caso LL: pesado a esquerda, filho esquerdo tambem pesado a esq */
-    if (fb > 1 && avlFb(raiz->esq) >= 0)
+    if (fb > 1 && avlFb(raiz->esq) >= 0){
+        if (rotacoes) (*rotacoes)++; 
         return rotDir(raiz);
+    }
 
     /* Caso LR: pesado a esquerda, filho esquerdo pesado a dir */
     if (fb > 1 && avlFb(raiz->esq) < 0) {
+        if (rotacoes) (*rotacoes) += 2;
         raiz->esq = rotEsq(raiz->esq);
         return rotDir(raiz);
     }
 
     /* Caso RR: pesado a direita, filho direito tambem pesado a dir */
-    if (fb < -1 && avlFb(raiz->dir) <= 0)
+    if (fb < -1 && avlFb(raiz->dir) <= 0) {
+        if (rotacoes) (*rotacoes)++;
         return rotEsq(raiz);
+    }
 
     /* Caso RL: pesado a direita, filho direito pesado a esq */
     if (fb < -1 && avlFb(raiz->dir) > 0) {
+        if (rotacoes) (*rotacoes) += 2;
         raiz->dir = rotDir(raiz->dir);
         return rotEsq(raiz);
     }
@@ -127,23 +133,25 @@ NodoAvl *avlBuscar(NodoAvl *raiz, Pedido dado) {
     return raiz;
 }
 
-NodoAvl *buscarPorCodigo(NodoAvl *raiz, int codigo)
+NodoAvl *buscarPorCodigo(NodoAvl *raiz, int codigo, int &comparacoes)
  {
     if (!raiz) return nullptr;
-    if (codigo < raiz->dado.cod) return buscarPorCodigo(raiz->esq, codigo);
-    if (codigo > raiz->dado.cod) return buscarPorCodigo(raiz->dir, codigo);
+    comparacoes++;
+    
+    if (codigo < raiz->dado.cod) return buscarPorCodigo(raiz->esq, codigo, comparacoes);
+    if (codigo > raiz->dado.cod) return buscarPorCodigo(raiz->dir, codigo, comparacoes);
     return raiz;
 }
 
-NodoAvl *avlInserir(NodoAvl *raiz, Pedido dado) {
+NodoAvl *avlInserir(NodoAvl *raiz, Pedido dado, int &rotacoes) {
     if (!raiz) return criarNodo(dado);
     if (dado.cod < raiz->dado.cod)
-        raiz->esq = avlInserir(raiz->esq, dado);
+        raiz->esq = avlInserir(raiz->esq, dado, rotacoes);
     else if (dado.cod > raiz->dado.cod)
-        raiz->dir = avlInserir(raiz->dir, dado);
+        raiz->dir = avlInserir(raiz->dir, dado, rotacoes);
     else
         return raiz; /* duplicatas ignoradas */
-    return reequilibrar(raiz);
+    return reequilibrar(raiz, &rotacoes);
 }
 
 static NodoAvl *minimo(NodoAvl *n) {

@@ -9,6 +9,8 @@
 #include "hash.hpp"
 #include "funcoes_menu.hpp"
 #include "cores.hpp"
+#include "medicoes.hpp"
+
 
 /* ================================================================
  * Funções de hash
@@ -129,7 +131,7 @@ void encDestruir(TabelaEnc *t) {
 }
 
 
-void exibirEstatisticasHash(const TabelaEnc *cache)
+void exibirEstatisticasHash(const TabelaEnc *cache, Metricas *met)
 {
     pula_linha(2);
     std::cout << cores::AMARELO << "Estatisticas da tabela hash:\n" << cores::RESET;
@@ -156,6 +158,14 @@ void exibirEstatisticasHash(const TabelaEnc *cache)
     std::cout << "Taxa de acerto: " << taxaAcerto << "%\n";
 
     pula_linha(1);
+
+
+    met->tamanhoHash = cache->m;
+    met->ocupadasHash = cache->n;
+    met->hits = cache->hits;
+    met->misses = cache->misses;
+    met->colisoes = cache->colisoes;
+
 }
 
 /* ================================================================

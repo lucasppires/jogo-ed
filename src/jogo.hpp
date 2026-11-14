@@ -14,10 +14,12 @@ struct Jogador {
     int score;
 };
 
-void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], PilhaEnc *p, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, int turnoAtual, int quantidadesPereciveisDisponiveis[], Jogador *player);
-const Pedido *obterPedido(NodoAvl *raiz, TabelaEnc *cache, int codigo);
+struct ListaContEst;   // declaração antecipada: definida em listacontest.hpp
 
-const Pedido *sortearPedido(NodoAvl *raiz, TabelaEnc *cache);
+void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], PilhaEnc *p, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, int turnoAtual, int quantidadesPereciveisDisponiveis[], Jogador *player, Metricas &met, ListaContEst *lista_historico);
+const Pedido *obterPedido(NodoAvl *raiz, TabelaEnc *cache, int codigo, Metricas &met);
+
+const Pedido *sortearPedido(NodoAvl *raiz, TabelaEnc *cache, Metricas &met);
 
 int numero_aleatorio(int minimo, int maximo);
 

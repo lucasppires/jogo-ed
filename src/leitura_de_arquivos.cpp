@@ -16,10 +16,7 @@ using std::string;
 using std::cout;
 using std::cin;
 
-int carregarPedidosAVL(
-    const char *arquivo,
-    NodoAvl **raiz,
-    double *tempo)
+int carregarPedidosAVL(const char *arquivo, NodoAvl **raiz, double *tempo, Metricas &met)
 {
 
     std::ifstream arq(arquivo);
@@ -58,7 +55,7 @@ int carregarPedidosAVL(
             return -1;
         }
 
-        *raiz = avlInserir(*raiz, pedido);  //insere o pedido na árvore AVL
+        *raiz = avlInserir(*raiz, pedido, met.rotacoes);  //insere o pedido na árvore AVL
 
         qtePedidosLidos++;
     }

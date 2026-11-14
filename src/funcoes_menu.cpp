@@ -11,6 +11,7 @@
 #include "timer.hpp"
 #include <random>
 #include <stdexcept>
+#include "medicoes.hpp"
 using std::cout;
 using std::cin;
 using std::scanf;
@@ -215,7 +216,8 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico)
 
     double tempo = mergeSortAdaptado(vetor, tamanhoVetor);
 
-
+    met.tamanhoOrdenacao = tamanhoVetor;   // atualiza o que sai no Relatorio de Desempenho
+    met.tempoOrdenacao = tempo;
 
     
     if (lista_historico->tamanho < 10) 
@@ -227,6 +229,8 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico)
        imprime_dez_primeiros(vetor); //se tiver 10 ou mais, imprimimos apenas os top 10
     }
 
+
+    printf("\nOrdenou %d jogadores.", tamanhoVetor);
     printf("\nTempo para ordenar (Merge sort): %fs\n", tempo);
 
     delete[] vetor;
@@ -246,4 +250,20 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico)
     {
         estado_menu = MENU;
     }
+}
+
+// funcao pra por no medicoes.log infos sobre a ordenacao do historico.
+void medirOrdenacaoHistorico(ListaContEst *lista_historico, Metricas &met)
+{
+    if (lista_historico->tamanho == 0) return;
+
+    Jogador *vetor = new Jogador[lista_historico->tamanho];
+    int tamanhoVetor = lista_para_vetor(lista_historico, vetor);   // cópia, fora do tempo
+
+    double tempo = mergeSortAdaptado(vetor, tamanhoVetor);         // só a ordenação
+
+    met.tamanhoOrdenacao = tamanhoVetor;
+    met.tempoOrdenacao = tempo;
+
+    delete[] vetor;
 }

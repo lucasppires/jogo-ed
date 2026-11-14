@@ -22,6 +22,7 @@
 #include "pilha.hpp"
 #include "teste_heap.hpp"
 #include "heap.hpp"
+#include "medicoes.hpp"
 
 
 
@@ -30,9 +31,11 @@ using std::cin;
 using std::endl;
 using std::scanf;
 
-// compilar: g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/jogo.cpp src/fila.cpp src/leitura_de_arquivos.cpp src/listacontest.cpp src/listaenc.cpp src/ingredientes.cpp src/avl.cpp src/hash.cpp src/timer.cpp src/sortings.cpp src/heap.cpp src/pilha.cpp src/teste_pilha.cpp src/teste_heap.cpp -I src -o tests/teste_menu.exe -Wall -std=c++17
+// compilar:g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/jogo.cpp src/fila.cpp src/leitura_de_arquivos.cpp src/listacontest.cpp src/listaenc.cpp src/ingredientes.cpp src/avl.cpp src/hash.cpp src/timer.cpp src/sortings.cpp src/heap.cpp src/pilha.cpp src/teste_pilha.cpp src/teste_heap.cpp src/medicoes.cpp -I src -o tests/teste_menu.exe -Wall -std=c++17
 
 // rodar: .\tests\teste_menu.exe src\pedidos.txt src\historico.txt
+
+Metricas met;
 
 int main(int argc, char *argv[])
 {
@@ -44,13 +47,17 @@ int main(int argc, char *argv[])
     NodoAvl *raiz = nullptr; //cria a raiz da arvore AVL que vai armazenar os pedidos
     double tempoPedidos = 0.0;
 
-    int pedidosLidos = carregarPedidosAVL(argv[1], &raiz, &tempoPedidos); //carrega os pedidos do arquivo para a arvore AVL
+    int pedidosLidos = carregarPedidosAVL(argv[1], &raiz, &tempoPedidos, met); //carrega os pedidos do arquivo para a arvore AVL
 
     if (pedidosLidos < 0) 
     {
         raiz = avlDestruir(raiz); //se der erro na leitura do arquivo, destruo a arvore e retorno 1
         return 1;
     }
+
+    met.nosInseridos = pedidosLidos;
+    met.alturaAVL = avlAltura(raiz) + 1; // a especificacao pediu arvore vazia => altura 0 e arvore folha = altura = 1.
+    met.tempoCarga = tempoPedidos;
 
     // cout << pedidosLidos << " pedidos lidos em " << tempoPedidos << " segundos.\n";
 
@@ -65,6 +72,11 @@ int main(int argc, char *argv[])
         liberar_recursos(raiz, &lista_historico);
         return 1;
     }
+
+    met.entradasHistorico = historicoslidos;
+
+    iniciaLog("medicoes.log", met); //cria o arquivo de log e escreve as metricas que ja temos nele.
+    medirOrdenacaoHistorico(&lista_historico, met);
 
     TabelaEnc cache; 
     encInicializar(&cache, 101); //cria e inicializa a tabela hash que vai armazenar os pedidos sorteados
@@ -92,7 +104,7 @@ int main(int argc, char *argv[])
             fpInicializar(&bacons);
 
             int quantidades[4] = {0, 0, 0, 0}; // s, q, c, t
-            novoJogo(raiz, &cache, ESTADO_MENU, argv, &hamburguer, &carnes, &ovos, &bacons, 0, quantidades, &player);
+            novoJogo(raiz, &cache, ESTADO_MENU, argv, &hamburguer, &carnes, &ovos, &bacons, 0, quantidades, &player, met, &lista_historico);
             ESTADO_MENU = MENU;
         }
         else if (ESTADO_MENU == COMO_JOGAR)
