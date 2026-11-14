@@ -2152,3 +2152,25 @@ Se precisar de mais espaço em alguma coluna, ajuste a constante de largura corr
 
 ##################################################
 
+Lucas — Prompt 61:
+como é pra ser a pontuacao nesse jogo?
+
+Resposta:
+A pontuação é **o número de clientes atendidos com sucesso**. Ela começa em `0` e aumenta em `1` a cada pedido entregue corretamente. Com três clientes, a pontuação máxima é `3`. Se você atender dois e perder no terceiro, termina com `2`.
+
+No código atual, `gravaJogoNoHistorico` ainda pede que o jogador digite o `score`. O jogo deve calcular esse valor sozinho. Em `novoJogo`, crie `int pontuacao = 0;` antes do laço da partida. Some `1` quando a opção `3` confirmar que o pedido está correto e passe o total para `gravaJogoNoHistorico` quando a partida acabar.
+
+Como o `67` é um atalho de teste e compartilha o bloco do `case 3`, eu colocaria o incremento dentro do `if (opcao == 3)`, junto de `Pedido correto!`. Assim, só as entregas corretas contam para a pontuação. [Regra da pontuação](C:/Users/lucas/jogo-ed/src/funcoes_menu.cpp:126) · [Envio do pedido](C:/Users/lucas/jogo-ed/src/jogo.cpp:312) · [Gravação do histórico](C:/Users/lucas/jogo-ed/src/jogo.cpp:106)
+
+##################################################
+
+Lucas — Prompt 62:
+onde faria mais sentido colocar a definicao da struct jogador
+
+Resposta:
+Eu colocaria a `struct Jogador` em um cabeçalho próprio, `C:/Users/lucas/jogo-ed/src/jogador.hpp`. Ela nasceu para guardar nome e pontuação no histórico, mas agora `teste_menu.cpp` também cria um `Jogador` e `novoJogo` recebe esse tipo. [Criação do jogador](C:/Users/lucas/jogo-ed/tests/teste_menu.cpp:72) · [Declaração de `novoJogo`](C:/Users/lucas/jogo-ed/src/jogo.hpp:10)
+
+Mova a definição junto com `#include <string>` para `jogador.hpp`. Em `listacontest.hpp`, inclua `"jogador.hpp"` para continuar usando `Jogador *dados`. Inclua `"jogador.hpp"` também em `jogo.hpp`, que usa `Jogador *player` na assinatura. Só a definição precisa mudar de lugar. [Definição atual](C:/Users/lucas/jogo-ed/src/listacontest.hpp:8)
+
+##################################################
+

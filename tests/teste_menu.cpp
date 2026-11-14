@@ -69,6 +69,8 @@ int main(int argc, char *argv[])
     TabelaEnc cache; 
     encInicializar(&cache, 101); //cria e inicializa a tabela hash que vai armazenar os pedidos sorteados
 
+    Jogador player;
+
     int ESTADO_MENU = MENU; //variavel que armazena o estado atual do menu, inicializado como MENU
 
     while (ESTADO_MENU != SAIR)
@@ -90,7 +92,7 @@ int main(int argc, char *argv[])
             fpInicializar(&bacons);
 
             int quantidades[4] = {0, 0, 0, 0}; // s, q, c, t
-            novoJogo(raiz, &cache, ESTADO_MENU, argv, &hamburguer, &carnes, &ovos, &bacons, 0, quantidades);
+            novoJogo(raiz, &cache, ESTADO_MENU, argv, &hamburguer, &carnes, &ovos, &bacons, 0, quantidades, &player);
             ESTADO_MENU = MENU;
         }
         else if (ESTADO_MENU == COMO_JOGAR)

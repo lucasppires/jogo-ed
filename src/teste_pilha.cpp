@@ -213,7 +213,8 @@ bool corrige_pedido(PilhaEnc *p, const ListaEnc *receita){
 void imprimir_hamburguer(PilhaEnc *p){
     NodoPilha* aux = p->topo;
 
-    if (aux == nullptr) {
+    if (aux == nullptr) 
+    {
         cout << "Teu hamburguer esta vazio" << endl;
         return;
     }

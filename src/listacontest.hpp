@@ -1,14 +1,9 @@
 #ifndef LISTACONTEST_HPP
 #define LISTACONTEST_HPP
 
-#include <string>
+#include "jogo.hpp"
 
 constexpr int CAPACIDADE = 50;
-
-struct Jogador {
-    std::string nome_jogador;
-    int score;
-};
 
 struct ListaContEst {
     int tamanho;

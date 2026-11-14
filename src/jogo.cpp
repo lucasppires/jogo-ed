@@ -26,6 +26,7 @@ using std::endl;
 using namespace std;
 
 #define N_MAX_CLIENTES 10
+#define N_CLIENTES 3
 
 // essa funcao deve rodar no inicio de cada turno
 void removeEstragadosHeap(int turnoAtual, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons)
@@ -158,7 +159,7 @@ static void mostrarEstoque(const FilaPrioridade *carnes,
               << "Mostarda, Picles e Alface\n";
 }
 
-void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], PilhaEnc *p, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, int turnoAtual, int quantidadesPereciveisDisponiveis[]) {
+void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], PilhaEnc *p, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, int turnoAtual, int quantidadesPereciveisDisponiveis[], Jogador *player) {
     estado_menu = MENU;
 
     if (raiz == nullptr)
@@ -170,7 +171,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
     FilaEnc clientes;
     inicializa(&clientes);
 
-    int numeroClientes = 3; // Número de clientes a serem criados
+    int numeroClientes = N_CLIENTES; // Número de clientes a serem criados
 
     // Valores provisorios: tres clientes com paciencias aleatorias.
     int pacienciaInicial[N_MAX_CLIENTES];
@@ -207,18 +208,27 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
 
     turnoAtual = 0;
 
+    player->score = 0;
+
     // LAÇO DO JOGO
-    while (!estaVazia(&clientes)) {     
+    while (!estaVazia(&clientes))
+     {     
         Cliente *atual = clienteDaFrente(&clientes);
 
         turnoAtual++;
 
-        if (atual->paciencia_restante == 0)
+        if (atual->paciencia_restante == 0) //gameover
         {
-            //implementar game over
+            esvaziarPilha(p);
+
+            pula_linha(2);
+            cout << cores::VERMELHO << "GAME OVER" << cores::RESET << " - A paciencia do cliente acabou!";
+            break;  
         }
 
-        cout << "\nTurno " << turnoAtual;
+        pula_linha(2);
+
+        cout << cores::LARANJA << "\nTurno " << turnoAtual << cores::RESET;
 
         if (atual->paciencia_restante == 1)
         {
@@ -226,7 +236,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
         }
         else
         {
-            cout << "\n";
+           pula_linha(1);
         }
 
         removeEstragadosHeap(turnoAtual, carnes, ovos, bacons);
@@ -243,10 +253,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
             }
 
             cout << "\nCliente: " << atual->id << '\n';
-            cout << "Paciencia restante: "
-                << atual->paciencia_restante << " turnos.\n";
-
-            atual->paciencia_restante = atual->paciencia_restante - 1;  
+            cout << "Paciencia restante: "<< atual->paciencia_restante << " turnos.\n"; 
 
             cout << "Pedido: " << pedidoAtual->cod << '\n';
             imprimir(&pedidoAtual->receita);
@@ -260,6 +267,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                     << "4 - Preparar ingrediente perecivel\n"
                     << "5 - Preparar ingrediente nao perecivel\n"
                     << "6 - Consultar estoque\n";
+                    
             
             std::string entrada;
 
@@ -276,7 +284,12 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                     break;
                 }
 
-                cout << "Opcao invalida! Escolha de 1 a 6: ";
+                if (entrada == "67") {
+                    opcao = 67;
+                    break;
+                }
+
+                cout << "Opcao invalida! Escolha de 1 a 6 ou 67: ";
             }
 
             switch (opcao) {
@@ -305,27 +318,35 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                     break;
 
                 case 3:
-                    // aqui vamos comparar o pedido do cliente com o hamburguer montado
-                    if (corrige_pedido(p, &pedidoAtual->receita)){
-                        cout << "Pedido correto!" << endl;
-                        // remove o cliente da fila
-                        Cliente *removido = clienteDaFrente(&clientes); 
-                        if (removido != nullptr)
-                            cout << "Cliente " << removido->id << " foi atendido e saiu da fila." << endl;
-
-                        desenfileira(&clientes, removido);
-                        
-                    }
-                    else{
-                        cout << "Montaste o hamburguer incorretamente! O cliente ficou putasso!" << endl;
-                        // diminui a paciencia do cliente
-                        atual->paciencia_restante--;
-                        if (atual->paciencia_restante <= 0){
-                            cout << "Cliente " << atual->id << " perdeu a paciencia e saiu da fila." << endl;
-                            desenfileira(&clientes, atual);
+                case 67:  //passa de fase na hora
+                    if (opcao == 67 || corrige_pedido(p, &pedidoAtual->receita)) {
+                        if (opcao == 3) {
+                            cout << "Pedido correto!" << endl;
                         }
+
+                        Cliente atendido;
+                        desenfileira(&clientes, &atendido);
+                        esvaziarPilha(p);
+
+                        player->score++;
+                        turnoAtual = 0;
+
+                        cout << "Cliente " << atendido.id
+                             << " foi atendido e saiu da fila." << endl;
+                        continue;
                     }
-                break;
+
+                    cout << "Montaste o hamburguer incorretamente! O cliente ficou putasso!" << endl;
+                    atual->paciencia_restante--;
+                    if (atual->paciencia_restante <= 0) {
+                        Cliente removido;
+                        desenfileira(&clientes, &removido);
+                        esvaziarPilha(p);
+                        cout << "Cliente " << removido.id
+                             << " perdeu a paciencia e saiu da fila." << endl;
+                        continue;
+                    }
+                    break;
 
                 case 4:
                     prepararIngredientePerecivel(turnoAtual, carnes, ovos, bacons);
@@ -340,17 +361,27 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                     turnoAtual--;  //como consultar estoque nao gasta um turno, e em todo laço é acrescentado 1 ao turno, diminuimos 1 aqui para corrigir
                     atual->paciencia_restante++; //mesma coisa do turno
                 break;
-
+            
                 default:
                     cout << "Opcao invalida" << endl;   //as vezes da um bug que faz o laço ficar em loop quando apertamos alguma opcao invalida
                 break;
 
             }
-            imprimir_hamburguer(p);
+
+            if (turnoAtual != 0)
+            {
+                imprimir_hamburguer(p);
+            }
+
         }
             // O cliente continua na fila durante o atendimento.
+
+        atual->paciencia_restante = atual->paciencia_restante - 1; 
         
     }
+
+    pula_linha(1);
+    cout << cores::VERDE_CLARO << "Sua pontuacao: " << player->score << cores::RESET;
 
     exibirEstatisticasHash(cache);
     destruir(&clientes);
