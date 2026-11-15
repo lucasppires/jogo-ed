@@ -10,5 +10,6 @@ bool adicionar_ingrediente(PilhaEnc *p, char adicionado);
 bool remover_ingrediente(PilhaEnc *p);
 bool corrige_pedido(PilhaEnc *p, const ListaEnc *receita);
 void imprimir_hamburguer(PilhaEnc *p);
+void desenhar_hamburguer(const PilhaEnc *p);
 
 #endif /* TESTE_PILHA_HPP */

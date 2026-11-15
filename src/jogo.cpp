@@ -120,7 +120,7 @@ void gravaJogoNoHistorico(int score, ListaContEst *lista_historico, const char* 
 
     string nome;
 
-    cout << "Nome:";
+    cout << "Nome: ";
     getline(cin >> ws, nome);   // ws descarta o '\n' que sobrou de leituras anteriores
 
     arq << nome << '\n';                // linha 1: nome
@@ -222,6 +222,8 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
 
     player->score = 0;
 
+    int saida_voluntaria = false;
+
     // LAÇO DO JOGO
     while (!estaVazia(&clientes))
      {     
@@ -229,12 +231,17 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
 
         turnoAtual++;
 
-        if (atual->paciencia_restante == 0) //gameover
+        if (atual->paciencia_restante == 0 || saida_voluntaria == true) //gameover ou saida
         {
             esvaziarPilha(p);
 
-            pula_linha(2);
-            cout << cores::VERMELHO << "GAME OVER" << cores::RESET << " - A paciencia do cliente acabou!";
+
+            if (atual->paciencia_restante == 0)
+            {
+                pula_linha(2);
+                cout << cores::VERMELHO << "GAME OVER" << cores::RESET << " - A paciencia do cliente acabou!";
+            }
+            
             break;  
         }
 
@@ -272,7 +279,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
 
             // A montagem do hamburguer sera implementada aqui.
 
-            imprimir_hamburguer(p);
+            desenhar_hamburguer(p);//imprimir_hamburguer(p);
 
             int opcao;
             cout << "\nInforme a opcao desejada:\n"
@@ -281,7 +288,8 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                     << "3 - Enviar pedido\n"
                     << "4 - Preparar ingrediente perecivel\n"
                     << "5 - Preparar ingrediente nao perecivel\n"
-                    << "6 - Consultar estoque\n";
+                    << "6 - Consultar estoque\n"
+                    << "7 - Sair\n";
                     
             
             std::string entrada;
@@ -294,7 +302,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                     return;
                 }
 
-                if (entrada.size() == 1 && entrada[0] >= '1' && entrada[0] <= '6') {
+                if (entrada.size() == 1 && entrada[0] >= '1' && entrada[0] <= '7') {
                     opcao = entrada[0] - '0';
                     break;
                 }
@@ -304,7 +312,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                     break;
                 }
 
-                cout << "Opcao invalida! Escolha de 1 a 6 ou 67: ";
+                cout << "Opcao invalida! Escolha de 1 a 7: ";
             }
 
             switch (opcao) {
@@ -375,7 +383,11 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                     turnoAtual--;  //como consultar estoque nao gasta um turno, e em todo laço é acrescentado 1 ao turno, diminuimos 1 aqui para corrigir
                     atual->paciencia_restante++; //mesma coisa do turno
                 break;
-            
+
+                case 7:
+                    saida_voluntaria = true;
+                break;
+                    
                 default:
                     cout << "Opcao invalida" << endl;
                 break;

@@ -243,3 +243,14 @@ Paciência inicial e contagem de turnos:
 2. `conta_turnos_pedido` percorre a lista encadeada da receita e soma o custo dos ingredientes, começando com 1 turno para enviar o pedido.
 3. Em `novoJogo`, a paciência inicial de cada cliente passou a ser o custo do seu pedido mais 2 turnos de margem.
 4. `conta_turnos_pedido` recebe `const ListaEnc *` e `conta_turnos_ingrediente` recebe `const Ingrediente *`. As declarações e chamadas foram ajustadas, e a dependência circular entre `listaenc.hpp` e `pedido.hpp` foi removida.
+
+TAD Lista Contígua:
+
+1. A definição de `Jogador` foi movida de `listacontest.hpp` para `jogo.hpp`, pois o tipo é usado na partida e no histórico. A lista continua armazenando registros com nome e pontuação e inclui `jogo.hpp` para acessar a definição.
+
+TAD Pilha e exibição do hambúrguer:
+
+1. Em `teste_pilha.cpp`, foi criada `desenho_ingrediente`, que associa o símbolo de cada ingrediente a um padrão de caracteres.
+2. A função `desenhar_hamburguer`, declarada em `teste_pilha.hpp`, recebe `const PilhaEnc *` e percorre os nós do topo à base sem desempilhar. Cada camada e seu nome são impressos na cor do ingrediente, com restauração da cor do terminal depois do nome.
+3. O pão de cima tem um desenho de várias linhas. O pão de baixo é desenhado separadamente, inclusive com a pilha vazia, pois faz parte da base e não ocupa um nó.
+4. `novoJogo` chama `desenhar_hamburguer` na tela da partida. A função `imprimir_hamburguer` continua disponível para exibir a versão em texto.

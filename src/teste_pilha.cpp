@@ -239,6 +239,57 @@ void imprimir_hamburguer(PilhaEnc *p){
 
 
 
+// escolhe o desenho de cada ingrediente pelo seu simbolo
+static const char *desenho_ingrediente(char simbolo)
+{
+    switch (simbolo) {
+        case 'k': return " ~~~ ~~~ ~~~ ~~~ ~~~ ";
+        case 'm': return " --- --- --- --- --- ";
+        case 'p': return "  (o)  (o)  (o)  (o) ";
+        case 'a': return R"( /\/\/\/\/\/\/\/\/\/\ )";
+        case 's': return " [o---o---o---o---o] ";
+        case 'q': return " [=================] ";
+        case 'c': return "  ()  ()  ()  ()  () ";
+        case 't': return " (:::)(:::)(:::)(:::) ";
+        case 'n': return " [#################] ";
+        case 'o': return " (_______(o)_______) ";
+        case 'b': return " ~~=====~~=====~~=== ";
+        default:  return " [-----------------] ";
+    }
+}
+
+void desenhar_hamburguer(const PilhaEnc *p)
+{
+    cout << "\nHAMBURGUER\n";
+
+    // percorre do topo pra base sem desempilhar os ingredientes
+    for (const NodoPilha *atual = p->topo; atual != nullptr; atual = atual->prox) 
+    {
+        const Ingrediente &ingrediente = atual->dado;
+
+        // o pao de cima ocupa mais de uma linha pra formar a tampa
+        if (ingrediente.simbolo == PAO.simbolo) 
+        {
+            cout << ingrediente.cor
+                  << "      .--------.\n"
+                 << "   .-'   . . .  '-.\n"
+                 << "  /________________\\";
+        } 
+        else 
+        {
+            cout << ingrediente.cor << desenho_ingrediente(ingrediente.simbolo);
+        }
+
+        // imprime o nome na mesma cor do desenho e so depois reseta a cor
+        cout << "  " << ingrediente.nome << cores::RESET << '\n';
+    }
+
+    // o pao de baixo nao fica na pilha e aparece mesmo quando ela esta vazia
+    cout << cores::LARANJA
+         << "  \\_________________/  Pao de baixo" << cores::RESET << '\n'
+         << cores::LARANJA << "   '---------------'" << cores::RESET << '\n';
+}
+
 // ia gerou um main pra eu testar
 // so eh compilado com -DTESTE_PILHA_MAIN (senao conflita com o main do teste_menu)
 #ifdef TESTE_PILHA_MAIN

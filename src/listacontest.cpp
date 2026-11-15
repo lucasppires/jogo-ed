@@ -1,6 +1,8 @@
 #include <iostream>
 #include "listacontest.hpp"
 #include "timer.hpp"
+#include "cores.hpp"
+#include "funcoes_menu.hpp"
 
 void inicializar(ListaContEst *l) {
     l->tamanho = 0;
@@ -123,21 +125,35 @@ double ordena_vetor_pelo_score_bubble_sort(
 void imprime_dez_primeiros(Jogador vetor[]) {
     std::cout << "RANKING (pelo score)\n";
 
-    for (int i = 0; i < 10; i++) {
-        std::cout << i + 1
-                  << ". Nome: " << vetor[i].nome_jogador
-                  << ", Score: " << vetor[i].score
-                  << '\n';
+    for (int i = 0; i < 10; i++) 
+    {
+        if (i == 0)
+        {
+            std::cout << cores::AMARELO << i + 1 << ". Nome: " << vetor[i].nome_jogador << ", Score: " << vetor[i].score << cores::RESET;
+        }
+        else
+        {
+            std::cout << i + 1 << ". Nome: " << vetor[i].nome_jogador << ", Score: " << vetor[i].score;
+        }
+
+        pula_linha(1);
     }
 }
 
 void imprime_de_1_a_9(Jogador vetor[], int tamanhoVetor) {
     std::cout << "RANKING (pelo score)\n";
 
-    for (int i = 0; i < tamanhoVetor; i++) {
-        std::cout << i + 1
-                  << ". Nome: " << vetor[i].nome_jogador
-                  << ", Score: " << vetor[i].score
-                  << '\n';
+    for (int i = 0; i < tamanhoVetor; i++) 
+    {
+        if (i == 0)
+        {
+            std::cout << cores::AMARELO << i + 1 << ". Nome: " << vetor[i].nome_jogador << ", Score: " << vetor[i].score << cores::RESET;
+        }
+        else
+        {
+            std::cout << i + 1 << ". Nome: " << vetor[i].nome_jogador << ", Score: " << vetor[i].score;
+        }
+
+        pula_linha(1);
     }
 }

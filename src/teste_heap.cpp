@@ -25,7 +25,11 @@ bool prepararIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPr
     const Ingrediente *preparado = buscarIngrediente(codigo);
 
     // digitou uma letra invalida
-    if(preparado == nullptr) return false;
+    if(preparado == nullptr) 
+    {
+        cout << "Ingrediente invalido.\n";
+        return false;
+    }
 
     if (preparado->perecivel == true){
         // se o campo perecivel do ingrediente é true, entao devemos armazenar esse ingrediente numa heap. Temos três ingreidentes pereciveis: carne, ovo frito e bacon.
@@ -79,7 +83,11 @@ bool prepararIngredienteNaoPerecivel(int quantidadesPereciveisDisponiveis[]){
     const Ingrediente *preparado = buscarIngrediente(codigo);
 
     // digitou uma letra invalida
-    if(preparado == nullptr) return false;
+    if(preparado == nullptr)
+    {
+        cout << "Ingrediente invalido.\n";
+        return false;
+    }
 
     if(preparado->perecivel == false and preparado->requer_preparo == true){
         /* 
