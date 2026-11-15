@@ -342,7 +342,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                         desenfileira(&clientes, &atendido);
                         esvaziarPilha(p);
 
-                        player->score++;
+                        player->score += atual->paciencia_restante * 10;
                         turnoAtual = 0;
 
                         cout << "Cliente " << atendido.id
