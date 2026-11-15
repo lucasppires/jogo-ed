@@ -15,11 +15,19 @@ constexpr int larguraPreparo = 18;
 
 static void imprimirIngrediente(const Ingrediente &ing)
 {
-    std::cout << std::setw(larguraIngrediente) << ing.nome
-              << std::setw(larguraSimbolo) << ing.simbolo
-              << std::setw(larguraPerecivel) << (ing.perecivel ? "Sim" : "Nao") //operador ternario, se ing.perecivel for true, imprime "Sim", senao imprime "Nao"
-              << std::setw(larguraPreparo) << (ing.requer_preparo ? "Sim" : "Nao")
-              << (ing.validade_turnos ? std::to_string(ing.validade_turnos) : "-") << '\n';
+            std::cout << ing.cor << std::setw(larguraIngrediente) << ing.nome << cores::RESET
+
+            << ing.cor << std::setw(larguraSimbolo) << ing.simbolo << cores::RESET
+
+
+            //operador ternario, se ing.perecivel for true, imprime "Sim", senao imprime "Nao"
+            << (ing.perecivel ? cores::VERDE : cores::VERMELHO)
+            << std::setw(larguraPerecivel) << (ing.perecivel ? "Sim" : "Nao") << cores::RESET
+
+            << (ing.requer_preparo ? cores::VERDE : cores::VERMELHO)
+            << std::setw(larguraPreparo) << (ing.requer_preparo ? "Sim" : "Nao") << cores::RESET
+
+            << (ing.validade_turnos ? std::to_string(ing.validade_turnos) : "-") << '\n';
 }
 
 
@@ -45,7 +53,7 @@ void imprimir(const ListaEnc *lista)
     const NodoReceita *aux = lista->ini;
     const auto formatoAnterior = std::cout.flags();
 
-    std::cout << "ADICIONE:\n\n"
+    std::cout << LARANJA << "\nADICIONE:\n\n" << cores::RESET
               << std::left
               << std::setw(larguraIngrediente) << "Ingrediente"
               << std::setw(larguraSimbolo) << "Codigo"

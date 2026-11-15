@@ -163,7 +163,7 @@ bool remover_ingrediente(PilhaEnc *p){
         return true;
     }
     else {
-        cout << "Nao foi possivel remover o ingrediente. O hamburguer esta vazio." << endl;
+        cout << VERMELHO << "Nao podes remover o pao de baixo." << cores::RESET << endl;
         return false;
     }
 }
@@ -213,22 +213,28 @@ bool corrige_pedido(PilhaEnc *p, const ListaEnc *receita){
 void imprimir_hamburguer(PilhaEnc *p){
     NodoPilha* aux = p->topo;
 
+
+    cout << "Teu hamburguer tem os seguintes ingredientes:\n " << endl;
+
     if (aux == nullptr) 
     {
-        cout << "Teu hamburguer esta vazio" << endl;
+        cout << LARANJA << "Pao de baixo" << cores:: RESET << endl;
         return;
     }
 
-    cout << "Teu hamburguer tem os seguintes ingredientes: " << endl;
+    else {
 
-    // sim, pode acessar a esturtura interna da pilha, a especificacao nao proibe.
-    while (aux != nullptr) {
-        cout << aux->dado.cor << aux->dado.nome << cores::RESET << endl;
-        aux = aux->prox;
+        // sim, pode acessar a esturtura interna da pilha, a especificacao nao proibe.
+        while (aux != nullptr) {
+            cout << aux->dado.cor << aux->dado.nome << cores::RESET << endl;
+            aux = aux->prox;
+        }
+
+        cout << LARANJA << "Pao de baixo" << cores:: RESET << endl;
+        return;
     }
 
-    cout << "Pao de baixo" << endl;
-    return;
+    cout << "\n";
 }
 
 

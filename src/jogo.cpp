@@ -270,8 +270,11 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
             imprimir(&pedidoAtual->receita);
 
             // A montagem do hamburguer sera implementada aqui.
+
+            imprimir_hamburguer(p);
+
             int opcao;
-            cout << "Informe a opcao desejada:\n"
+            cout << "\nInforme a opcao desejada:\n"
                     << "1 - Adicionar ingrediente ao hamburguer\n"
                     << "2 - Remover ingrediente\n"
                     << "3 - Enviar pedido\n"
@@ -379,10 +382,11 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
 
             }
 
-            if (turnoAtual != 0)
-            {
-                imprimir_hamburguer(p);
-            }
+            // Tirei isso pq acho melhor que seja printado o hamburguer inicial com o Pao de Baixo já posto, acho q fica mais claro e bonito.
+            //if (turnoAtual != 0)
+          //  {
+           //     imprimir_hamburguer(p);
+           // }
 
         }
             // O cliente continua na fila durante o atendimento.
