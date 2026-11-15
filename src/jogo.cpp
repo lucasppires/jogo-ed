@@ -113,9 +113,9 @@ int numero_aleatorio(int minimo, int maximo)
     return intervalo(gerador);
 }
 
-// teremos que trocar o nome pra argv[2]
-void gravaJogoNoHistorico(int score, ListaContEst *lista_historico){
-    ofstream arq("src/historico.txt", ios::app);
+// teremos que trocar o nome pra argv[2]. FEITO!
+void gravaJogoNoHistorico(int score, ListaContEst *lista_historico, const char* nomeArqHistorico){
+    ofstream arq(nomeArqHistorico, ios::app);
     if (!arq.is_open()) return;
 
     string nome;
@@ -395,7 +395,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
     cout << cores::VERDE_CLARO << "Sua pontuacao: " << player->score << cores::RESET;
 
     cout << '\n';
-    gravaJogoNoHistorico(player->score, lista_historico);
+    gravaJogoNoHistorico(player->score, lista_historico, argv[2]);
     exibirEstatisticasHash(cache, &met);
     geraRelatorio("medicoes.log", met);
     destruir(&clientes);

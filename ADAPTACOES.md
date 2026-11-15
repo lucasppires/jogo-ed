@@ -228,3 +228,11 @@ Histórico:
 4. O comando de compilação passou a incluir src/medicoes.cpp.
 
 Pendente: gravaJogoNoHistorico ainda grava em "src/historico.txt", e não no arquivo recebido em argv[2]; zeraMetricasPartida não é chamada no início de cada partida, e as estatísticas da hash vêm do cache reutilizado entre partidas; medir a ordenação com pelo menos 3 tamanhos de histórico para o relatório.
+
+Alterações de 15/11/2026:
+
+Histórico:
+1. gravaJogoNoHistorico passou a receber const char *nomeArqHistorico e abre esse arquivo com std::ios::app, em vez do caminho fixo "src/historico.txt".
+2. novoJogo, que já recebia argv, passa argv[2] para gravaJogoNoHistorico. Assim, o jogo grava no mesmo arquivo de histórico que foi lido na inicialização. A assinatura de novoJogo não mudou.
+
+Pendente: "medicoes.log" continua com nome fixo no teste_menu.cpp e no jogo.cpp; o medicoes.cpp tem um main de rascunho, que gera "multiple definition of main" se for compilado junto com o teste_menu.cpp; o src/main.cpp está vazio.

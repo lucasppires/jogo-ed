@@ -133,7 +133,10 @@ void encDestruir(TabelaEnc *t) {
 
 void exibirEstatisticasHash(const TabelaEnc *cache, Metricas *met)
 {
+
     pula_linha(2);
+
+    /*
     std::cout << cores::AMARELO << "Estatisticas da tabela hash:\n" << cores::RESET;
     std::cout << "Tamanho da tabela: " << cache->m << "\n";
     std::cout << "Numero de elementos: " << cache->n << "\n";
@@ -155,9 +158,11 @@ void exibirEstatisticasHash(const TabelaEnc *cache, Metricas *met)
         taxaAcerto = 0.0;
     }
 
-    std::cout << "Taxa de acerto: " << taxaAcerto << "%\n";
+    // std::cout << "Taxa de acerto: " << taxaAcerto << "%\n";
 
     pula_linha(1);
+
+    */
 
 
     met->tamanhoHash = cache->m;
