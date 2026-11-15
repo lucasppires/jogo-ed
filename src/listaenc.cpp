@@ -3,6 +3,7 @@
 #include "listaenc.hpp"
 #include <iostream>
 #include <iomanip>
+#include "ingredientes.hpp"
 using namespace std;
 
 namespace 
@@ -84,6 +85,21 @@ Ingrediente buscar(const ListaEnc *lista, char simbolo) {
     return Ingrediente{"", '\0', false, false, 0};
 }
 
+int conta_turnos_pedido(const ListaEnc *receita) //vamos contar quantos turnos sao necessarios para montar cada pedido
+{
+    const NodoReceita *aux = receita->ini;
+
+    int turnospedido = 1; //comeca em 1 pq tem o turno pra enviar o pedido
+
+    while (aux != nullptr) //enquanto o ponteiro nao for nulo
+    {
+        turnospedido += conta_turnos_ingrediente(&aux->dado); //vamos analisando o numero de turnos para cada ingrediente e somando ao contador
+        aux = aux->prox;
+    }
+
+    return turnospedido; 
+}
+
 int inserirInicio(ListaEnc *lista, Ingrediente ing) {
     NodoReceita *novo = new (std::nothrow) NodoReceita;
 
@@ -152,5 +168,3 @@ void destruir(ListaEnc *lista) {
 
     lista->ini = nullptr;
 }
-
-

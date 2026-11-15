@@ -200034,3 +200034,13 @@ Kelly
 0
 DELETAR_TESTE
 410
+Lucas
+270
+
+0
+Jacques
+280
+
+0
+Dennis
+410
