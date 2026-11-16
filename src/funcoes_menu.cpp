@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include "medicoes.hpp"
 #include <vector>
+#include <limits>
 using std::cout;
 using std::cin;
 using std::scanf;
@@ -240,7 +241,6 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico)
             printf("\nOrdenou %d jogadores.", tamanhoVetor);
             printf("\nTempo para ordenar (Merge sort): %fs\n", tempo);
 
-            delete[] vetor;
         }
         break;
 
@@ -260,16 +260,17 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico)
             printf("\nOrdenou %d jogadores.", tamanhoVetor);
             printf("\nTempo para ordenar (Radix sort LSD): %fs\n", tempoOrdString);
 
-            delete[] vetor;
-
         }
         break;
 
         default:
+        cin.clear();
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         break;
-
-
     }
+
+    delete[] vetor;
+
     cout << "\nSelecione uma opcao:\n";
     cout << "1. Jogar\n";
     cout << "2. Voltar ao menu\n";

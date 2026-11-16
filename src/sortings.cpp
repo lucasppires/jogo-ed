@@ -1,4 +1,5 @@
 #include <new>
+#include <cctype>
 #include "sortings.hpp"
 #include "timer.hpp"
 #include "listacontest.hpp"
@@ -161,13 +162,22 @@ double radixSortAdaptado(Jogador jogadores[], int tamanhoVetor) {
     Jogador *aux = new (std::nothrow) Jogador[tamanhoVetor];
     if (aux == nullptr) return 0.0;
 
+    // feito por IA
+    // Igual ao charAt, mas converte a letra para minuscula antes,
+    // para "ana" e "Ana" ficarem juntas e "Ze" nao vir antes de "ana".
+    auto charAtMinusculo = [](const string& s, int d) {
+        if (d < (int)s.size())
+            return tolower((unsigned char)s[d]) + 1;
+        return 0;
+    };
+
     // Counting sort estável em cada posição, da última para a primeira
     for (int d = W - 1; d >= 0; d--) {
         vector<int> count(R + 2, 0);
 
         // 1. Conta a frequência de cada caractere na posição d
         for (int i = 0; i < tamanhoVetor; i++)
-            count[charAt(jogadores[i].nome_jogador, d) + 1]++;
+            count[charAtMinusculo(jogadores[i].nome_jogador, d) + 1]++;
 
         // 2. Transforma contagens em posições iniciais (soma acumulada)
         for (int r = 0; r < R + 1; r++)
@@ -175,7 +185,7 @@ double radixSortAdaptado(Jogador jogadores[], int tamanhoVetor) {
 
         // 3. Distribui os jogadores no vetor auxiliar (mantém a estabilidade)
         for (int i = 0; i < tamanhoVetor; i++)
-            aux[count[charAt(jogadores[i].nome_jogador, d)]++] = jogadores[i];
+            aux[count[charAtMinusculo(jogadores[i].nome_jogador, d)]++] = jogadores[i];
 
         // 4. Copia de volta
         for (int i = 0; i < tamanhoVetor; i++)

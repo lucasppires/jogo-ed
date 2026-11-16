@@ -161,3 +161,9 @@ g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/leitura_de_arquivos.cpp src/li
    - O Claude trocou vector<string> e string por std::vector<std::string> e std::string nos protótipos, para o header não depender de um using namespace std em quem o inclui.
    - O Claude compilou o sortings.cpp sozinho e o projeto inteiro (teste_menu com medicoes.cpp), com -Wall -std=c++17, sem erros nem avisos. Isso resolve a pendência do item 25 sobre declarar o radixSortAdaptado no header.
    - Ainda pendente: chamar radixSortAdaptado no funcoes_menu.cpp e testar a ordenação; maiúsculas continuam vindo antes de minúsculas.
+27. (Mateus) Pedi ao Claude para adaptar o radixSortAdaptado, no src/sortings.cpp, para que maiúsculas não venham antes de minúsculas, ou seja, "Zé" não ficar antes de "ana" (15/11/2026). O que foi feito:
+   - O Claude criou dentro da função uma lambda charAtMinusculo, igual ao charAt, mas que passa o caractere por tolower antes de devolver o dígito. Os dois laços do counting sort passaram a usá-la. O charAt original não foi alterado, porque o radixSortLSD e o radixSortMSD também o usam.
+   - Foi adicionado #include <cctype> no topo do sortings.cpp, de onde vem o tolower.
+   - Como o counting sort é estável, nomes que só diferem em maiúsculas e minúsculas ("Ana" e "ana") mantêm a ordem em que estavam.
+   - O Claude compilou o sortings.cpp com -Wall -Wextra -std=c++17, sem erros nem avisos. A ordenação ainda não foi testada.
+   - Limitação: letras acentuadas em UTF-8 (como "É") ocupam mais de um byte e não são convertidas pelo tolower, então nomes que começam com acento vão para o fim da lista.
