@@ -33,7 +33,7 @@ using std::scanf;
 
 // compilar:g++ src/main.cpp src/funcoes_menu.cpp src/jogo.cpp src/fila.cpp src/leitura_de_arquivos.cpp src/listacontest.cpp src/listaenc.cpp src/ingredientes.cpp src/avl.cpp src/hash.cpp src/timer.cpp src/sortings.cpp src/heap.cpp src/pilha.cpp src/teste_pilha.cpp src/teste_heap.cpp src/medicoes.cpp -I src -o src/main.exe -Wall -std=c++17
 
-// rodar: .\tests\teste_menu.exe src\pedidos.txt src\historico.txt
+// rodar: .\src\main.exe src\pedidos.txt src\historico.txt
 
 Metricas met;
 

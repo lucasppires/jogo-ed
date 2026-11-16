@@ -180,7 +180,7 @@ bool corrige_pedido(PilhaEnc *p, const ListaEnc *receita){
     // vê se ambas as estruturas - array e lista - tem o mesmo tamanho, se nn tiver, deu merda no pedido
 
     if (n != tamanho(receita)) {
-        cout << "Montaste o pedido com a quantidade errada de ingredientes!" << endl;
+        // cout << "Montaste o pedido com a quantidade errada de ingredientes!" << endl;
         return false;
     }
 
@@ -260,7 +260,7 @@ static const char *desenho_ingrediente(char simbolo)
 
 void desenhar_hamburguer(const PilhaEnc *p)
 {
-    cout << "\nHAMBURGUER\n";
+    cout << "\nHAMBURGUER\n\n";
 
     // percorre do topo pra base sem desempilhar os ingredientes
     for (const NodoPilha *atual = p->topo; atual != nullptr; atual = atual->prox) 
@@ -286,8 +286,8 @@ void desenhar_hamburguer(const PilhaEnc *p)
 
     // o pao de baixo nao fica na pilha e aparece mesmo quando ela esta vazia
     cout << cores::LARANJA
-         << "  \\_________________/  Pao de baixo" << cores::RESET << '\n'
-         << cores::LARANJA << "   '---------------'" << cores::RESET << '\n';
+         << " \\_________________/  Pao de baixo" << cores::RESET << '\n'
+         << cores::LARANJA << "  '---------------'" << cores::RESET << '\n';
 }
 
 // ia gerou um main pra eu testar

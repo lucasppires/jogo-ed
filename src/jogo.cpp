@@ -19,7 +19,6 @@
 #include "medicoes.hpp"
 #include "timer.hpp"
 #include "sortings.hpp"
-#include "listaContEst.hpp"
 
 
 using std::cout;
@@ -113,15 +112,33 @@ int numero_aleatorio(int minimo, int maximo)
     return intervalo(gerador);
 }
 
+const char *stringParaCharPtr(const std::string &s)
+{
+    return s.c_str();
+}
+
 // teremos que trocar o nome pra argv[2]. FEITO!
 void gravaJogoNoHistorico(int score, ListaContEst *lista_historico, const char* nomeArqHistorico){
     ofstream arq(nomeArqHistorico, ios::app);
     if (!arq.is_open()) return;
 
-    string nome;
+    std::string nome;
 
-    cout << "Nome: ";
-    getline(cin >> ws, nome);   // ws descarta o '\n' que sobrou de leituras anteriores
+    bool verificacao = true;
+
+    while(verificacao == true){
+        cout << "Nome: ";
+        getline(cin >> ws, nome);   // ws descarta o '\n' que sobrou de leituras anteriores
+
+
+        const char*nomeVerificado = stringParaCharPtr(nome);
+
+        if (strlen(nomeVerificado) <= 20)
+            verificacao = false;
+
+        else 
+            cout << "Insira um nome com no maximo 20 caracteres.\n";
+    }
 
     arq << nome << '\n';                // linha 1: nome
     arq << score << '\n';               // linha 2: score
@@ -307,8 +324,8 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                     break;
                 }
 
-                if (entrada == "67") {
-                    opcao = 67;
+                if (entrada == "0") {
+                    opcao = 0;
                     break;
                 }
 
@@ -324,6 +341,8 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                     const Ingrediente *ing = buscarIngrediente(adicionado);
                     if (ing == nullptr) {
                         cout << "Ingrediente invalido" << endl;
+                        turnoAtual--;  //como uma operacao invalida nao gasta um turno, e em todo laço é acrescentado 1 ao turno, diminuimos 1 aqui para corrigir
+                        atual->paciencia_restante++; //mesma coisa do turno
                     }
                     else if (ing->perecivel) {
                         // carne, ovo, bacon: so adiciona se tiver na heap (e remove de la)
@@ -341,8 +360,8 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                     break;
 
                 case 3:
-                case 67:  //passa de fase na hora
-                    if (opcao == 67 || corrige_pedido(p, &pedidoAtual->receita)) {
+                case 0:  //passa de fase na hora
+                    if (opcao == 0 || corrige_pedido(p, &pedidoAtual->receita)) {
                         if (opcao == 3) {
                             cout << "Pedido correto!" << endl;
                         }
@@ -359,7 +378,10 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                     }
 
                     cout << "Montaste o hamburguer incorretamente! O cliente ficou putasso!" << endl;
-                    atual->paciencia_restante--;
+
+                    // turnoAtual--;  //como enviar nao gasta um turno, e em todo laço é acrescentado 1 ao turno, diminuimos 1 aqui para corrigir
+                    // atual->paciencia_restante++; //mesma coisa do turno
+
                     if (atual->paciencia_restante <= 0) {
                         Cliente removido;
                         desenfileira(&clientes, &removido);
@@ -385,11 +407,15 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                 break;
 
                 case 7:
+                    turnoAtual--;  //como sair nao gasta um turno, e em todo laço é acrescentado 1 ao turno, diminuimos 1 aqui para corrigir
+                    atual->paciencia_restante++; //mesma coisa do turno
                     saida_voluntaria = true;
                 break;
                     
                 default:
                     cout << "Opcao invalida" << endl;
+                    turnoAtual--;  //como uma operacao invalida nao gasta um turno, e em todo laço é acrescentado 1 ao turno, diminuimos 1 aqui para corrigir
+                    atual->paciencia_restante++; //mesma coisa do turno
                 break;
 
             }
