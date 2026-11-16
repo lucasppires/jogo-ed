@@ -2174,3 +2174,35 @@ Mova a definição junto com `#include <string>` para `jogador.hpp`. Em `listaco
 
 ##################################################
 
+Lucas — Prompt 63:
+acho que deu problema no push das ultimas alteracoes. quando tento dar git pull aparece:
+
+remote: Enumerating objects: 14, done.
+remote: Counting objects: 100% (14/14), done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 8 (delta 6), reused 8 (delta 6), pack-reused 0 (from 0)
+Unpacking objects: 100% (8/8), 916 bytes | 8.00 KiB/s, done.
+From https://github.com/lucasppires/jogo-ed
+   494d248..8ff48a6  main       -> origin/main
+Auto-merging src/historico.txt
+CONFLICT (content): Merge conflict in src/historico.txt
+Automatic merge failed; fix conflicts and then commit the result.
+
+Resposta:
+O `git pull` baixou as alterações do GitHub e parou na etapa de juntar as duas versões de `src/historico.txt`. Seu commit do desenho do hambúrguer, `33541b8`, está salvo localmente. O conflito aconteceu porque os dois lados acrescentaram partidas no mesmo ponto do arquivo.
+
+No VS Code, abra o [histórico na linha do conflito](C:/Users/lucas/jogo-ed/src/historico.txt:200047) e clique em **Aceitar Ambas as Alterações** (*Accept Both Changes*). Conferi que são **9 partidas locais e 1 do GitHub**, todas adicionadas no fim. Salve o arquivo e confira se ficaram os dez pares de nome e pontuação, sem as linhas `<<<<<<<`, `=======` e `>>>>>>>`.
+
+Depois, na pasta do projeto, rode:
+
+```bash
+git add -- src/historico.txt
+git status
+git commit -m "Resolve conflito no historico de partidas"
+git push origin main
+```
+
+O `git status` deve indicar que todos os conflitos foram resolvidos e que o merge ainda precisa do commit. Você já está no meio desse merge.
+
+##################################################
+
