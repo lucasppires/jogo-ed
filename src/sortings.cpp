@@ -76,3 +76,185 @@ double mergeSortAdaptado(Jogador vetor[], int tamanhoVetor) {
     double tempoExecucao = timer_parar(&t);
     return tempoExecucao;
 }
+
+
+// Radix Sort para strings em C++
+// Duas versões:
+//   1) LSD (Least Significant Digit): processa do último caractere para o primeiro.
+//      Strings de tamanhos diferentes são tratadas como se fossem "completadas"
+//      com um caractere de valor 0 no final (que vem antes de qualquer letra).
+//   2) MSD (Most Significant Digit): processa do primeiro caractere para o último,
+//      de forma recursiva. Costuma ser mais eficiente para strings de tamanhos variados.
+//
+// Ambas usam counting sort (estável) em cada posição de caractere.
+// Alfabeto: 256 símbolos (ASCII estendido) + 1 posição para "fim da string".
+//
+// Compilar:  g++ -std=c++17 -Wall -O2 radix_sort_strings.cpp -o radix
+// Executar:  ./radix
+ 
+#include <iostream>
+#include <string>
+#include <vector>
+ 
+using namespace std;
+ 
+const int R = 256; // tamanho do alfabeto (ASCII estendido)
+ 
+// Retorna o "dígito" da string s na posição d.
+// Se d passou do fim da string, retorna 0 (fim da string vem antes de qualquer caractere).
+// Caso contrário, retorna o código do caractere + 1 (faixa 1..256).
+int charAt(const string& s, int d) {
+    if (d < (int)s.size())
+        return (unsigned char)s[d] + 1;
+    return 0;
+}
+ 
+// =====================================================================
+// 1) LSD Radix Sort
+// Complexidade: O(W * (n + R)), onde W = tamanho da maior string.
+// =====================================================================
+void radixSortLSD(vector<string>& v) {
+    int n = v.size();
+    if (n <= 1) return;
+ 
+    // Descobre o tamanho da maior string
+    int W = 0;
+    for (const string& s : v)
+        if ((int)s.size() > W) W = s.size();
+ 
+    vector<string> aux(n);
+ 
+    // Counting sort estável em cada posição, da última para a primeira
+    for (int d = W - 1; d >= 0; d--) {
+        vector<int> count(R + 2, 0);
+ 
+        // 1. Conta a frequência de cada caractere na posição d
+        for (int i = 0; i < n; i++)
+            count[charAt(v[i], d) + 1]++;
+ 
+        // 2. Transforma contagens em posições iniciais (soma acumulada)
+        for (int r = 0; r < R + 1; r++)
+            count[r + 1] += count[r];
+ 
+        // 3. Distribui os elementos no vetor auxiliar (mantém a estabilidade)
+        for (int i = 0; i < n; i++)
+            aux[count[charAt(v[i], d)]++] = v[i];
+ 
+        // 4. Copia de volta
+        for (int i = 0; i < n; i++)
+            v[i] = aux[i];
+    }
+}
+
+double radixSortAdaptado(Jogador jogadores[], int tamanhoVetor) {
+    Timer t;
+    timer_iniciar(&t);
+
+    if (tamanhoVetor <= 1) return 0.0;
+
+    // Descobre o tamanho do maior nome
+    int W = 0;
+    for (int i = 0; i < tamanhoVetor; i++)
+        if ((int)jogadores[i].nome_jogador.size() > W)
+            W = jogadores[i].nome_jogador.size();
+
+    Jogador *aux = new (std::nothrow) Jogador[tamanhoVetor];
+    if (aux == nullptr) return 0.0;
+
+    // Counting sort estável em cada posição, da última para a primeira
+    for (int d = W - 1; d >= 0; d--) {
+        vector<int> count(R + 2, 0);
+
+        // 1. Conta a frequência de cada caractere na posição d
+        for (int i = 0; i < tamanhoVetor; i++)
+            count[charAt(jogadores[i].nome_jogador, d) + 1]++;
+
+        // 2. Transforma contagens em posições iniciais (soma acumulada)
+        for (int r = 0; r < R + 1; r++)
+            count[r + 1] += count[r];
+
+        // 3. Distribui os jogadores no vetor auxiliar (mantém a estabilidade)
+        for (int i = 0; i < tamanhoVetor; i++)
+            aux[count[charAt(jogadores[i].nome_jogador, d)]++] = jogadores[i];
+
+        // 4. Copia de volta
+        for (int i = 0; i < tamanhoVetor; i++)
+            jogadores[i] = aux[i];
+    }
+
+    delete[] aux;
+
+    double tempoExecucao = timer_parar(&t);
+    return tempoExecucao;
+}
+ 
+// =====================================================================
+// 2) MSD Radix Sort (recursivo)
+// Ordena v[lo..hi] olhando o caractere na posição d.
+// =====================================================================
+void radixSortMSD(vector<string>& v, vector<string>& aux, int lo, int hi, int d) {
+    if (hi <= lo) return;
+ 
+    vector<int> count(R + 2, 0);
+ 
+    // 1. Conta a frequência
+    for (int i = lo; i <= hi; i++)
+        count[charAt(v[i], d) + 1]++;
+ 
+    // 2. Soma acumulada
+    for (int r = 0; r < R + 1; r++)
+        count[r + 1] += count[r];
+ 
+    // 3. Distribui
+    for (int i = lo; i <= hi; i++)
+        aux[count[charAt(v[i], d)]++] = v[i];
+ 
+    // 4. Copia de volta
+    for (int i = lo; i <= hi; i++)
+        v[i] = aux[i - lo];
+ 
+    // 5. Ordena recursivamente cada grupo que tem o mesmo caractere na posição d.
+    //    O grupo 0 (strings que já terminaram) não precisa ser ordenado de novo.
+    for (int r = 1; r <= R; r++)
+        radixSortMSD(v, aux, lo + count[r - 1], lo + count[r] - 1, d + 1);
+}
+ 
+void radixSortMSD(vector<string>& v) {
+    int n = v.size();
+    if (n <= 1) return;
+    vector<string> aux(n);
+    radixSortMSD(v, aux, 0, n - 1, 0);
+}
+ 
+// =====================================================================
+// Teste
+// =====================================================================
+void imprime(const vector<string>& v) {
+    for (const string& s : v)
+        cout << s << " ";
+    cout << "\n";
+}
+
+/*
+int main() {
+    vector<string> original = {
+        "banana", "maca", "abacaxi", "uva", "manga", "kiwi",
+        "melancia", "ameixa", "abacate", "mamao", "pera", "uva", "a", "ab"
+    };
+
+    cout << "Original:   ";
+    imprime(original);
+
+    vector<string> v1 = original;
+    radixSortLSD(v1);
+    cout << "LSD Radix:  ";
+    imprime(v1);
+
+    vector<string> v2 = original;
+    radixSortMSD(v2);
+    cout << "MSD Radix:  ";
+    imprime(v2);
+
+    return 0;
+}
+*/

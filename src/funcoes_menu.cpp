@@ -12,6 +12,7 @@
 #include <random>
 #include <stdexcept>
 #include "medicoes.hpp"
+#include <vector>
 using std::cout;
 using std::cin;
 using std::scanf;
@@ -209,32 +210,66 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico)
         return;
     }
 
-    //imprimir_ListaContEst(lista_historico);
+    int res;
+
     Jogador *vetor = new Jogador[lista_historico->tamanho];
 
     int tamanhoVetor = lista_para_vetor(lista_historico, vetor);
 
-    double tempo = mergeSortAdaptado(vetor, tamanhoVetor);
+    cout << "Como queres visualizar o historico? Por score [1] ou por nome [2]:" << endl;
+    cin >> res;
 
-    met.tamanhoOrdenacao = tamanhoVetor;   // atualiza o que sai no Relatorio de Desempenho
-    met.tempoOrdenacao = tempo;
+    switch (res){
+        case 1:
+        {
+            double tempo = mergeSortAdaptado(vetor, tamanhoVetor);
 
-    
-    if (lista_historico->tamanho < 10) 
-    {
-        imprime_de_1_a_9(vetor, tamanhoVetor); //se tiver entre 1 e 9 jogadores, imprimimos todos eles
+            met.tamanhoOrdenacao = tamanhoVetor;   // atualiza o que sai no Relatorio de Desempenho
+            met.tempoOrdenacao = tempo;
+
+            
+            if (lista_historico->tamanho < 10) 
+            {
+                imprime_de_1_a_9(vetor, tamanhoVetor); //se tiver entre 1 e 9 jogadores, imprimimos todos eles
+            }
+            else
+            {
+            imprime_dez_primeiros(vetor); //se tiver 10 ou mais, imprimimos apenas os top 10
+            }
+
+            printf("\nOrdenou %d jogadores.", tamanhoVetor);
+            printf("\nTempo para ordenar (Merge sort): %fs\n", tempo);
+
+            delete[] vetor;
+        }
+        break;
+
+        case 2:
+        {
+            double tempoOrdString = radixSortAdaptado(vetor, tamanhoVetor);
+
+            if (lista_historico->tamanho < 10) 
+            {
+                imprime_de_1_a_9(vetor, tamanhoVetor); //se tiver entre 1 e 9 jogadores, imprimimos todos eles
+            }
+            else
+            {
+            imprime_dez_primeiros(vetor); //se tiver 10 ou mais, imprimimos apenas os top 10
+            }
+
+            printf("\nOrdenou %d jogadores.", tamanhoVetor);
+            printf("\nTempo para ordenar (Radix sort LSD): %fs\n", tempoOrdString);
+
+            delete[] vetor;
+
+        }
+        break;
+
+        default:
+        break;
+
+
     }
-    else
-    {
-       imprime_dez_primeiros(vetor); //se tiver 10 ou mais, imprimimos apenas os top 10
-    }
-
-
-    printf("\nOrdenou %d jogadores.", tamanhoVetor);
-    printf("\nTempo para ordenar (Merge sort): %fs\n", tempo);
-
-    delete[] vetor;
-
     cout << "\nSelecione uma opcao:\n";
     cout << "1. Jogar\n";
     cout << "2. Voltar ao menu\n";

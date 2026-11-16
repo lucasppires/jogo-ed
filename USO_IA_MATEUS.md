@@ -148,3 +148,16 @@ g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/leitura_de_arquivos.cpp src/li
    - O único ponto fixo era a gravação: gravaJogoNoHistorico abria "src/historico.txt". Com isso, rodar com outro histórico (por exemplo hist_10k.txt) faria o jogo ler de um arquivo e gravar em outro.
    - Sugestão implementada: gravaJogoNoHistorico recebe const char *nomeArqHistorico e passa esse nome ao ofstream; novoJogo, que já recebia argv e não o usava, passa argv[2] na chamada. Não foi preciso mudar a assinatura de novoJogo.
    - Observações do Claude: "medicoes.log" continua fixo (só importa se a especificação pedir o log como argumento); o medicoes.cpp tem um main de rascunho com TODOs, que causa "multiple definition of main" se entrar na mesma compilação do teste_menu.cpp; o src/main.cpp está vazio, e se o main definitivo for para lá, o uso de argv[1] e argv[2] precisa ir junto.
+25. (Mateus) Pedi ao Claude para adaptar o Radix Sort para strings, no src/sortings.cpp, para ordenar o vetor de Jogador, mexendo só na função radixSortAdaptado (15/11/2026). O que foi feito:
+   - O Claude reescreveu a função, que agora ordena os jogadores por nome_jogador em ordem alfabética com o radix LSD (do último caractere para o primeiro), aplicando um counting sort estável em cada posição e reaproveitando a função charAt e a constante R.
+   - Onde o código original lia v[i], agora lê jogadores[i].nome_jogador. O vetor auxiliar guarda o Jogador inteiro, então o score acompanha o nome.
+   - O vector<string> aux virou Jogador *aux = new (std::nothrow) Jogador[tamanhoVetor], liberado com delete[] no fim, igual ao mergeSortAdaptado. O n virou tamanhoVetor.
+   - A função mede o próprio tempo com Timer, timer_iniciar e timer_parar e retorna esse tempo como double.
+   - Erros de compilação corrigidos no meu rascunho: return; sem valor em uma função double (agora retorna 0.0) e o ; que faltava depois de timer_iniciar(&t).
+   - Ainda pendente: declarar double radixSortAdaptado(Jogador vetor[], int tamanhoVetor); no sortings.hpp para poder chamar a função no funcoes_menu.cpp; a comparação é pelo código ASCII, então maiúsculas vêm antes de minúsculas (se isso importar, usar tolower dentro do charAt); a função ainda não foi compilada nem testada.
+26. (Mateus) Perguntei ao Claude por que o src/sortings.hpp não compilava depois de declarar o radixSortAdaptado e as funções do Radix Sort (15/11/2026). O que foi explicado e feito:
+   - Erro: "'vector' was not declared in this scope". Os protótipos usavam vector<string>, mas o <vector> não era incluído no header, e no sortings.cpp o #include <vector> vinha depois do #include "sortings.hpp".
+   - Por minha conta, adicionei #include <string> e #include <vector> no sortings.hpp.
+   - O Claude trocou vector<string> e string por std::vector<std::string> e std::string nos protótipos, para o header não depender de um using namespace std em quem o inclui.
+   - O Claude compilou o sortings.cpp sozinho e o projeto inteiro (teste_menu com medicoes.cpp), com -Wall -std=c++17, sem erros nem avisos. Isso resolve a pendência do item 25 sobre declarar o radixSortAdaptado no header.
+   - Ainda pendente: chamar radixSortAdaptado no funcoes_menu.cpp e testar a ordenação; maiúsculas continuam vindo antes de minúsculas.
