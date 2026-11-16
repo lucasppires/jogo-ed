@@ -18,11 +18,11 @@ void imprimir(const ListaEnc *lista);
 
 Ingrediente buscar(const ListaEnc *lista, char simbolo);
 const Ingrediente *buscarIngrediente(char simbolo);
+int conta_turnos_pedido(const ListaEnc *receita);
 
 int inserirInicio(ListaEnc *lista, Ingrediente ing);
 int inserirFim(ListaEnc *lista, Ingrediente ing);
 int removerPorSimbolo(ListaEnc *lista, char simbolo);
-
 
 void destruir(ListaEnc *lista);
 

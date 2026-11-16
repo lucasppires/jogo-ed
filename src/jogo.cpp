@@ -156,7 +156,9 @@ static void mostrarEstoque(const FilaPrioridade *carnes,
                            const int quantidadesNaoPereciveis[],
                            int turnoAtual)
 {
-    std::cout << "\nESTOQUE - Turno " << turnoAtual << '\n';
+    std::cout << cores::AZUL_CLARO << "\nESTOQUE - Turno " << turnoAtual << cores::RESET;
+
+    pula_linha(1);
 
     mostrarPerecivel("Carne", carnes, turnoAtual);
     mostrarPerecivel("Ovo frito", ovos, turnoAtual);
@@ -200,7 +202,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
         }
 
         // vetor de numeros aleatorios, sorteamos uma paciencia para cada cliente, mas os valores podem se repetir
-        pacienciaInicial[i] = numero_aleatorio(9, 15); //talvez criar algum algortimo para determinar a paciencia de forma mais adequada!!
+        pacienciaInicial[i] = conta_turnos_pedido(&pedidoAtual->receita) + 2; //usamos essa funcao para contar o numero minimo de turnos e somamos 2, para nao ser tao dificil tb
 
         // criamos o cliente
         Cliente cliente_atual = criarCliente(i+1, pacienciaInicial[i], pedidoAtual);
@@ -214,8 +216,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
         }
     }
 
-    cout << "Partida iniciada com "
-         << tamanho(&clientes) << " clientes.\n";
+    cout << "Partida iniciada com " << tamanho(&clientes) << " clientes.\n";
 
     turnoAtual = 0;
 
@@ -343,7 +344,6 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                         esvaziarPilha(p);
 
                         player->score += atual->paciencia_restante * 10;
-                        turnoAtual = 0;
 
                         cout << "Cliente " << atendido.id
                              << " foi atendido e saiu da fila." << endl;
@@ -377,7 +377,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                 break;
             
                 default:
-                    cout << "Opcao invalida" << endl;   //as vezes da um bug que faz o laço ficar em loop quando apertamos alguma opcao invalida
+                    cout << "Opcao invalida" << endl;
                 break;
 
             }

@@ -236,3 +236,10 @@ Histórico:
 2. novoJogo, que já recebia argv, passa argv[2] para gravaJogoNoHistorico. Assim, o jogo grava no mesmo arquivo de histórico que foi lido na inicialização. A assinatura de novoJogo não mudou.
 
 Pendente: "medicoes.log" continua com nome fixo no teste_menu.cpp e no jogo.cpp; o medicoes.cpp tem um main de rascunho, que gera "multiple definition of main" se for compilado junto com o teste_menu.cpp; o src/main.cpp está vazio.
+
+Paciência inicial e contagem de turnos:
+
+1. `conta_turnos_ingrediente` conta 1 turno para adicionar o ingrediente e mais 1 quando ele exige preparo.
+2. `conta_turnos_pedido` percorre a lista encadeada da receita e soma o custo dos ingredientes, começando com 1 turno para enviar o pedido.
+3. Em `novoJogo`, a paciência inicial de cada cliente passou a ser o custo do seu pedido mais 2 turnos de margem.
+4. `conta_turnos_pedido` recebe `const ListaEnc *` e `conta_turnos_ingrediente` recebe `const Ingrediente *`. As declarações e chamadas foram ajustadas, e a dependência circular entre `listaenc.hpp` e `pedido.hpp` foi removida.

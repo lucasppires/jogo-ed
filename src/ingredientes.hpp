@@ -72,5 +72,6 @@ inline const Ingrediente BACON{
 
 
 const Ingrediente *buscarIngrediente(char simbolo);
+int conta_turnos_ingrediente(const Ingrediente *ingrediente);
 
 #endif
