@@ -122,8 +122,12 @@ double ordena_vetor_pelo_score_bubble_sort(
 }
 
 // Usar somente quando houver pelo menos dez registros.
-void imprime_dez_primeiros(Jogador vetor[]) {
-    std::cout << "RANKING (pelo score)\n";
+void imprime_dez_primeiros(Jogador vetor[], bool ehPorScore) {
+    if (ehPorScore)
+        std::cout << "RANKING (pelo score)\n";
+
+    else
+        std::cout << "ORDENANDO PELOS NOMES\n"; 
 
     for (int i = 0; i < 10; i++) 
     {
@@ -140,8 +144,12 @@ void imprime_dez_primeiros(Jogador vetor[]) {
     }
 }
 
-void imprime_de_1_a_9(Jogador vetor[], int tamanhoVetor) {
-    std::cout << "RANKING (pelo score)\n";
+void imprime_de_1_a_9(Jogador vetor[], int tamanhoVetor, bool ehPorScore) {
+    if (ehPorScore)
+        std::cout << "RANKING (pelo score)\n";
+
+    else
+        std::cout << "ORDENANDO PELOS NOMES\n"; 
 
     for (int i = 0; i < tamanhoVetor; i++) 
     {

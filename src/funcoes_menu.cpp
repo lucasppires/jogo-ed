@@ -169,6 +169,7 @@ void historico(int& estado_menu, ListaContEst *lista_historico)
     }
 }
 
+/*
 void historicov2(int& estado_menu, ListaContEst *lista_historico)
 {
     //imprimir_ListaContEst(lista_historico);
@@ -199,6 +200,7 @@ void historicov2(int& estado_menu, ListaContEst *lista_historico)
         estado_menu = MENU;
     }
 }
+*/
 
 //usa merge sort
 void historicov3(int& estado_menu, ListaContEst *lista_historico)
@@ -220,22 +222,25 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico)
     cout << "Como queres visualizar o historico? Por score [1] ou por nome [2]:" << endl;
     cin >> res;
 
+    bool ehPorScore;
+
     switch (res){
-        case 1:
+        case 1:  // por score
         {
             double tempo = mergeSortAdaptado(vetor, tamanhoVetor);
 
             met.tamanhoOrdenacao = tamanhoVetor;   // atualiza o que sai no Relatorio de Desempenho
             met.tempoOrdenacao = tempo;
 
+            ehPorScore = true;
             
             if (lista_historico->tamanho < 10) 
             {
-                imprime_de_1_a_9(vetor, tamanhoVetor); //se tiver entre 1 e 9 jogadores, imprimimos todos eles
+                imprime_de_1_a_9(vetor, tamanhoVetor, ehPorScore); //se tiver entre 1 e 9 jogadores, imprimimos todos eles
             }
             else
             {
-            imprime_dez_primeiros(vetor); //se tiver 10 ou mais, imprimimos apenas os top 10
+            imprime_dez_primeiros(vetor, ehPorScore); //se tiver 10 ou mais, imprimimos apenas os top 10
             }
 
             printf("\nOrdenou %d jogadores.", tamanhoVetor);
@@ -244,17 +249,19 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico)
         }
         break;
 
-        case 2:
+        case 2:     // por ordem alfabetica
         {
             double tempoOrdString = radixSortAdaptado(vetor, tamanhoVetor);
 
+            ehPorScore = false;
+
             if (lista_historico->tamanho < 10) 
             {
-                imprime_de_1_a_9(vetor, tamanhoVetor); //se tiver entre 1 e 9 jogadores, imprimimos todos eles
+                imprime_de_1_a_9(vetor, tamanhoVetor, ehPorScore); //se tiver entre 1 e 9 jogadores, imprimimos todos eles
             }
             else
             {
-            imprime_dez_primeiros(vetor); //se tiver 10 ou mais, imprimimos apenas os top 10
+            imprime_dez_primeiros(vetor, ehPorScore); //se tiver 10 ou mais, imprimimos apenas os top 10
             }
 
             printf("\nOrdenou %d jogadores.", tamanhoVetor);
