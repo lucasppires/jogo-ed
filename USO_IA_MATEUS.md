@@ -167,3 +167,6 @@ g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/leitura_de_arquivos.cpp src/li
    - Como o counting sort é estável, nomes que só diferem em maiúsculas e minúsculas ("Ana" e "ana") mantêm a ordem em que estavam.
    - O Claude compilou o sortings.cpp com -Wall -Wextra -std=c++17, sem erros nem avisos. A ordenação ainda não foi testada.
    - Limitação: letras acentuadas em UTF-8 (como "É") ocupam mais de um byte e não são convertidas pelo tolower, então nomes que começam com acento vão para o fim da lista.
+28. (Mateus) Pedi ajuda ao Claude para gravar no medicoes.log as métricas do carregamento logo após carregar os pedidos e o histórico, antes do menu, como pede a seção 5.1 (16/11/2026). O que foi explicado e feito:
+   - Problema apontado: o iniciaLog só recriava o arquivo vazio, então, se o programa fosse aberto e encerrado sem jogar, o medicoes.log ficava com 0 bytes.
+   - O Claude escreveu uma nova versão do iniciaLog, em src/medicoes.cpp, que grava no log, com formatação, as métricas que a função já recebia: nós inseridos, altura resultante, rotações (inserção), tempo de carregamento e entradas carregadas do histórico. A contagem dessas métricas não foi alterada, e o main.cpp também não precisou mudar.

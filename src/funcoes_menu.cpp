@@ -232,6 +232,8 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico)
             met.tamanhoOrdenacao = tamanhoVetor;   // atualiza o que sai no Relatorio de Desempenho
             met.tempoOrdenacao = tempo;
 
+            registraOrdenacao("medicoes.log", tamanhoVetor, "Merge Sort (pontuacao)", tempo);
+
             ehPorScore = true;
             
             if (lista_historico->tamanho < 10) 
@@ -252,6 +254,10 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico)
         case 2:     // por ordem alfabetica
         {
             double tempoOrdString = radixSortAdaptado(vetor, tamanhoVetor);
+
+            met.tamanhoOrdenacao = tamanhoVetor;
+            met.tempoOrdenacao = tempoOrdString;
+            registraOrdenacao("medicoes.log", tamanhoVetor, "Ordenacao por nome", tempoOrdString);
 
             ehPorScore = false;
 

@@ -53,11 +53,23 @@ static std::string textoRelatorio(const Metricas& m) {
 }
  
 bool iniciaLog(const std::string& caminho, const Metricas& m) {
-    std::ofstream log(caminho);                  // SEM app: apaga e recria
+    std::ofstream log(caminho);                  // SEM app: apaga e recria a cada execucao
     if (!log) {
         std::cerr << "Erro ao criar " << caminho << "\n";
         return false;
     }
+
+    log << std::fixed;
+    log << "=== MEDICOES APOS O CARREGAMENTO ===\n";
+    log << "-- AVL: carregamento --\n";
+    log << "Nos inseridos: " << m.nosInseridos << "\n";
+    log << "Altura resultante: " << m.alturaAVL << "\n";
+    log << "Rotacoes (insercao): " << m.rotacoes << "\n";
+    log << "Tempo de carregamento: " << std::setprecision(6) << m.tempoCarga << " s\n";
+    log << "-- Historico: carregamento --\n";
+    log << "Entradas carregadas: " << m.entradasHistorico << "\n";
+    log << "====================================\n\n";
+
     return true;
 }
  
