@@ -1,13 +1,13 @@
 #include <iostream>
 #include "heap.hpp"
 #include "ingredientes.hpp"
-#include "teste_pilha.hpp"
+#include "hamburguer.hpp"
 
 using namespace std;
 
 // farei uma min heap organizada em funcao do turno de vencimento!
 
-// compilar g++ src/teste_heap.cpp src/heap.cpp src/ingredientes.cpp -o src/teste_heap.exe -Wall -std=c++17
+// compilar g++ src/preparo.cpp src/heap.cpp src/ingredientes.cpp -o src/teste_heap.exe -Wall -std=c++17
 // executar src/teste_heap.exe
 
 int calculaTurnoVencimento(int turnoAtual, const Ingrediente *ing){

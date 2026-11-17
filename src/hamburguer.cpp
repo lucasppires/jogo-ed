@@ -4,7 +4,7 @@
 #include <iostream>
 
 // comando de compilação:
-// g++ -DTESTE_PILHA_MAIN teste_pilha.cpp pilha.cpp ingredientes.cpp listaenc.cpp -o teste_pilha -Wall -std=c++17
+// g++ -DTESTE_PILHA_MAIN hamburguer.cpp pilha.cpp ingredientes.cpp listaenc.cpp -o teste_pilha -Wall -std=c++17
 // .\teste_pilha.exe
 
 
@@ -109,7 +109,7 @@ inline const Ingrediente BACON{
         aux = TOMATE;
         break;
 
-        // o controle de estoque (heap) eh feito em usaIngredientePerecivel (teste_heap.cpp)
+        // o controle de estoque (heap) eh feito em usaIngredientePerecivel (preparo.cpp)
         case 'n':
         aux = CARNE;
         break;

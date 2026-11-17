@@ -20,7 +20,7 @@
 #include "jogo.hpp"
 #include "fila.hpp"
 #include "pilha.hpp"
-#include "teste_heap.hpp"
+#include "preparo.hpp"
 #include "heap.hpp"
 #include "medicoes.hpp"
 
@@ -31,9 +31,9 @@ using std::cin;
 using std::endl;
 using std::scanf;
 
-// compilar:g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/jogo.cpp src/fila.cpp src/leitura_de_arquivos.cpp src/listacontest.cpp src/listaenc.cpp src/ingredientes.cpp src/avl.cpp src/hash.cpp src/timer.cpp src/sortings.cpp src/heap.cpp src/pilha.cpp src/teste_pilha.cpp src/teste_heap.cpp src/medicoes.cpp -I src -o tests/teste_menu.exe -Wall -std=c++17
+// compilar:g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/jogo.cpp src/fila.cpp src/leitura_de_arquivos.cpp src/listacontest.cpp src/listaenc.cpp src/ingredientes.cpp src/avl.cpp src/hash.cpp src/timer.cpp src/sortings.cpp src/heap.cpp src/pilha.cpp src/hamburguer.cpp src/preparo.cpp src/medicoes.cpp -I src -o tests/teste_menu.exe -Wall -std=c++17
 
-// rodar: .\tests\teste_menu.exe src\pedidos.txt src\historico.txt
+// rodar: .\tests\teste_menu.exe data\pedidos.txt data\historico.txt
 
 Metricas met;
 
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 
     met.entradasHistorico = historicoslidos;
 
-    iniciaLog("medicoes.log", met); //cria o arquivo de log e escreve as metricas que ja temos nele.
+    iniciaLog("data/medicoes.log", met); //cria o arquivo de log e escreve as metricas que ja temos nele.
     medirOrdenacaoHistorico(&lista_historico, met);
 
     TabelaEnc cache; 

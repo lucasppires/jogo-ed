@@ -9,13 +9,14 @@
 #include "funcoes_menu.hpp"
 #include <random>
 #include <stdexcept>
-#include "teste_heap.hpp"
+#include "preparo.hpp"
 #include <fstream>
+#include <cstring>
 #include "avl.hpp"
 #include "hash.hpp"
 #include "heap.hpp"
 #include "pilha.hpp"
-#include "teste_pilha.hpp"
+#include "hamburguer.hpp"
 #include "medicoes.hpp"
 #include "timer.hpp"
 #include "sortings.hpp"
@@ -439,7 +440,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
     cout << '\n';
     gravaJogoNoHistorico(player->score, lista_historico, argv[2]);
     exibirEstatisticasHash(cache, &met);
-    geraRelatorio("medicoes.log", met);
+    geraRelatorio("data/medicoes.log", met);
     destruir(&clientes);
 
 }

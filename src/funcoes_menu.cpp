@@ -232,7 +232,7 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico)
             met.tamanhoOrdenacao = tamanhoVetor;   // atualiza o que sai no Relatorio de Desempenho
             met.tempoOrdenacao = tempo;
 
-            registraOrdenacao("medicoes.log", tamanhoVetor, "Merge Sort (scores)", tempo);
+            registraOrdenacao("data/medicoes.log", tamanhoVetor, "Merge Sort (scores)", tempo);
 
             ehPorScore = true;
             
@@ -257,7 +257,7 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico)
 
             met.tamanhoOrdenacao = tamanhoVetor;
             met.tempoOrdenacao = tempoOrdString;
-            registraOrdenacao("medicoes.log", tamanhoVetor, "Quick Sort (nomes)", tempoOrdString);
+            registraOrdenacao("data/medicoes.log", tamanhoVetor, "Quick Sort (nomes)", tempoOrdString);
 
             ehPorScore = false;
 
