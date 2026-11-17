@@ -268,3 +268,76 @@ int main() {
     return 0;
 }
 */
+
+
+// quick sort:
+
+int particionar(int a[], int esq, int dir) {
+    int pivo = a[dir];   /* x = A[b]: o último elemento é o pivô */
+    int i = esq - 1;
+    int j, tmp;
+
+    for (j = esq; j < dir; j++) {
+        if (a[j] <= pivo) {
+            i++;
+            tmp = a[i]; a[i] = a[j]; a[j] = tmp;   /* swap(A[i], A[j]) */
+        }
+    }
+    tmp = a[i + 1]; a[i + 1] = a[dir]; a[dir] = tmp; /* pivô para a posição final */
+    return i + 1;
+}
+
+void quickSort(int a[], int esq, int dir) {
+    if (esq >= dir) return;              /* conquista: 0 ou 1 elemento */
+    int p = particionar(a, esq, dir);    /* divisão: faz o trabalho */
+    quickSort(a, esq, p - 1);
+    quickSort(a, p + 1, dir);            /* recombinação: nada a fazer */
+}
+
+// feito por IA
+// Compara dois nomes ignorando maiusculas/minusculas (mesmo criterio do radix).
+// Retorna < 0 se a vem antes de b, 0 se sao iguais, > 0 se a vem depois de b.
+int compararNomes(const string& a, const string& b) {
+    int n = (a.size() < b.size()) ? a.size() : b.size();
+    for (int k = 0; k < n; k++) {
+        int ca = tolower((unsigned char)a[k]);
+        int cb = tolower((unsigned char)b[k]);
+        if (ca != cb) return ca - cb;
+    }
+    return (int)a.size() - (int)b.size();   /* prefixo menor vem antes ("ab" < "abc") */
+}
+
+int particionarAdaptado(Jogador vetor[], int esq, int dir) {
+    string pivo = vetor[dir].nome_jogador;   /* o último elemento é o pivô */
+    int i = esq - 1;
+    Jogador tmp;
+
+    for (int j = esq; j < dir; j++) {
+        if (compararNomes(vetor[j].nome_jogador, pivo) <= 0) {
+            i++;
+            tmp = vetor[i]; vetor[i] = vetor[j]; vetor[j] = tmp;   /* swap(A[i], A[j]) */
+        }
+    }
+    tmp = vetor[i + 1]; vetor[i + 1] = vetor[dir]; vetor[dir] = tmp; /* pivô para a posição final */
+    return i + 1;
+}
+
+void quickSortRecAdaptado(Jogador vetor[], int esq, int dir) {
+    if (esq >= dir) return;                          /* conquista: 0 ou 1 elemento */
+    int p = particionarAdaptado(vetor, esq, dir);    /* divisão: faz o trabalho */
+    quickSortRecAdaptado(vetor, esq, p - 1);
+    quickSortRecAdaptado(vetor, p + 1, dir);         /* recombinação: nada a fazer */
+}
+
+double quickSortAdaptado(Jogador vetor[], int tamanhoVetor) {
+    Timer t;
+    timer_iniciar(&t);
+
+    if (tamanhoVetor <= 1) return 0.0;
+
+    quickSortRecAdaptado(vetor, 0, tamanhoVetor - 1);
+
+    double tempoExecucao = timer_parar(&t);
+    return tempoExecucao;
+}
+

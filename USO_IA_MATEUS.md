@@ -170,3 +170,11 @@ g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/leitura_de_arquivos.cpp src/li
 28. (Mateus) Pedi ajuda ao Claude para gravar no medicoes.log as métricas do carregamento logo após carregar os pedidos e o histórico, antes do menu, como pede a seção 5.1 (16/11/2026). O que foi explicado e feito:
    - Problema apontado: o iniciaLog só recriava o arquivo vazio, então, se o programa fosse aberto e encerrado sem jogar, o medicoes.log ficava com 0 bytes.
    - O Claude escreveu uma nova versão do iniciaLog, em src/medicoes.cpp, que grava no log, com formatação, as métricas que a função já recebia: nós inseridos, altura resultante, rotações (inserção), tempo de carregamento e entradas carregadas do histórico. A contagem dessas métricas não foi alterada, e o main.cpp também não precisou mudar.
+29. (Mateus) Pedi ao Claude para escrever, no src/sortings.cpp, logo abaixo do quickSort de inteiros, o Quick Sort adaptado para ordenar o vetor de Jogador pelo nome, sem mexer em outras partes do código (16/11/2026). O que foi feito:
+   - O Claude criou a função compararNomes, que compara dois nomes letra por letra usando tolower, com o mesmo critério do radixSortAdaptado ("ana" e "Ana" ficam juntos, e "Zé" não vem antes de "ana"). Se um nome é prefixo do outro, o menor vem antes ("ab" antes de "abc").
+   - Foi criada a função particionarAdaptado, igual ao particionar original (o pivô é o último elemento), mas que compara o nome_jogador com compararNomes e troca o Jogador inteiro, para o score acompanhar o nome.
+   - Também foram criadas a quickSortRecAdaptado, que faz a recursão, e a quickSortAdaptado(Jogador vetor[], int tamanhoVetor), que mede o tempo com o Timer e devolve um double, no mesmo padrão do mergeSortAdaptado e do radixSortAdaptado.
+   - Os nomes terminam em "Adaptado" para não se confundirem com as versões para int.
+   - O código não foi compilado nem testado.
+   - Pendente, por minha conta: declarar quickSortAdaptado no sortings.hpp e chamá-la onde for usada.
+   - Limitação: o Quick Sort não é estável, então jogadores com o mesmo nome podem trocar de ordem entre si.

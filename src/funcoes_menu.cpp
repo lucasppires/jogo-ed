@@ -232,7 +232,7 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico)
             met.tamanhoOrdenacao = tamanhoVetor;   // atualiza o que sai no Relatorio de Desempenho
             met.tempoOrdenacao = tempo;
 
-            registraOrdenacao("medicoes.log", tamanhoVetor, "Merge Sort (pontuacao)", tempo);
+            registraOrdenacao("medicoes.log", tamanhoVetor, "Merge Sort (scores)", tempo);
 
             ehPorScore = true;
             
@@ -246,18 +246,18 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico)
             }
 
             printf("\nOrdenou %d jogadores.", tamanhoVetor);
-            printf("\nTempo para ordenar (Merge sort): %fs\n", tempo);
+            printf("\nTempo para ordenar (Merge Sort): %fs\n", tempo);
 
         }
         break;
 
         case 2:     // por ordem alfabetica
         {
-            double tempoOrdString = radixSortAdaptado(vetor, tamanhoVetor);
+            double tempoOrdString = quickSortAdaptado(vetor, tamanhoVetor);
 
             met.tamanhoOrdenacao = tamanhoVetor;
             met.tempoOrdenacao = tempoOrdString;
-            registraOrdenacao("medicoes.log", tamanhoVetor, "Ordenacao por nome", tempoOrdString);
+            registraOrdenacao("medicoes.log", tamanhoVetor, "Quick Sort (nomes)", tempoOrdString);
 
             ehPorScore = false;
 
@@ -271,7 +271,7 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico)
             }
 
             printf("\nOrdenou %d jogadores.", tamanhoVetor);
-            printf("\nTempo para ordenar (Radix sort LSD): %fs\n", tempoOrdString);
+            printf("\nTempo para ordenar (Quick Sort): %fs\n", tempoOrdString);
 
         }
         break;

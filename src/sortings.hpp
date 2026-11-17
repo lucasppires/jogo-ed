@@ -20,4 +20,11 @@ void radixSortMSD(std::vector<std::string>& v, std::vector<std::string>& aux, in
 void radixSortMSD(std::vector<std::string>& v);
 void imprime(const std::vector<std::string>& v);
 
+int particionar(int a[], int esq, int dir);
+void quickSort(int a[], int esq, int dir);
+int compararNomes(const string& a, const string& b);
+int particionarAdaptado(Jogador vetor[], int esq, int dir);
+void quickSortRecAdaptado(Jogador vetor[], int esq, int dir);
+double quickSortAdaptado(Jogador vetor[], int tamanhoVetor);
+
 #endif /* SORTINGS_HPP */
