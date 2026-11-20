@@ -29,8 +29,10 @@ using std::endl;
 
 using namespace std;
 
-#define N_MAX_CLIENTES 10
+#define N_MAX_CLIENTES 100
 #define N_CLIENTES 3
+
+
 
 // essa funcao deve rodar no inicio de cada turno
 void removeEstragadosHeap(int turnoAtual, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons)
@@ -190,7 +192,8 @@ static void mostrarEstoque(const FilaPrioridade *carnes,
               << "Mostarda, Picles e Alface\n";
 }
 
-void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], PilhaEnc *p, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, int turnoAtual, int quantidadesPereciveisDisponiveis[], Jogador *player, Metricas &met, ListaContEst *lista_historico) {
+void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], PilhaEnc *p, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, int turnoAtual, int quantidadesPereciveisDisponiveis[], Jogador *player, Metricas &met, ListaContEst *lista_historico, int dificuldade)
+ {
     estado_menu = MENU;
 
     if (raiz == nullptr)
@@ -220,8 +223,22 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
         }
 
         // vetor de numeros aleatorios, sorteamos uma paciencia para cada cliente, mas os valores podem se repetir
-        pacienciaInicial[i] = conta_turnos_pedido(&pedidoAtual->receita) + 2; //usamos essa funcao para contar o numero minimo de turnos e somamos 2, para nao ser tao dificil tb
 
+        pacienciaInicial[i] = conta_turnos_pedido(&pedidoAtual->receita);
+
+        if (dificuldade == FACIL)
+        {
+             pacienciaInicial[i] += 4; //usamos essa funcao para contar o numero minimo de turnos e somamos 2, para nao ser tao dificil tb
+        }
+        else if (dificuldade == NORMAL)
+        {
+            pacienciaInicial[i] += 2;
+        }
+        else if (dificuldade == DIFICIL)
+        {
+            pacienciaInicial[i] += 0;
+        }
+        
         // criamos o cliente
         Cliente cliente_atual = criarCliente(i+1, pacienciaInicial[i], pedidoAtual);
 
@@ -364,14 +381,14 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                 case 0:  //passa de fase na hora
                     if (opcao == 0 || corrige_pedido(p, &pedidoAtual->receita)) {
                         if (opcao == 3) {
-                            cout << "Pedido correto!" << endl;
+                            cout << cores::VERDE_CLARO << "Pedido correto!" << cores::RESET << endl;
                         }
 
                         Cliente atendido;
                         desenfileira(&clientes, &atendido);
                         esvaziarPilha(p);
 
-                        player->score += atual->paciencia_restante * 10;
+                        player->score += atendido.paciencia_restante * (10*((float) dificuldade/2)); //se é facil mult por 1; normal mult por 1.5 e difiil mult por 2
 
                         cout << "Cliente " << atendido.id
                              << " foi atendido e saiu da fila." << endl;

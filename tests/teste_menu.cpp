@@ -79,11 +79,13 @@ int main(int argc, char *argv[])
     medirOrdenacaoHistorico(&lista_historico, met);
 
     TabelaEnc cache; 
-    encInicializar(&cache, 101); //cria e inicializa a tabela hash que vai armazenar os pedidos sorteados
+    encInicializar(&cache, 1009); //cria e inicializa a tabela hash que vai armazenar os pedidos sorteados, com m == 1009
 
     Jogador player;
 
     int ESTADO_MENU = MENU; //variavel que armazena o estado atual do menu, inicializado como MENU
+
+    int DIFICULDADE = 0; //determina se é facil , medio ou dificil
 
     while (ESTADO_MENU != SAIR)
         {
@@ -95,6 +97,38 @@ int main(int argc, char *argv[])
 
         if (ESTADO_MENU == NOVO_JOGO)
         {
+
+            pula_linha(2);
+
+            cout << cores::VERDE_CLARO << "1 - Facil\n"
+                 << cores::AMARELO_CLARO << "2 - Normal\n"
+                 << cores::VERMELHO_CLARO << "3 - Dificil\n\n"
+                 << cores::RESET;
+
+            std::string opcaoDificuldade;
+            while (true) {
+                cout << "Selecione um nivel de dificuldade: ";
+
+                if (!(cin >> opcaoDificuldade)) {
+                    liberar_recursos(raiz, &lista_historico, &cache);
+                    return 0;
+                }
+
+                // aceita somente um digito entre 1 e 3
+                if (opcaoDificuldade.size() == 1 &&
+                    opcaoDificuldade[0] >= '1' && opcaoDificuldade[0] <= '3') {
+                    // os valores de FACIL, NORMAL e DIFICIL sao 2, 3 e 4
+                    DIFICULDADE = opcaoDificuldade[0] - '0' + 1;
+                    break;
+                }
+
+                cout << cores::VERMELHO_CLARO
+                     << "Opcao invalida! Escolha 1, 2 ou 3.\n"
+                     << cores::RESET;
+            }
+
+            pula_linha(2);
+
             PilhaEnc hamburguer;
             inicializa(&hamburguer);
 
@@ -104,7 +138,7 @@ int main(int argc, char *argv[])
             fpInicializar(&bacons);
 
             int quantidades[4] = {0, 0, 0, 0}; // s, q, c, t
-            novoJogo(raiz, &cache, ESTADO_MENU, argv, &hamburguer, &carnes, &ovos, &bacons, 0, quantidades, &player, met, &lista_historico);
+            novoJogo(raiz, &cache, ESTADO_MENU, argv, &hamburguer, &carnes, &ovos, &bacons, 0, quantidades, &player, met, &lista_historico, DIFICULDADE);
             ESTADO_MENU = MENU;
         }
         else if (ESTADO_MENU == COMO_JOGAR)

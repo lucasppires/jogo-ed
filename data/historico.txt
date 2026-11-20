@@ -200064,3 +200064,13 @@ ketchup
 450
 Farmador de aura
 420
+b-tree
+40
+B+-tree
+720
+,
+430
+Huffmann
+23520
+Patricia
+570

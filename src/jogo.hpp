@@ -14,11 +14,18 @@ struct Jogador {
     int score;
 };
 
+typedef enum {
+    FACIL = 2,
+    NORMAL = 3,
+    DIFICIL = 4
+} DIFICULDADE;
+
 struct ListaContEst;   // declaração antecipada: definida em listacontest.hpp
 
 void gravaJogoNoHistorico(int score, ListaContEst *lista_historico, const char* nomeArqHistorico);
 
-void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], PilhaEnc *p, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, int turnoAtual, int quantidadesPereciveisDisponiveis[], Jogador *player, Metricas &met, ListaContEst *lista_historico);
+void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], PilhaEnc *p, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, int turnoAtual, int quantidadesPereciveisDisponiveis[], Jogador *player, Metricas &met, ListaContEst *lista_historico, int dificuldade);
+
 const Pedido *obterPedido(NodoAvl *raiz, TabelaEnc *cache, int codigo, Metricas &met);
 
 const Pedido *sortearPedido(NodoAvl *raiz, TabelaEnc *cache, Metricas &met);

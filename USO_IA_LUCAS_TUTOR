@@ -2206,3 +2206,27 @@ O `git status` deve indicar que todos os conflitos foram resolvidos e que o merg
 
 ##################################################
 
+Lucas — Prompt 64:
+typedef enum so aceita int?
+
+Resposta:
+Um `enum` define **constantes com valores inteiros**. O `typedef` só dá um nome ao tipo.
+
+```cpp
+typedef enum {
+    MENU = 0,
+    NOVO_JOGO = 1,
+    COMO_JOGAR = 2,
+    HISTORICO = 3,
+    SAIR = 4
+} EstadoMenu;
+```
+
+Nesse exemplo, `NOVO_JOGO` representa o número `1`. Se você omitir os valores, a numeração começa em `0` e aumenta de um em um.
+
+Ele também aceita valores de caracteres, como `'n'`, porque caracteres possuem códigos inteiros. Textos como `"Novo jogo"` e números fracionários como `1.5` não podem ser valores de um `enum`.
+
+Em C++, você pode escolher o tipo inteiro usado para armazenar os valores, por exemplo `enum EstadoMenu : unsigned char`. Então, **os valores são inteiros, mas o armazenamento pode usar outros tipos integrais além de `int`**.
+
+##################################################
+
