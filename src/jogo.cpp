@@ -1,4 +1,7 @@
 #include <iostream>
+#include <iomanip>
+
+using namespace std;
 #include <string>
 #include "jogo.hpp"
 #include "fila.hpp"
@@ -22,12 +25,7 @@
 #include "sortings.hpp"
 
 
-using std::cout;
-using std::cin;
-using std::scanf;
-using std::endl;
 
-using namespace std;
 
 #define N_MAX_CLIENTES 100
 #define N_CLIENTES 3
@@ -107,15 +105,15 @@ const Pedido *sortearPedido(NodoAvl *raiz, TabelaEnc *cache, Metricas &met)
 int numero_aleatorio(int minimo, int maximo)
 {
     if (minimo > maximo)
-        throw std::invalid_argument("Intervalo invalido");
+        throw invalid_argument("Intervalo invalido");
 
-    static std::mt19937 gerador(std::random_device{}());
-    std::uniform_int_distribution<int> intervalo(minimo, maximo);
+    static mt19937 gerador(random_device{}());
+    uniform_int_distribution<int> intervalo(minimo, maximo);
 
     return intervalo(gerador);
 }
 
-const char *stringParaCharPtr(const std::string &s)
+const char *stringParaCharPtr(const string &s)
 {
     return s.c_str();
 }
@@ -125,7 +123,7 @@ void gravaJogoNoHistorico(int score, ListaContEst *lista_historico, const char* 
     ofstream arq(nomeArqHistorico, ios::app);
     if (!arq.is_open()) return;
 
-    std::string nome;
+    string nome;
 
     bool verificacao = true;
 
@@ -153,21 +151,39 @@ void gravaJogoNoHistorico(int score, ListaContEst *lista_historico, const char* 
 
 }
 
-static void mostrarPerecivel(const char *nome,
+// usa as mesmas larguras em todas as linhas para alinhar as colunas
+static void mostrarItemEstoque(const Ingrediente &ingrediente,
+                               const string &quantidade,
+                               const string &situacao,
+                               const char *corSituacao)
+{
+    cout << "  " << setw(8) << ingrediente.simbolo
+         << ingrediente.cor << setw(22) << ingrediente.nome << cores::RESET
+         << corSituacao << setw(12) << quantidade
+         << situacao << cores::RESET << '\n';
+}
+
+static void mostrarPerecivel(const Ingrediente &ingrediente,
                              const FilaPrioridade *estoque,
                              int turnoAtual)
 {
-    std::cout << nome << ": " << estoque->tamanho;
-
+    string situacao = "Sem unidades prontas";
+    const char *corSituacao = cores::CINZA;
     int turnoVencimento;
-    if (fpMinimo(estoque, &turnoVencimento))
-    {
+
+    if (fpMinimo(estoque, &turnoVencimento)) {
         int turnosRestantes = turnoVencimento - turnoAtual;
-        std::cout << " | proximo vencimento em "
-                  << turnosRestantes << " turno(s)";
+        situacao = "Vence em " + to_string(turnosRestantes) + " turno(s)";
+        corSituacao = cores::VERDE_CLARO;
+
+        // destaca a unidade que precisa ser usada antes do proximo turno
+        if (turnosRestantes <= 1) {
+            corSituacao = cores::VERMELHO_CLARO;
+        }
     }
 
-    std::cout << '\n';
+    mostrarItemEstoque(ingrediente, to_string(estoque->tamanho),
+                       situacao, corSituacao);
 }
 
 static void mostrarEstoque(const FilaPrioridade *carnes,
@@ -176,20 +192,53 @@ static void mostrarEstoque(const FilaPrioridade *carnes,
                            const int quantidadesNaoPereciveis[],
                            int turnoAtual)
 {
-    std::cout << cores::AZUL_CLARO << "\nESTOQUE - Turno " << turnoAtual << cores::RESET;
+    const auto formatoAnterior = cout.flags();
+    cout << left
+         << cores::AZUL_CLARO
+         << "\n  ESTOQUE  |  TURNO " << turnoAtual << '\n'
+         << "  --------------------------------------------------------------\n"
+         << cores::RESET
+         << "  " << setw(8) << "Codigo" << setw(22) << "Ingrediente"
+         << setw(12) << "Quantidade" << "Situacao\n";
 
-    pula_linha(1);
+    cout << cores::CIANO_CLARO << "\n  PERECIVEIS PREPARADOS\n" << cores::RESET;
+    mostrarPerecivel(CARNE, carnes, turnoAtual);
+    mostrarPerecivel(OVO_FRITO, ovos, turnoAtual);
+    mostrarPerecivel(BACON, bacons, turnoAtual);
 
-    mostrarPerecivel("Carne", carnes, turnoAtual);
-    mostrarPerecivel("Ovo frito", ovos, turnoAtual);
-    mostrarPerecivel("Bacon", bacons, turnoAtual);
+    cout << cores::CIANO_CLARO << "\n  PREPARADOS SEM VENCIMENTO\n" << cores::RESET;
+    const Ingrediente *naoPereciveis[] = {
+        &QUEIJO_SUICO, &QUEIJO_CHEDDAR, &CEBOLA, &TOMATE
+    };
 
-    std::cout << "Queijo suico: " << quantidadesNaoPereciveis[0] << '\n'
-              << "Queijo cheddar: " << quantidadesNaoPereciveis[1] << '\n'
-              << "Cebola: " << quantidadesNaoPereciveis[2] << '\n'
-              << "Tomate: " << quantidadesNaoPereciveis[3] << '\n'
-              << "Ilimitados: Pao de cima, Ketchup, "
-              << "Mostarda, Picles e Alface\n";
+    // as posicoes acompanham a ordem usada no vetor de quantidades
+    for (int i = 0; i < 4; i++) {
+        string situacao = "Pronto para usar";
+        const char *corSituacao = cores::VERDE_CLARO;
+
+        if (quantidadesNaoPereciveis[i] == 0) {
+            situacao = "Precisa preparar";
+            corSituacao = cores::CINZA;
+        }
+
+        mostrarItemEstoque(*naoPereciveis[i],
+                           to_string(quantidadesNaoPereciveis[i]),
+                           situacao, corSituacao);
+    }
+
+    cout << cores::CIANO_CLARO << "\n  SEM PREPARO\n" << cores::RESET;
+    const Ingrediente *ilimitados[] = {&PAO, &KETCHUP, &MOSTARDA, &PICLES, &ALFACE};
+    for (const Ingrediente *ingrediente : ilimitados) {
+        mostrarItemEstoque(*ingrediente, "Ilimitada", "Pronto para usar",
+                           cores::VERDE_CLARO);
+    }
+
+    cout << cores::AZUL_CLARO
+         << "  --------------------------------------------------------------\n"
+         << cores::RESET
+         << "  Vencimento exibido: unidade mais proxima de vencer.\n"
+         << "  Consultar o estoque nao gasta turno.\n\n";
+    cout.flags(formatoAnterior);
 }
 
 void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], PilhaEnc *p, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, int turnoAtual, int quantidadesPereciveisDisponiveis[], Jogador *player, Metricas &met, ListaContEst *lista_historico, int dificuldade)
@@ -327,7 +376,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                     << "7 - Sair\n";
                     
             
-            std::string entrada;
+            string entrada;
 
             while (true)  //equivale ao cin >> opcao, mas o cin da erro se for digitado um caractere no lugar de um int
             {
@@ -395,7 +444,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                         continue;
                     }
 
-                    cout << "Montaste o hamburguer incorretamente! O cliente ficou putasso!" << endl;
+                    cout << "Montaste o hamburguer incorretamente! O cliente pediu para falar com o gerente do restaurante!" << endl;
 
                     // turnoAtual--;  //como enviar nao gasta um turno, e em todo laço é acrescentado 1 ao turno, diminuimos 1 aqui para corrigir
                     // atual->paciencia_restante++; //mesma coisa do turno
@@ -420,6 +469,14 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
 
                 case 6:
                     mostrarEstoque(carnes, ovos, bacons, quantidadesPereciveisDisponiveis, turnoAtual);
+
+                    pula_linha(1);
+                    cout << cores::AMARELO << "Aperte qualquer tecla para voltar ao menu de acoes" << cores::RESET << endl;
+
+                    char qqrtecla;
+
+                    cin >> qqrtecla;
+
                     turnoAtual--;  //como consultar estoque nao gasta um turno, e em todo laço é acrescentado 1 ao turno, diminuimos 1 aqui para corrigir
                     atual->paciencia_restante++; //mesma coisa do turno
                 break;

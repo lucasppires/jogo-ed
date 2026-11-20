@@ -1,10 +1,11 @@
 #include <iostream>
+
+using namespace std;
 #include <new>
 #include "listaenc.hpp"
 #include <iostream>
 #include <iomanip>
 #include "ingredientes.hpp"
-using namespace std;
 
 namespace 
 {
@@ -16,19 +17,19 @@ constexpr int larguraPreparo = 18;
 
 static void imprimirIngrediente(const Ingrediente &ing)
 {
-            std::cout << ing.cor << std::setw(larguraIngrediente) << ing.nome << cores::RESET
+            cout << ing.cor << setw(larguraIngrediente) << ing.nome << cores::RESET
 
-            << ing.cor << std::setw(larguraSimbolo) << ing.simbolo << cores::RESET
+            << ing.cor << setw(larguraSimbolo) << ing.simbolo << cores::RESET
 
 
             //operador ternario, se ing.perecivel for true, imprime "Sim", senao imprime "Nao"
             << (ing.perecivel ? cores::VERDE : cores::VERMELHO)
-            << std::setw(larguraPerecivel) << (ing.perecivel ? "Sim" : "Nao") << cores::RESET
+            << setw(larguraPerecivel) << (ing.perecivel ? "Sim" : "Nao") << cores::RESET
 
             << (ing.requer_preparo ? cores::VERDE : cores::VERMELHO)
-            << std::setw(larguraPreparo) << (ing.requer_preparo ? "Sim" : "Nao") << cores::RESET
+            << setw(larguraPreparo) << (ing.requer_preparo ? "Sim" : "Nao") << cores::RESET
 
-            << (ing.validade_turnos ? std::to_string(ing.validade_turnos) : "-") << '\n';
+            << (ing.validade_turnos ? to_string(ing.validade_turnos) : "-") << '\n';
 }
 
 
@@ -52,14 +53,14 @@ int tamanho(const ListaEnc *lista) {
 void imprimir(const ListaEnc *lista)
 {
     const NodoReceita *aux = lista->ini;
-    const auto formatoAnterior = std::cout.flags();
+    const auto formatoAnterior = cout.flags();
 
-    std::cout << LARANJA << "\nADICIONE:\n\n" << cores::RESET
-              << std::left
-              << std::setw(larguraIngrediente) << "Ingrediente"
-              << std::setw(larguraSimbolo) << "Codigo"
-              << std::setw(larguraPerecivel) << "Perecivel?"
-              << std::setw(larguraPreparo) << "Requer preparo?"
+    cout << LARANJA << "\nADICIONE:\n\n" << cores::RESET
+              << left
+              << setw(larguraIngrediente) << "Ingrediente"
+              << setw(larguraSimbolo) << "Codigo"
+              << setw(larguraPerecivel) << "Perecivel?"
+              << setw(larguraPreparo) << "Requer preparo?"
               << "Validade (turnos)\n\n";
 
     while (aux != nullptr)
@@ -68,8 +69,8 @@ void imprimir(const ListaEnc *lista)
         aux = aux->prox;
     }
 
-    std::cout << '\n';
-    std::cout.flags(formatoAnterior);
+    cout << '\n';
+    cout.flags(formatoAnterior);
 }
 Ingrediente buscar(const ListaEnc *lista, char simbolo) {
     const NodoReceita *aux = lista->ini;
@@ -101,7 +102,7 @@ int conta_turnos_pedido(const ListaEnc *receita) //vamos contar quantos turnos s
 }
 
 int inserirInicio(ListaEnc *lista, Ingrediente ing) {
-    NodoReceita *novo = new (std::nothrow) NodoReceita;
+    NodoReceita *novo = new (nothrow) NodoReceita;
 
     if (novo == nullptr)
         return 0;
@@ -114,7 +115,7 @@ int inserirInicio(ListaEnc *lista, Ingrediente ing) {
 }
 
 int inserirFim(ListaEnc *lista, Ingrediente ing) {
-    NodoReceita *novo = new (std::nothrow) NodoReceita;
+    NodoReceita *novo = new (nothrow) NodoReceita;
 
     if (novo == nullptr)
         return 0;

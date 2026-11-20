@@ -4,6 +4,8 @@
  */
 
 #include <iostream>
+
+using namespace std;
 #include <new>
 #include <string>
 #include "avl.hpp"
@@ -17,7 +19,7 @@
 static int maximo(int a, int b) { return a > b ? a : b; }
 
 static NodoAvl *criarNodo(const Pedido &pedido) {
-    NodoAvl *n = new (std::nothrow) NodoAvl;
+    NodoAvl *n = new (nothrow) NodoAvl;
 
     if (!n)
         return nullptr;
@@ -216,9 +218,9 @@ void avlEmOrdem(const NodoAvl *raiz) {
 
     avlEmOrdem(raiz->esq);
 
-    std::cout << "Pedido " << raiz->dado.cod << ":\n";
+    cout << "Pedido " << raiz->dado.cod << ":\n";
     imprimir(&raiz->dado.receita);
-    std::cout << '\n';
+    cout << '\n';
 
     avlEmOrdem(raiz->dir);
 }

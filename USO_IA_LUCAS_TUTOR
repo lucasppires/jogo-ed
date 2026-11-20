@@ -2230,3 +2230,31 @@ Em C++, você pode escolher o tipo inteiro usado para armazenar os valores, por 
 
 ##################################################
 
+Lucas — Prompt 65:
+analisando o trabalho como esta agora e o enunciado, o que ainda falta fazer, se existe algo?
+
+Resposta:
+**Ainda faltam alguns ajustes importantes antes da entrega.** O executável baseado em `tests/teste_menu.cpp` compilou sem avisos, e confirmei a criação de um histórico inicialmente ausente, a saída voluntária e a gravação dos resultados. A comparação com o enunciado revelou os pontos abaixo.
+
+1. **Atualizar o ponto de entrada oficial.** `src/main.cpp` falha na compilação porque chama `novoJogo` sem o argumento da dificuldade. Ele também usa hash de tamanho 101, enquanto o teste usa 1009. É preciso definir uma versão final consistente para compilar e apresentar. [main.cpp](C:/Users/lucas/jogo-ed/src/main.cpp:107)
+
+2. **Adequar a pontuação obrigatória.** O enunciado determina um ponto por cliente atendido. Hoje vocês calculam pontos pela paciência restante e pela dificuldade. Minha orientação anterior sobre os multiplicadores precisava considerar essa regra. Podem manter uma pontuação bônus como extra, preservando o resultado obrigatório. O atalho `0` também precisa sair da versão final ou ficar restrito ao teste, pois atende clientes sem montar o pedido. [Pontuação e atalho](C:/Users/lucas/jogo-ed/src/jogo.cpp:429)
+
+3. **Preservar o hambúrguer ao conferir a receita.** `corrige_pedido` desempilha os ingredientes e, quando a ordem está errada, devolve `false` com a pilha vazia. O enunciado exige preservar a pilha nessa consulta. Também vale alinhar a conclusão ao exemplo do enunciado, que verifica o pedido ao colocar o pão de cima. Hoje existe uma ação separada de enviar, com um turno adicional previsto no cálculo da paciência. [Comparação da receita](C:/Users/lucas/jogo-ed/src/hamburguer.cpp:172)
+
+4. **Separar as métricas de cada partida.** No teste com duas partidas, a segunda exibiu cinco hits acumulados, incluindo os dois da primeira. As buscas na AVL também continuaram acumuladas. A hash pode continuar como cache da sessão, mas os números apresentados como “durante a partida” precisam corresponder àquela partida. [Métricas](C:/Users/lucas/jogo-ed/src/medicoes.cpp:110)
+
+5. **Garantir o log e a contagem correta de nós.** Ao executar sem a pasta `data`, o programa mostrou erros e deixou de gerar o log obrigatório. Além disso, `nosInseridos` recebe a quantidade de registros lidos, que inclui códigos repetidos. Com repetições, esse valor supera a quantidade de nós realmente inseridos. [Inicialização do log e das métricas](C:/Users/lucas/jogo-ed/tests/teste_menu.cpp:56) · [Carga dos pedidos](C:/Users/lucas/jogo-ed/src/leitura_de_arquivos.cpp:35)
+
+6. **Revisar a ordenação alfabética para os arquivos finais.** Ela já existe, mas o Quick Sort escolhe sempre o último nome como pivô. Com muitos nomes iguais ou já ordenados, pode ficar muito lento e aprofundar demais a recursão. O enunciado permite nomes repetidos. Há também implementações de Radix com `std::vector` no módulo, embora o histórico use Merge Sort e Quick Sort. Convém retirar as implementações sem uso que empregam estruturas prontas, proibidas pelo enunciado. [Ordenação](C:/Users/lucas/jogo-ed/src/sortings.cpp:312)
+
+7. **Finalizar a apresentação da partida.** Falta uma mensagem explícita de vitória. O estoque aparece somente ao consultar, enquanto a seção de interface pede as quantidades visíveis junto do pedido, hambúrguer e turnos restantes. A tela Como jogar também precisa refletir as regras finais, incluindo a dificuldade e a forma de concluir o pedido. [Tela e encerramento](C:/Users/lucas/jogo-ed/src/jogo.cpp:512)
+
+**Para fechar a entrega**, ainda é preciso conferir o relatório de até oito páginas, as justificativas dos parâmetros, as tabelas com comparação teórica e as três medições de histórico previstas no checklist. Não encontrei o relatório PDF nem essas tabelas no repositório. Depois, gerem o log final com os arquivos completos e testem o ZIP descompactado em outra pasta, incluindo vitória, derrota, desistência e arquivos com repetições.
+
+Eu começaria pelos itens **1, 2 e 3**. Eles afetam diretamente a compilação da versão final e as regras obrigatórias. Esta revisão usou testes pequenos, e a execução completa com os arquivos grandes ainda precisa ser validada.
+
+A comparação foi feita com :codex-file-citation{path="C:/Users/lucas/Downloads/trab_final.pdf" purpose="source"}.
+
+##################################################
+

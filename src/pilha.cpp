@@ -1,4 +1,6 @@
 #include <new>
+
+using namespace std;
 #include "pilha.hpp"
 #include "ingredientes.hpp"
 
@@ -11,7 +13,7 @@ bool estaVazia(PilhaEnc *p) {
 }
 
 bool empilha(PilhaEnc *p, Ingrediente adicionado) {
-    NodoPilha *novo = new (std::nothrow) NodoPilha;
+    NodoPilha *novo = new (nothrow) NodoPilha;
     if (novo == nullptr)
         return false;
 

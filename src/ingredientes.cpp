@@ -1,7 +1,8 @@
 #include "ingredientes.hpp"
 
+using namespace std;
+
 #include <string>
-using std::string;
 
 const Ingrediente *buscarIngrediente(char simbolo)
 {

@@ -4,6 +4,8 @@
  */
 
 #include <cmath>
+
+using namespace std;
 #include <iostream>
 #include <string>
 #include "hash.hpp"
@@ -23,7 +25,7 @@ int hashDivisao(int k, int m) {
 int hashMultiplicativo(int k, int m) {
     const double A = 0.6180339887;   /* (sqrt(5)-1)/2 — Knuth */
     double prod = static_cast<double>(k) * A;
-    double frac = prod - std::floor(prod);
+    double frac = prod - floor(prod);
     return static_cast<int>(m * frac);
 }
 
@@ -137,13 +139,13 @@ void exibirEstatisticasHash(const TabelaEnc *cache, Metricas *met)
     pula_linha(2);
 
     /*
-    std::cout << cores::AMARELO << "Estatisticas da tabela hash:\n" << cores::RESET;
-    std::cout << "Tamanho da tabela: " << cache->m << "\n";
-    std::cout << "Numero de elementos: " << cache->n << "\n";
-    std::cout << "Hits: " << cache->hits << "\n";
-    std::cout << "Misses: " << cache->misses << "\n";
-    std::cout << "Colisoes: " << cache->colisoes << "\n";
-    std::cout << "Fator de carga (n/m): " << static_cast<double>(cache->n) / cache->m << "\n"; //static_cast é pq o n e o m sao inteiros, entao transformamos o n em double para a divisao poder ter valores decimais
+    cout << cores::AMARELO << "Estatisticas da tabela hash:\n" << cores::RESET;
+    cout << "Tamanho da tabela: " << cache->m << "\n";
+    cout << "Numero de elementos: " << cache->n << "\n";
+    cout << "Hits: " << cache->hits << "\n";
+    cout << "Misses: " << cache->misses << "\n";
+    cout << "Colisoes: " << cache->colisoes << "\n";
+    cout << "Fator de carga (n/m): " << static_cast<double>(cache->n) / cache->m << "\n"; //static_cast é pq o n e o m sao inteiros, entao transformamos o n em double para a divisao poder ter valores decimais
     
    double totalBuscas = static_cast<double>(cache->hits) + static_cast<double>(cache->misses);
 
@@ -158,7 +160,7 @@ void exibirEstatisticasHash(const TabelaEnc *cache, Metricas *met)
         taxaAcerto = 0.0;
     }
 
-    // std::cout << "Taxa de acerto: " << taxaAcerto << "%\n";
+    // cout << "Taxa de acerto: " << taxaAcerto << "%\n";
 
     pula_linha(1);
 

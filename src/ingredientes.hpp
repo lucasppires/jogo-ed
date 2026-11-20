@@ -3,8 +3,9 @@
 
 
 #include <string>
+
+using namespace std;
 #include "cores.hpp"
-using std::string;
 using namespace cores;
 
 

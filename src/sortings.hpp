@@ -1,6 +1,8 @@
 #ifndef SORTINGS_HPP
 #define SORTINGS_HPP
 #include "listacontest.hpp"
+
+using namespace std;
 #include <string>
 #include <vector>
 
@@ -13,12 +15,12 @@ void mergeAdaptado(Jogador vetor[], Jogador aux[], int ini, int meio, int fim);
 void mergeSortRecAdaptado(Jogador vetor[], Jogador aux[], int ini, int fim);
 double mergeSortAdaptado(Jogador vetor[], int tamanhoVetor);   
 
-int charAt(const std::string& s, int d);
-void radixSortLSD(std::vector<std::string>& v);
+int charAt(const string& s, int d);
+void radixSortLSD(vector<string>& v);
 double radixSortAdaptado(Jogador jogadores[], int tamanhoVetor);
-void radixSortMSD(std::vector<std::string>& v, std::vector<std::string>& aux, int lo, int hi, int d);
-void radixSortMSD(std::vector<std::string>& v);
-void imprime(const std::vector<std::string>& v);
+void radixSortMSD(vector<string>& v, vector<string>& aux, int lo, int hi, int d);
+void radixSortMSD(vector<string>& v);
+void imprime(const vector<string>& v);
 
 int particionar(int a[], int esq, int dir);
 void quickSort(int a[], int esq, int dir);

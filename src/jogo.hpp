@@ -3,6 +3,8 @@
 
 #include <string>
 
+using namespace std;
+
 #include "avl.hpp"
 #include "hash.hpp"
 #include "heap.hpp"    // FilaPrioridade
@@ -10,7 +12,7 @@
 
 
 struct Jogador {
-    std::string nome_jogador;
+    string nome_jogador;
     int score;
 };
 

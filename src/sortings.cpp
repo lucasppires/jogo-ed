@@ -1,4 +1,6 @@
 #include <new>
+
+using namespace std;
 #include <cctype>
 #include "sortings.hpp"
 #include "timer.hpp"
@@ -30,7 +32,7 @@ void mergeSortRec(int a[], int aux[], int ini, int fim) {
 
 void mergeSort(int a[], int n) {
     if (n <= 1) return;
-    int *aux = new (std::nothrow) int[n]; /* o vetor extra: O(n) de memoria */
+    int *aux = new (nothrow) int[n]; /* o vetor extra: O(n) de memoria */
     if (aux == nullptr) return;
     mergeSortRec(a, aux, 0, n - 1);
     delete[] aux;
@@ -68,7 +70,7 @@ double mergeSortAdaptado(Jogador vetor[], int tamanhoVetor) {
 
     if (tamanhoVetor <= 1) return 0.0;
 
-    Jogador *aux = new (std::nothrow) Jogador[tamanhoVetor];
+    Jogador *aux = new (nothrow) Jogador[tamanhoVetor];
     if (aux == nullptr) return 0.0;
 
     mergeSortRecAdaptado(vetor, aux, 0, tamanhoVetor - 1);
@@ -97,7 +99,6 @@ double mergeSortAdaptado(Jogador vetor[], int tamanhoVetor) {
 #include <string>
 #include <vector>
  
-using namespace std;
  
 const int R = 256; // tamanho do alfabeto (ASCII estendido)
  
@@ -159,7 +160,7 @@ double radixSortAdaptado(Jogador jogadores[], int tamanhoVetor) {
         if ((int)jogadores[i].nome_jogador.size() > W)
             W = jogadores[i].nome_jogador.size();
 
-    Jogador *aux = new (std::nothrow) Jogador[tamanhoVetor];
+    Jogador *aux = new (nothrow) Jogador[tamanhoVetor];
     if (aux == nullptr) return 0.0;
 
     // feito por IA

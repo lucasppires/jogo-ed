@@ -1,4 +1,6 @@
 #include <iostream>
+
+using namespace std;
 #include <fstream>
 #include <string>
 #include <limits>
@@ -10,25 +12,20 @@
 #include "timer.hpp"
 #include "leitura_de_arquivos.hpp"
 
-using std::cerr;
-using std::ifstream;
-using std::string;
-using std::cout;
-using std::cin;
 
 int carregarPedidosAVL(const char *arquivo, NodoAvl **raiz, double *tempo, Metricas &met)
 {
 
-    std::ifstream arq(arquivo);
+    ifstream arq(arquivo);
 
     if (!arq)
     {
-        std::cerr << "Nao foi possivel abrir o arquivo.\n";
+        cerr << "Nao foi possivel abrir o arquivo.\n";
         return -1;
     }
 
     int codigo;
-    std::string receita;
+    string receita;
     int qtePedidosLidos = 0;
 
     Timer t;
@@ -79,15 +76,15 @@ int confere_argc_e_argv(int argc, char *argv[])
 
 int contarLinhas(const char *nomeArquivo)
 {
-    std::ifstream arq(nomeArquivo);
+    ifstream arq(nomeArquivo);
 
     if (!arq)
         return -1;
 
     int linhas = 0;
-    std::string linha;
+    string linha;
 
-    while (std::getline(arq, linha))
+    while (getline(arq, linha))
     {
         if (!linha.empty())
             linhas++;
@@ -101,12 +98,12 @@ int carregarPartidasListaContEst(
     ListaContEst *l,
     double *tempoListaContEst)
 {
-    std::ifstream arq(arquivo);
+    ifstream arq(arquivo);
 
     if (!arq)
     {
-        std::error_code erro;
-        bool existe = std::filesystem::exists(arquivo, erro);
+        error_code erro;
+        bool existe = filesystem::exists(arquivo, erro);
 
         if (!erro && !existe)
         {
@@ -114,22 +111,22 @@ int carregarPartidasListaContEst(
             return 0;
         }
 
-        std::cerr << "Nao foi possivel abrir o historico.\n";
+        cerr << "Nao foi possivel abrir o historico.\n";
         return -1;
     }
 
     Jogador aux;
-    std::string nome;
+    string nome;
     int score;
     int qtePartidas = 0;
 
     Timer t;
     timer_iniciar(&t);
 
-    while (std::getline(arq, nome) && arq >> score)
+    while (getline(arq, nome) && arq >> score)
     {
         arq.ignore(
-            std::numeric_limits<std::streamsize>::max(),
+            numeric_limits<streamsize>::max(),
             '\n'
         );
 
@@ -147,7 +144,7 @@ int carregarPartidasListaContEst(
         } 
         else
         {
-            std::cerr << "Erro ao inserir partida no historico.\n";
+            cerr << "Erro ao inserir partida no historico.\n";
             *tempoListaContEst = timer_parar(&t);
             return -1;
         }
@@ -159,7 +156,7 @@ int carregarPartidasListaContEst(
     return qtePartidas;
 }
 
-bool montarReceita(const std::string &texto, ListaEnc *lista) 
+bool montarReceita(const string &texto, ListaEnc *lista)
 {
     for (char simbolo : texto) //percorre cada caractere da string de receita
     {
@@ -167,7 +164,7 @@ bool montarReceita(const std::string &texto, ListaEnc *lista)
 
         if (ingrediente == nullptr)  //se o ingrediente for invalido ou nao for encontrado
         {
-            std::cerr << "Ingrediente desconhecido: " << simbolo << std::endl;
+            cerr << "Ingrediente desconhecido: " << simbolo << endl;
             destruir(lista);  //destrói a lista para evitar vazamento de memória
             return false;
         }
@@ -175,7 +172,7 @@ bool montarReceita(const std::string &texto, ListaEnc *lista)
         {
             if (!inserirFim(lista, *ingrediente)) //se der erro na inserção
             {
-                std::cerr << "Erro ao inserir ingrediente na lista.\n";
+                cerr << "Erro ao inserir ingrediente na lista.\n";
                 destruir(lista);
                 return false;
             }

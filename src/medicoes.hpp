@@ -2,6 +2,8 @@
 #define MEDICOES_HPP
 
 #include <iostream>
+
+using namespace std;
 #include <fstream>
 #include <string>
 
@@ -29,12 +31,12 @@ struct Metricas{
 
 extern Metricas met;   // definida em teste_menu.cpp
 
-bool iniciaLog(const std::string& caminho, const Metricas& m);
+bool iniciaLog(const string& caminho, const Metricas& m);
 
-bool geraRelatorio(const std::string& caminho, const Metricas& m);
+bool geraRelatorio(const string& caminho, const Metricas& m);
 
 
-bool registraOrdenacao(const std::string& caminho, long tamanho, const std::string& algoritmo, double tempo);
+bool registraOrdenacao(const string& caminho, long tamanho, const string& algoritmo, double tempo);
 
 void zeraMetricasPartida(Metricas& m);
 

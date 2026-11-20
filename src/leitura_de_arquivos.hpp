@@ -2,6 +2,8 @@
 #define LEITURA_ARQUIVOS_HPP
 
 #include "avl.hpp"
+
+using namespace std;
 #include "listacontest.hpp"
 
 int carregarPedidosAVL(
@@ -21,6 +23,6 @@ int carregarPartidasListaContEst(
     double *tempoListaContEst
 );
 
-bool montarReceita(const std::string &texto, ListaEnc *lista);
+bool montarReceita(const string &texto, ListaEnc *lista);
 
 #endif

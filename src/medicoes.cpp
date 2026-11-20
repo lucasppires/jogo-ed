@@ -1,5 +1,7 @@
 
 #include "medicoes.hpp"
+
+using namespace std;
 #include <fstream>
 #include <iostream>
 #include <iomanip>
@@ -8,9 +10,9 @@
 // Monta o texto uma vez so; depois manda o MESMO texto para a tela e para o log.
 
  
-static std::string textoRelatorio(const Metricas& m) {
-    std::ostringstream s;
-    s << std::fixed;
+static string textoRelatorio(const Metricas& m) {
+    ostringstream s;
+    s << fixed;
  
     // TODO: conferir se as contas batem com o que voces acumularam
     double media  = (m.totalBuscas > 0) ? (double)m.totalComparacoes / m.totalBuscas : 0.0;
@@ -24,7 +26,7 @@ static std::string textoRelatorio(const Metricas& m) {
     s << "Nos inseridos: " << m.nosInseridos << "\n";
     s << "Altura resultante: " << m.alturaAVL << "\n";
     s << "Rotacoes (insercao): " << m.rotacoes << "\n";
-    s << "Tempo de carregamento: " << std::setprecision(6) << m.tempoCarga << " s\n";
+    s << "Tempo de carregamento: " << setprecision(6) << m.tempoCarga << " s\n";
  
     s << "-- Historico: carregamento --\n";
     s << "Entradas carregadas: " << m.entradasHistorico << "\n";
@@ -32,40 +34,40 @@ static std::string textoRelatorio(const Metricas& m) {
     s << "-- AVL: buscas durante a partida --\n";
     s << "Total de buscas: " << m.totalBuscas << "\n";
     s << "Total de comparacoes: " << m.totalComparacoes << "\n";
-    s << "Media de comparacoes por busca: " << std::setprecision(2) << media << "\n";
-    s << "Tempo total acumulado: " << std::setprecision(6) << m.tempoBuscas << " s\n";
+    s << "Media de comparacoes por busca: " << setprecision(2) << media << "\n";
+    s << "Tempo total acumulado: " << setprecision(6) << m.tempoBuscas << " s\n";
  
     s << "-- Tabela hash --\n";
     s << "Tamanho (m): " << m.tamanhoHash << "\n";
     s << "Entradas ocupadas (n): " << m.ocupadasHash << "\n";
-    s << "Fator de carga (lambda): " << std::setprecision(2) << lambda << "\n";
+    s << "Fator de carga (lambda): " << setprecision(2) << lambda << "\n";
     s << "Total de hits: " << m.hits << "\n";
     s << "Total de misses: " << m.misses << "\n";
-    s << "Taxa de acerto: " << std::setprecision(1) << taxa << "%\n";
+    s << "Taxa de acerto: " << setprecision(1) << taxa << "%\n";
     s << "Total de colisoes: " << m.colisoes << "\n";
 
     s << "-- Ordenacao do historico (ao acessar Historico) --\n";
     s << "Tamanho: " << m.tamanhoOrdenacao << " entradas\n";
-    s << "Merge Sort: " << std::setprecision(6) << m.tempoOrdenacao << " s\n";
+    s << "Merge Sort: " << setprecision(6) << m.tempoOrdenacao << " s\n";
  
     s << "================================\n\n";
     return s.str();
 }
  
-bool iniciaLog(const std::string& caminho, const Metricas& m) {
-    std::ofstream log(caminho);                  // SEM app: apaga e recria a cada execucao
+bool iniciaLog(const string& caminho, const Metricas& m) {
+    ofstream log(caminho);                  // SEM app: apaga e recria a cada execucao
     if (!log) {
-        std::cerr << "Erro ao criar " << caminho << "\n";
+        cerr << "Erro ao criar " << caminho << "\n";
         return false;
     }
 
-    log << std::fixed;
+    log << fixed;
     log << "=== MEDICOES APOS O CARREGAMENTO ===\n";
     log << "-- AVL: carregamento --\n";
     log << "Nos inseridos: " << m.nosInseridos << "\n";
     log << "Altura resultante: " << m.alturaAVL << "\n";
     log << "Rotacoes (insercao): " << m.rotacoes << "\n";
-    log << "Tempo de carregamento: " << std::setprecision(6) << m.tempoCarga << " s\n";
+    log << "Tempo de carregamento: " << setprecision(6) << m.tempoCarga << " s\n";
     log << "-- Historico: carregamento --\n";
     log << "Entradas carregadas: " << m.entradasHistorico << "\n";
     log << "====================================\n\n";
@@ -73,32 +75,32 @@ bool iniciaLog(const std::string& caminho, const Metricas& m) {
     return true;
 }
  
-bool geraRelatorio(const std::string& caminho, const Metricas& m) {
-    std::string texto = textoRelatorio(m);
-    std::cout << texto;                          // tela
+bool geraRelatorio(const string& caminho, const Metricas& m) {
+    string texto = textoRelatorio(m);
+    cout << texto;                          // tela
  
-    std::ofstream log(caminho, std::ios::app);   // COM app: escreve no final
+    ofstream log(caminho, ios::app);   // COM app: escreve no final
     if (!log) {
-        std::cerr << "Erro ao abrir " << caminho << "\n";
+        cerr << "Erro ao abrir " << caminho << "\n";
         return false;
     }
     log << texto;                                // arquivo
     return true;
 }
  
-bool registraOrdenacao(const std::string& caminho, long tamanho,
-                       const std::string& algoritmo, double tempo) {
-    std::ostringstream s;
-    s << std::fixed << std::setprecision(6);
+bool registraOrdenacao(const string& caminho, long tamanho,
+                       const string& algoritmo, double tempo) {
+    ostringstream s;
+    s << fixed << setprecision(6);
     s << "-- Ordenacao do historico (ao acessar Historico) --\n";
     s << "Tamanho: " << tamanho << " entradas\n";
     s << algoritmo << ": " << tempo << " s\n\n";
  
-    std::cout << s.str();
+    cout << s.str();
  
-    std::ofstream log(caminho, std::ios::app);
+    ofstream log(caminho, ios::app);
     if (!log) {
-        std::cerr << "Erro ao abrir " << caminho << "\n";
+        cerr << "Erro ao abrir " << caminho << "\n";
         return false;
     }
     log << s.str();

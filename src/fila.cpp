@@ -1,4 +1,6 @@
 #include <new>
+
+using namespace std;
 #include "fila.hpp"
 
 void inicializa(FilaEnc *f) 
@@ -14,7 +16,7 @@ bool estaVazia(FilaEnc *f)
 
 bool enfileira(FilaEnc *f, Cliente valor) 
 {
-    Nodo *novo = new (std::nothrow) Nodo;
+    Nodo *novo = new (nothrow) Nodo;
     if (novo == nullptr)
         return false;
 

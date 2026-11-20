@@ -1,4 +1,6 @@
 #include <iostream>
+
+using namespace std;
 #include <fstream>
 #include <string>
 #include "funcoes_menu.hpp"
@@ -14,47 +16,51 @@
 #include "medicoes.hpp"
 #include <vector>
 #include <limits>
-using std::cout;
-using std::cin;
-using std::scanf;
-using std::endl;
 
 void imprime_linha(int n)
 {
     for (int i = 0; i < n; i++)
-        std::printf("#");
+        printf("#");
 }
 
 void pula_linha(int n)
 {
     for (int i = 0; i < n; i++)
-        std::printf("\n");
+        printf("\n");
 }
 
 void imprimir_menu(int& estado_menu)
 {
-    imprime_linha(44);
-            pula_linha(1);
-            cout << cores::AZUL <<"\t\tDADO BURGER\n";
-            pula_linha(1);
-            cout << cores::AMARELO <<"\t\t1. Novo jogo\n";
-            cout << cores::VERMELHO <<"\t\t2. Como jogar\n";
-            cout << cores::VERDE <<"\t\t3. Historico\n";
-            cout << cores::MAGENTA <<"\t\t4. Sair\n" << cores::RESET;
-        
-            pula_linha(1);
-            imprime_linha(44);
-            pula_linha(2);
+    // espacos fixos deixam o menu alinhado em terminais diferentes
+    cout << '\n'
+         << cores::AZUL_CLARO
+         << "  ----------------------------------------------------------\n"
+         << cores::LARANJA
+         << "                        .--------.\n"
+         << "                     .-'  . . .   '-.\n"
+         << "                    /________________\\\n"
+         << cores::VERDE_CLARO << "                    /\\/\\/\\/\\/\\/\\/\\/\\/\\\n"
+         << cores::MARROM << "                    [################]\n"
+         << cores::LARANJA << "                    \\________________/\n\n"
+         << cores::AMARELO_CLARO << "                        DADO BURGER\n"
+         << cores::AZUL_CLARO
+         << "  ----------------------------------------------------------\n\n"
+         << cores::VERDE_CLARO << "       [1]  " << cores::BRANCO_CLARO << "Novo jogo\n\n"
+         << cores::CIANO_CLARO << "       [2]  " << cores::BRANCO_CLARO << "Como jogar\n\n"
+         << cores::AMARELO_CLARO << "       [3]  " << cores::BRANCO_CLARO << "Historico\n\n"
+         << cores::VERMELHO_CLARO << "       [4]  " << cores::BRANCO_CLARO << "Sair\n\n"
+         << cores::AZUL_CLARO
+         << "  ----------------------------------------------------------\n"
+         << cores::RESET;
 
-            
-    std::string opcao;
+    string opcao;
 
-    while (true) 
-    {  
-        cout << "Digite a opcao desejada: ";
+    while (true)
+    {
+        cout << cores::CIANO_CLARO << "  Escolha uma opcao [1-4]: " << cores::RESET;
 
         if (!(cin >> opcao)) {
-            estado_menu = 4; // Sair se a entrada for encerrada.
+            estado_menu = SAIR; // sai se a entrada for encerrada
             break;
         }
 
@@ -63,10 +69,10 @@ void imprimir_menu(int& estado_menu)
             break;
         }
 
-        cout << "Opcao invalida! Escolha de 1 a 4.\n";  
+        cout << cores::VERMELHO_CLARO
+             << "  Opcao invalida! Escolha de 1 a 4.\n"
+             << cores::RESET;
     }
-            
-            
 }
 
 //destroi a avl e a lista contígua de histórico, né? 
@@ -278,7 +284,7 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico)
 
         default:
         cin.clear();
-        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         break;
     }
 

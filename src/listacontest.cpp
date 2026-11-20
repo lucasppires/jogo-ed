@@ -1,4 +1,6 @@
 #include <iostream>
+
+using namespace std;
 #include "listacontest.hpp"
 #include "timer.hpp"
 #include "cores.hpp"
@@ -75,12 +77,12 @@ void destruir(ListaContEst *l) {
 
 void imprimir_ListaContEst(const ListaContEst *l) {
     if (l->tamanho == 0) {
-        std::cout << "Lista vazia.\n";
+        cout << "Lista vazia.\n";
         return;
     }
 
     for (int i = 0; i < l->tamanho; i++) {
-        std::cout << "Nome: " << l->dados[i].nome_jogador
+        cout << "Nome: " << l->dados[i].nome_jogador
                   << ", Score: " << l->dados[i].score
                   << '\n';
     }
@@ -124,20 +126,20 @@ double ordena_vetor_pelo_score_bubble_sort(
 // Usar somente quando houver pelo menos dez registros.
 void imprime_dez_primeiros(Jogador vetor[], bool ehPorScore) {
     if (ehPorScore)
-        std::cout << "RANKING (pelo score)\n";
+        cout << "RANKING (pelo score)\n";
 
     else
-        std::cout << "ORDENANDO PELOS NOMES\n"; 
+        cout << "ORDENANDO PELOS NOMES\n";
 
     for (int i = 0; i < 10; i++) 
     {
         if (i == 0)
         {
-            std::cout << cores::AMARELO << i + 1 << ". Nome: " << vetor[i].nome_jogador << ", Score: " << vetor[i].score << cores::RESET;
+            cout << cores::AMARELO << i + 1 << ". Nome: " << vetor[i].nome_jogador << ", Score: " << vetor[i].score << cores::RESET;
         }
         else
         {
-            std::cout << i + 1 << ". Nome: " << vetor[i].nome_jogador << ", Score: " << vetor[i].score;
+            cout << i + 1 << ". Nome: " << vetor[i].nome_jogador << ", Score: " << vetor[i].score;
         }
 
         pula_linha(1);
@@ -146,20 +148,20 @@ void imprime_dez_primeiros(Jogador vetor[], bool ehPorScore) {
 
 void imprime_de_1_a_9(Jogador vetor[], int tamanhoVetor, bool ehPorScore) {
     if (ehPorScore)
-        std::cout << "RANKING (pelo score)\n";
+        cout << "RANKING (pelo score)\n";
 
     else
-        std::cout << "ORDENANDO PELOS NOMES\n"; 
+        cout << "ORDENANDO PELOS NOMES\n";
 
     for (int i = 0; i < tamanhoVetor; i++) 
     {
         if (i == 0)
         {
-            std::cout << cores::AMARELO << i + 1 << ". Nome: " << vetor[i].nome_jogador << ", Score: " << vetor[i].score << cores::RESET;
+            cout << cores::AMARELO << i + 1 << ". Nome: " << vetor[i].nome_jogador << ", Score: " << vetor[i].score << cores::RESET;
         }
         else
         {
-            std::cout << i + 1 << ". Nome: " << vetor[i].nome_jogador << ", Score: " << vetor[i].score;
+            cout << i + 1 << ". Nome: " << vetor[i].nome_jogador << ", Score: " << vetor[i].score;
         }
 
         pula_linha(1);

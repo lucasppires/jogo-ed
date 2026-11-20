@@ -1,5 +1,7 @@
 // Bibliotecas padrão
 #include <iostream>
+
+using namespace std;
 #include <fstream>
 #include <string>
 #include <cstdio>
@@ -26,10 +28,6 @@
 
 
 
-using std::cout;
-using std::cin;
-using std::endl;
-using std::scanf;
 
 // compilar:g++ tests/teste_menu.cpp src/funcoes_menu.cpp src/jogo.cpp src/fila.cpp src/leitura_de_arquivos.cpp src/listacontest.cpp src/listaenc.cpp src/ingredientes.cpp src/avl.cpp src/hash.cpp src/timer.cpp src/sortings.cpp src/heap.cpp src/pilha.cpp src/hamburguer.cpp src/preparo.cpp src/medicoes.cpp -I src -o tests/teste_menu.exe -Wall -std=c++17
 
@@ -105,7 +103,7 @@ int main(int argc, char *argv[])
                  << cores::VERMELHO_CLARO << "3 - Dificil\n\n"
                  << cores::RESET;
 
-            std::string opcaoDificuldade;
+            string opcaoDificuldade;
             while (true) {
                 cout << "Selecione um nivel de dificuldade: ";
 
