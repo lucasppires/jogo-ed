@@ -45,7 +45,7 @@ void removeEstragadosHeap(int turnoAtual, FilaPrioridade *carnes, FilaPrioridade
 
 const Pedido *obterPedido(NodoAvl *raiz, TabelaEnc *cache, int codigo, Metricas &met) 
 {
-    // Primeiro procura na hash.
+    // primeiro procura na hash
     const Pedido *pedido = encBuscar(cache, codigo);
 
     if (pedido != nullptr) return pedido;
@@ -243,10 +243,36 @@ static void mostrarEstoque(const FilaPrioridade *carnes,
     cout.flags(formatoAnterior);
 }
 
+// mostra o trofeu e o total de clientes atendidos ao vencer a partida
+static void mostrarVitoria(int numeroClientes)
+{
+    pula_linha(2);
+    
+    cout << cores::VERDE_CLARO
+         << "\n\n  ==================================================\n"
+         << cores::AMARELO_CLARO
+         << "                     __________\n"
+         << "                    '._      _.'\n"
+         << "                  (   |      |   )\n"
+         << "                   '._|      |_.'\n"
+         << "                      '.___.'\n"
+         << "                        | |\n"
+         << "                      __| |__\n"
+         << "                     [_______]\n\n"
+         << cores::VERDE_CLARO
+         << "                       VITORIA!\n\n"
+         << cores::BRANCO_CLARO
+         << "       Todos os clientes foram atendidos!\n"
+         << "       Voce concluiu seu turno no Dado Burger.\n\n"
+         << cores::CIANO_CLARO
+         << "       Clientes atendidos: " << numeroClientes << '\n'
+         << cores::VERDE_CLARO
+         << "  ==================================================\n"
+         << cores::RESET;
+}
+
 void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], PilhaEnc *p, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, int turnoAtual, int quantidadesPereciveisDisponiveis[], Jogador *player, Metricas &met, ListaContEst *lista_historico, int dificuldade)
  {
-    estado_menu = MENU;
-
     if (raiz == nullptr)
     {
         cout << "Nao existem pedidos para iniciar a partida.\n";
@@ -279,7 +305,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
 
         if (dificuldade == FACIL)
         {
-             pacienciaInicial[i] += 4; //usamos essa funcao para contar o numero minimo de turnos e somamos 2, para nao ser tao dificil tb
+             pacienciaInicial[i] += 4; //usamos essa funcao para contar o numero minimo de turnos e somamos 4, para nao ser tao dificil tb
         }
         else if (dificuldade == NORMAL)
         {
@@ -305,18 +331,18 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
 
     cout << "Partida iniciada com " << tamanho(&clientes) << " clientes.\n";
 
-    turnoAtual = 0;
+    turnoAtual = 1;
 
     player->score = 0;
 
-    int saida_voluntaria = false;
+    bool saida_voluntaria = false;
 
     // LAÇO DO JOGO
     while (!estaVazia(&clientes))
      {     
         Cliente *atual = clienteDaFrente(&clientes);
 
-        turnoAtual++;
+
 
         if (atual->paciencia_restante == 0 || saida_voluntaria == true) //gameover ou saida
         {
@@ -326,7 +352,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
             if (atual->paciencia_restante == 0)
             {
                 pula_linha(2);
-                cout << cores::VERMELHO << "GAME OVER" << cores::RESET << " - A paciencia do cliente acabou!";
+                cout << cores::VERMELHO << "GAME OVER" << cores::RESET << " - A paciencia do cliente acabou! Ele iniciou uma campanha de cancelamento contra o Dado Burguer :( ";
             }
             
             break;  
@@ -366,7 +392,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
 
             // A montagem do hamburguer sera implementada aqui.
 
-            desenhar_hamburguer(p);//imprimir_hamburguer(p);
+            desenhar_hamburguer(p);
 
             int opcao;
             cout << "\nInforme a opcao desejada:\n"
@@ -444,7 +470,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
 
                         cout << "Cliente " << atendido.id
                              << " foi atendido e saiu da fila." << endl;
-                        continue;
+                        continue; //pula todo o resto do laço do while
                     }
 
                     cout << "Montaste o hamburguer incorretamente! O cliente pediu para falar com o gerente do restaurante!" << endl;
@@ -452,13 +478,13 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                     // turnoAtual--;  //como enviar nao gasta um turno, e em todo laço é acrescentado 1 ao turno, diminuimos 1 aqui para corrigir
                     // atual->paciencia_restante++; //mesma coisa do turno
 
-                    if (atual->paciencia_restante <= 0) {
+                    if (atual->paciencia_restante <= 0) 
+                    {
                         Cliente removido;
                         desenfileira(&clientes, &removido);
                         esvaziarPilha(p);
-                        cout << "Cliente " << removido.id
-                             << " perdeu a paciencia e saiu da fila." << endl;
-                        continue;
+                        cout << "Cliente " << removido.id << " perdeu a paciencia e foi comer no xis do outro lado da rua :( " << endl;
+                        continue; 
                     }
                     break;
 
@@ -474,7 +500,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                     mostrarEstoque(carnes, ovos, bacons, quantidadesPereciveisDisponiveis, turnoAtual);
 
                     pula_linha(1);
-                    cout << cores::AMARELO << "Aperte qualquer tecla para voltar ao menu de acoes" << cores::RESET << endl;
+                    cout << cores::AMARELO << "Aperte qualquer tecla e depois ENTER para voltar ao menu de acoes" << cores::RESET << endl;
 
                     char qqrtecla;
 
@@ -498,8 +524,12 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
 
             }
 
+            
+
         }
             // O cliente continua na fila durante o atendimento.
+
+        turnoAtual++;
 
         atual->paciencia_restante = atual->paciencia_restante - 1; 
         
@@ -507,34 +537,11 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
 
     if (estaVazia(&clientes) == true)
     {
-        pula_linha(2);
-        
-        cout << cores::VERDE_CLARO
-             << "\n\n  ==================================================\n"
-             << cores::AMARELO_CLARO
-             << "                     __________\n"
-             << "                    '._      _.'\n"
-             << "                  (   |      |   )\n"
-             << "                   '._|      |_.'\n"
-             << "                      '.___.'\n"
-             << "                        | |\n"
-             << "                      __| |__\n"
-             << "                     [_______]\n\n"
-             << cores::VERDE_CLARO
-             << "                       VITORIA!\n\n"
-             << cores::BRANCO_CLARO
-             << "       Todos os clientes foram atendidos!\n"
-             << "       Voce concluiu seu turno no Dado Burger.\n\n"
-             << cores::CIANO_CLARO
-             << "       Clientes atendidos: " << numeroClientes << '\n'
-             << cores::VERDE_CLARO
-             << "  ==================================================\n"
-             << cores::RESET;
+        mostrarVitoria(numeroClientes); //tela de vitoria
     }
 
     pula_linha(1);
     cout << cores::VERDE_CLARO << "Sua pontuacao: " << player->score << cores::RESET;
-    
     pula_linha(1);
 
     gravaJogoNoHistorico(player->score, lista_historico, argv[2]);

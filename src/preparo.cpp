@@ -11,7 +11,7 @@ using namespace std;
 // executar src/teste_heap.exe
 
 int calculaTurnoVencimento(int turnoAtual, const Ingrediente *ing){
-    return turnoAtual + ing->validade_turnos;
+    return turnoAtual + ing->validade_turnos + 1;
 }
 
 

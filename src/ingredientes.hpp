@@ -59,11 +59,11 @@ inline const Ingrediente TOMATE{
 
 // Com preparo e pereciveis
 inline const Ingrediente CARNE{
-    "Carne", 'n', true, true, 3, MARROM
+    "Carne", 'n', true, true, 4, MARROM
 };
 
 inline const Ingrediente OVO_FRITO{
-    "Ovo frito", 'o', true, true, 3, BRANCO
+    "Ovo frito", 'o', true, true, 2, BRANCO
 };
 
 inline const Ingrediente BACON{

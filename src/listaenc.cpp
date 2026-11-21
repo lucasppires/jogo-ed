@@ -22,14 +22,17 @@ static void imprimirIngrediente(const Ingrediente &ing)
             << ing.cor << setw(larguraSimbolo) << ing.simbolo << cores::RESET
 
 
-            //operador ternario, se ing.perecivel for true, imprime "Sim", senao imprime "Nao"
+            /*operador ternario (?), como funciona:    variavel ? Açao se for true : Açao se for false
+            
+            ex -> se ing.perecivel for true, imprime "Sim", senao imprime "Nao"     */
+
             << (ing.perecivel ? cores::VERDE : cores::VERMELHO)
             << setw(larguraPerecivel) << (ing.perecivel ? "Sim" : "Nao") << cores::RESET
 
             << (ing.requer_preparo ? cores::VERDE : cores::VERMELHO)
             << setw(larguraPreparo) << (ing.requer_preparo ? "Sim" : "Nao") << cores::RESET
 
-            << (ing.validade_turnos ? to_string(ing.validade_turnos) : "-") << '\n';
+            << (ing.validade_turnos ? to_string(ing.validade_turnos) : "-") << '\n';  //o -1 ta ali pra corrigir um bug
 }
 
 
