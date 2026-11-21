@@ -1,0 +1,256 @@
+# Adaptações realizadas nas estruturas que nos foram dadas
+
+Primeiramente, transformaram-se os códigos do moodle em C para C++ (.c para .cpp). Em seguida, adaptou-se o conteúdo do código, pq apesar de C ser um subconjunto de C++, é necessário adaptar alguns pontos do código. Por exemplo, malloc (em C) e new (em C++).
+
+Adaptações no TAD AVL:
+
+1. Foi criada a struct Pedido, com código e receita.
+2. O campo dado de NodoAvl passou de int para Pedido.
+3. A função criarNodo agora recebe const Pedido & e armazena o pedido completo no nó.
+4. As funções avlBuscar, avlInserir e avlRemover agora recebem Pedido e comparam seu código.
+5. A remoção com dois filhos copia o pedido completo do sucessor.
+6. A função avlEmOrdem agora imprime o código e percorre a lista de ingredientes da receita.
+7. O carregamento monta os pedidos e os insere na AVL antes do menu.
+8. A destruição da AVL foi incluída em liberar_recursos.
+9. A struct Pedido foi movida para pedido.hpp, e receita passou de string para ListaEnc.
+10. A função avlDestruir agora libera a lista da receita antes de apagar cada nó.
+11. A função avlRemover também libera a receita removida. No caso de dois filhos, transfere a lista do sucessor e deixa seu ponteiro nulo para evitar liberar a mesma lista duas vezes.
+12. Foi criada buscarPorCodigo, que recebe apenas o código e retorna o nó encontrado ou nullptr.
+13. Foi criada sortearPedido, posteriormente movida para jogo.cpp e adaptada para consultar a hash antes da AVL, sem remover o pedido nem copiar os nós da receita.
+
+
+
+Alterações no TAD Fila (04/11/2026):
+1. Foi criada a struct Cliente em pedido.hpp, com id e paciencia restante.
+2. O dado dos nós passou de Produto para Cliente, para representar a ordem de atendimento.
+3. As funções enfileira e desenfileira foram adaptadas para receber e devolver Cliente.
+4. Foi criada criarClientes, que gera os identificadores, define a paciência inicial e enfileira todos os clientes. Retorna false se uma inserção falhar.
+5. Foi criada clienteDaFrente, que retorna um ponteiro para o cliente sem removê-lo, permitindo consultar e atualizar sua paciência. Retorna nullptr se a fila estiver vazia.
+6. Foi criada destruir para esvaziar a fila usando desenfileira, liberando os clientes restantes.
+
+Integração dos clientes ao jogo (04/11/2026):
+1. A função novoJogo passou a preparar uma fila própria por partida, com três clientes e paciência provisória sorteada entre 9 e 15, igual para todos na mesma partida.
+2. O cliente da frente é consultado e recebe um pedido sorteado da AVL, exibindo identificador, paciência, código e receita.
+3. A fila é liberada ao retornar da função, inclusive em falhas de criação ou obtenção do pedido.
+4. A raiz da AVL e argv são passados à função novoJogo pela opção Novo jogo do menu.
+
+Pendente: implementar o atendimento, o desconto de paciência e a retirada dos clientes atendidos. A função atual apenas prepara e exibe o primeiro atendimento.
+
+Alterações no TAD Pilha, em andamento (04/11/2026):
+1. O dado do nó passou de Produto para Ingrediente, para representar o hambúrguer.
+2. A função empilha passou a receber um Ingrediente.
+
+Pendente: adaptar desempilha e topo, que ainda usam Produto, incluir a definição de Ingrediente no cabeçalho e distinguir o nome do nó da pilha do nó da fila.
+
+Alterações no TAD LISTA CONT EST:
+1. A struct ListaContEst agora possui como atribudo um array da struct Jogador, definida no início do .hpp. Não é mais um vetor de produtos.
+2. A função inserir recebe como parâmetro um Jogador, não mais um Produto.
+3. A função acessar foi modificada também, mudei seu retorno: agora é um Jogador.
+4. A função buscar também teve seu corpo modificado, para que compilasse
+5. Foi adicionado o campo capacidade a struct ListaContEst, pois assim seu limite de jogadores fica flexível.
+6. Em vez de um vetor de jogadores com capacidade fixa, troquei para um ponteiro para um vetor de jogadores sem tamanho prévio, mais flexível.
+7. A inicialização da ListaContEst agora também atribui um valor de início ao campo de capacidade da struct, definido pela constante CAPACIDADE. Atualmente esse valor é 50.
+8. A função inserir na ListaContEst agora não retorna mais false quando a lista esta cheia, mas sim dobra a capacidade da lista, dinamicamente.
+9. A função destruir agora também anula o ponteiro pro vetor e zera a capacidade.
+10. Foi criada a função para imprimir uma ListaContEst
+
+Alterações no TAD Lista Enc:
+1. Em vez de produto, os nodos agora contém ingredientes, em vez de produtos.
+2. Nodo se chama NodoReceita.
+3. Todas as funções foram alteradas, de forma com que tudo que referenciava produtos agora referencia ingredientes.
+4. Também alguns pontos foram otimizados para C++ (new, cout, etc).
+5. A busca e a remoção identificam ingredientes pelo símbolo (char), em vez do código de produto.
+6. As inserções usam new (std::nothrow) para permitir verificar falhas de alocação.
+
+Organização dos módulos:
+1. O antigo módulo lista foi separado em listacontest.hpp/.cpp para o histórico e listaenc.hpp/.cpp para as receitas.
+2. Os includes e o comando de compilação foram atualizados para os novos arquivos, incluindo ingredientes.cpp.
+
+Cadastro de ingredientes:
+1. Foi criada a struct Ingrediente, com nome, símbolo, perecível, requer_preparo e validade_turnos.
+2. Os tipos de ingredientes foram definidos como constantes em ingredientes.hpp.
+3. A função buscarIngrediente retorna um ponteiro constante para o ingrediente do símbolo recebido, ou nullptr se ele for inválido.
+
+Carregamento das receitas:
+1. A função montarReceita converte as letras em nós, inserindo no final para preservar a ordem de montagem.
+2. Cada pedido tem sua lista inicializada e preenchida antes da inserção na AVL.
+3. Em símbolo inválido ou falha de inserção na lista, a receita parcial é destruída e a carga retorna erro.
+4. Códigos repetidos são verificados antes da montagem, evitando criar listas que não seriam armazenadas. O primeiro pedido do código é preservado.
+5. A contagem de registros lidos inclui os repetidos e é diferente da quantidade de nós inseridos.
+
+Verificação realizada:
+1. A carga foi conferida com três pedidos, verificando códigos em ordem crescente, ingredientes na ordem das receitas e abertura do menu.
+
+Alterações no Merge Sort
+1. Foi adaptado para C++;
+2. Agora as três funcoes que compoem o mergeSort (merge, mergeSortRec e mergeSort) foram adaptadas para receber e ordenar um vetor da struct Jogador. Isso porque queremos ordenar o historico em ordem decrescente, para imprimir o top 10 melhores escores.
+3. A funcao mergeSort também registra o tempo de execucao e retorna uma variavel do tipo doublefloat indicando o tempo.
+
+
+Alterações de 06/11/2026:
+
+Cliente e fila:
+1. A struct Cliente ganhou pedido_cliente, do tipo const Pedido *, para associar o cliente ao pedido da AVL sem duplicar a receita.
+2. A função criarClientes foi substituída por criarCliente, que recebe identificador, paciência e ponteiro do pedido e devolve um Cliente.
+3. O enfileiramento passou a ser feito em novoJogo, verificando o retorno de enfileira. Destruir a fila não libera os pedidos, que continuam pertencendo à AVL.
+
+Preparação da partida:
+1. Cada cliente passou a receber um sorteio próprio de paciência entre 9 e 15; os valores podem se repetir.
+2. O pedido é sorteado e associado ao cliente antes de ele ser enfileirado.
+3. O atendimento consulta o pedido pelo campo pedido_cliente do cliente da frente, em vez de manter apenas uma variável separada.
+4. A fila parcial é liberada se a obtenção do pedido ou o enfileiramento falhar.
+
+Alterações no TAD Hash:
+1. A adaptação foi concentrada no encadeamento separado, mantendo as outras implementações com valores inteiros.
+2. O campo valor de No passou de int para const Pedido *, para guardar referências aos pedidos da AVL.
+3. A função encInserir passou a receber esse ponteiro, mantendo o código do pedido como chave.
+4. A função encBuscar passou a devolver const Pedido * ou nullptr quando não encontra a chave. A hash não possui nem libera as receitas apontadas.
+5. Foi iniciada a preparação das métricas, zerando hits, misses e colisoes em encInicializar.
+
+Atualização do TAD Hash (08/11/2026):
+6. Foram adicionados hits, misses e colisoes à TabelaEnc, do tipo unsigned long long.
+7. A função encBuscar passou a receber TabelaEnc sem const para atualizar os contadores: soma um hit ao encontrar o código ou um miss ao terminar sem encontrá-lo.
+8. A função encInserir passou a contar uma colisão quando a posição já está ocupada, independentemente do tamanho da lista nessa posição.
+9. Foi criada obterPedido em jogo.cpp, que consulta primeiro a hash; em um miss, busca na AVL e insere a referência encontrada no cache.
+10. O cache passou a ser inicializado uma vez no teste_menu, antes do menu, com tamanho provisório 101.
+11. A função liberar_recursos ganhou um parâmetro opcional para a hash, liberando o cache antes da AVL. O valor padrão nullptr permite usá-la nos erros anteriores à criação do cache.
+
+Integração e estatísticas da hash (08/11/2026):
+1. A função novoJogo passou a receber o cache criado no teste_menu, reutilizando a mesma hash entre partidas.
+2. A função sortearPedido foi movida da AVL para jogo.cpp e passou a receber a raiz e o cache. A declaração e a chamada foram atualizadas, removendo a versão antiga.
+3. O intervalo do sorteio passou a usar o menor e o maior código da árvore, sem reler o arquivo. Códigos inexistentes provocam outro sorteio.
+4. O pedido sorteado agora é recuperado por obterPedido: hash primeiro e AVL somente no miss.
+5. Foi criada exibirEstatisticasHash no TAD hash, mostrando m, n, hits, misses, colisões, fator de carga e taxa de acerto.
+6. O fator de carga usa conversão para double. A taxa de acerto é calculada em porcentagem com if/else, retornando zero quando não há buscas.
+7. As estatísticas passaram a ser exibidas ao final de novoJogo e representam os valores acumulados da execução.
+8. O comando de compilação do teste_menu precisa incluir hash.cpp.
+
+Pendente na hash: gravar as métricas em medicoes.log, integrar sua apresentação ao encerramento real das partidas e justificar o tamanho provisório 101. A rotina atual ainda não executa uma partida completa.
+
+Alterações no TAD Pilha e nos ingredientes (08/11/2026):
+1. A struct Ingrediente ganhou o campo cor, do tipo const char *, e cada constante de ingrediente passou a ter sua cor. Assim, a cor acompanha as cópias guardadas na pilha.
+2. O ingredientes.hpp passou a incluir cores.hpp, e foram criadas as cores MARROM e LARANJA.
+3. Foi criada esvaziarPilha, que desempilha todos os ingredientes, liberando os nós.
+4. Foi criada montarPilhaViaSimbolos, que esvazia a pilha e empilha os ingredientes de uma string de símbolos, da base para o topo. É usada no teste e supõe que todos os símbolos sejam válidos.
+5. Em teste_pilha.cpp, foi criada imprimir_hamburguer, que percorre a pilha do topo até a base e imprime cada ingrediente na sua cor.
+6. A verificação do pão de cima em adicionar_ingrediente passou a usar estaVazia antes de acessar p->topo, evitando acesso por ponteiro nulo com a pilha vazia.
+7. O main de teste_pilha.cpp passou a testar adicionar_ingrediente, remover_ingrediente, corrige_pedido e imprimir_hamburguer. A compilação do teste agora precisa de listaenc.cpp.
+
+Pendente na pilha: ajustar a impressão do "Pao de baixo", que aparece no início e no fim do hambúrguer; levar as funções de teste_pilha.cpp para o jogo; distinguir o nome do nó da pilha do nó da fila, pois ambos se chamam Nodo.
+
+Alterações no TAD Heap (08/11/2026):
+1. O heap passou de máximo para mínimo: as comparações de heapify e siftUp foram invertidas, de > para <. Assim, o topo guarda o menor valor.
+2. Na fila de prioridade, a lógica foi mantida, pois ela usa heapify e siftUp. Em heap.cpp, fpMaximo passou a se chamar fpMinimo e fpRemoverMaximo passou a se chamar fpRemoverMinimo.
+3. Como o min-heap deixa o heapSort em ordem decrescente, foi adicionada ao final da função uma inversão do vetor, que devolve a ordem crescente.
+
+Pendente no heap: atualizar heap.hpp, que ainda declara fpMaximo e fpRemoverMaximo e descreve um heap máximo; remover o include de sortings.hpp em heap.cpp, que não é mais necessário; renomear a variável maior de heapify, que agora guarda o índice do menor elemento; corrigir o comentário do heapSort que ainda cita o máximo.
+
+Preparo de ingredientes, em andamento em teste_heap.cpp (08/11/2026):
+1. Cada perecível usa um min-heap próprio (carne, ovo frito e bacon), organizado pelo turno de vencimento, de modo que a unidade mais próxima de vencer fique no topo.
+2. Foi criada calculaTurnoVencimento, que soma o turno atual à validade do ingrediente.
+3. Foi criada prepararIngredientePerecivel, que lê o código, insere o vencimento no heap correspondente e retorna false em código inválido, ingrediente de outro tipo ou heap cheio.
+4. Foi criada prepararIngredientePerene, que lê o código e soma uma unidade no vetor de contadores, cujas posições 0 a 3 são queijo suíço, queijo cheddar, cebola e tomate. Retorna false em código inválido e para ingredientes perecíveis ou que não precisam de preparo.
+
+Pendente no preparo: ler o código uma única vez e decidir qual das duas funções chamar; levar as funções para o jogo, gastando o turno apenas quando o preparo der certo; dar baixa no estoque ao usar o ingrediente e descartar os perecíveis vencidos no início de cada turno; testar as funções, pois o main de teste_heap.cpp ainda está vazio.
+
+Atualização do TAD Heap (09/11/2026):
+4. O heap.hpp passou a declarar fpMinimo e fpRemoverMinimo, acompanhando os nomes usados em heap.cpp.
+5. O include de sortings.hpp foi removido de heap.cpp, pois o heapSort não chama mais o mergeSort.
+
+Pendente no heap: atualizar os comentários do heap.hpp que ainda descrevem um heap máximo; renomear a variável maior de heapify, que agora guarda o índice do menor elemento; corrigir o comentário do heapSort que ainda cita o máximo.
+
+Descarte e uso de ingredientes, em andamento em teste_heap.cpp (09/11/2026):
+1. Foi criada removeIngredienteEstragado, que retira do min-heap as unidades com turno de vencimento menor ou igual ao turno atual. O laço usa fpMinimo e termina quando o heap esvazia ou quando o topo ainda não venceu.
+2. Foi criada usaIngredientePerecivel, que lê o código e retira do heap correspondente a unidade mais próxima de vencer. Se não houver unidade disponível, avisa o jogador e retorna false.
+3. Foi criada usaIngredientePerene, que lê o código e retira uma unidade do vetor de contadores. Retorna false em código inválido, sem unidade disponível ou para ingredientes que não precisam de preparo.
+
+Pendente no descarte e no uso: incluir os retornos que faltam em removeIngredienteEstragado e usaIngredientePerecivel, pois hoje o programa quebra ao chamar removeIngredienteEstragado; usar turnoAtual em usaIngredientePerecivel ou garantir o descarte antes do uso, para que uma unidade vencida não seja consumida; ler o código uma única vez e decidir qual função chamar; tratar à parte os ingredientes sem preparo, que têm quantidade infinita; integrar as funções à pilha do hambúrguer e ao jogo; escrever os testes no main de teste_heap.cpp, que ainda está vazio.
+
+Alterações de 10/11/2026:
+
+TAD Pilha:
+1. A struct Nodo da pilha passou a se chamar NodoPilha, em pilha.hpp, pilha.cpp e teste_pilha.cpp, pois a fila também tem uma struct Nodo e o jogo.cpp inclui os dois cabeçalhos. Isso resolve a pendência de distinguir os dois nós.
+2. A função remover_ingrediente passou a retornar true quando a remoção dá certo. Antes, o else sem chaves fazia a função retornar false sempre.
+
+TAD Hash:
+1. Foi incluído <iostream> em hash.cpp, pois exibirEstatisticasHash usa std::cout.
+
+Organização dos módulos:
+1. O main de teste_heap.cpp foi removido, e o main de teste_pilha.cpp ficou entre #ifdef TESTE_PILHA_MAIN e #endif. Assim, as funções dos dois arquivos podem ser compiladas junto com o teste_menu, que tem o único main do jogo. Para testar a pilha sozinha, compila-se com -DTESTE_PILHA_MAIN.
+2. O comando de compilação do jogo passou a incluir heap.cpp, teste_heap.cpp, teste_pilha.cpp e pilha.cpp.
+
+Integração da pilha e dos heaps ao jogo:
+1. A função novoJogo passou a receber a pilha do hambúrguer (PilhaEnc *), os três heaps de perecíveis (carnes, ovos e bacons), o turno atual e o vetor com as quantidades dos não perecíveis preparados.
+2. O jogo.hpp passou a incluir heap.hpp e pilha.hpp, onde são definidos FilaPrioridade e PilhaEnc, e sua declaração de novoJogo foi atualizada para a nova assinatura.
+3. No teste_menu, cada partida cria e inicializa a pilha, os três heaps e o vetor de quantidades (zerado), e passa seus endereços para novoJogo.
+4. A cada turno, novoJogo chama removeEstragadosHeap, que descarta dos três heaps as unidades vencidas. Em seguida, o jogador escolhe entre adicionar ou remover ingrediente do hambúrguer, enviar o pedido, preparar perecível ou preparar não perecível.
+
+Histórico de partidas:
+1. Foi criada gravaJogoNoHistorico, que acrescenta o nome e o score ao final do arquivo, no mesmo formato do historico.txt (nome em uma linha, score na seguinte). O nome é lido com getline(cin >> ws, nome), para aceitar nomes com espaço, e o score começa em zero.
+2. Na leitura do histórico, o '\r' passou a ser removido do nome antes de copiá-lo para o Jogador. Antes, a remoção acontecia depois da cópia, e o nome guardado continuava com o '\r'.
+
+Pendente: chamar esvaziarPilha depois de cada partida, para liberar os nós do hambúrguer; atualizar o comando de compilação no comentário do teste_menu.cpp; turnoAtual é recebido por valor em novoJogo; gravaJogoNoHistorico ainda grava em um arquivo fixo (historico_teste.txt), não valida o score e não está declarada em jogo.hpp nem é chamada; a opção 1 do turno chama adicionar_ingrediente diretamente, sem passar por usaIngredientePerecivel e usaIngredienteNaoPerecivel, então o estoque dos heaps e do vetor de quantidades ainda não é consumido ao montar o hambúrguer.
+
+Alterações nos TADs e no estoque (13/11/2026):
+
+TAD Lista Enc:
+1. A função `imprimir` passou a mostrar a receita em colunas, com larguras compartilhadas com `imprimirIngrediente` via `std::setw`. As colunas mostram nome, código, perecibilidade, necessidade de preparo e validade em turnos.
+2. A função `imprimirIngrediente` mostra `Sim` e `Nao` para os campos booleanos e `-` quando a validade é zero.
+
+Integração do estoque com o heap e a pilha:
+1. A opção de adicionar ingrediente passou a ler o código uma vez e encaminhá-lo a `usaIngredientePerecivel` ou `usaIngredienteNaoPerecivel`. As duas funções agora recebem o código por parâmetro.
+2. O estoque é baixado depois que o ingrediente entra na pilha. Para perecíveis, retira-se do heap a unidade com o menor turno de vencimento. Para não perecíveis que exigem preparo, reduz-se o contador correspondente. Ingredientes ilimitados são adicionados diretamente.
+3. A opção Consultar estoque usa `mostrarEstoque` e `mostrarPerecivel` para exibir quantidades e, em cada heap não vazio, quanto falta para o próximo vencimento (`turnoVencimento - turnoAtual`). A leitura usa `fpMinimo` e mantém a unidade no heap.
+4. A consulta compensa o avanço do turno e o desconto de paciência feitos pelo laço para voltar ao menu no mesmo turno.
+
+Alterações de 14/11/2026:
+
+Medições e medicoes.log:
+1. Foi criado o módulo medicoes.hpp/.cpp, com a struct Metricas (carregamento da AVL e do histórico, buscas na AVL, hash e ordenação) e as funções iniciaLog, geraRelatorio, registraOrdenacao e zeraMetricasPartida. O medicoes.hpp tem include guard e declara extern Metricas met, definida no teste_menu.cpp.
+2. iniciaLog abre o medicoes.log sem std::ios::app, recriando o arquivo a cada execução. As demais gravações usam std::ios::app.
+3. geraRelatorio monta o Relatório de Desempenho uma vez e envia o mesmo texto para a tela e para o log, ao final de novoJogo. Média de comparações, fator de carga e taxa de acerto valem zero quando o divisor é zero.
+
+TAD AVL:
+1. reequilibrar passou a receber int *rotacoes, com padrão nullptr: soma 1 nas rotações simples (LL e RR) e 2 nas duplas (LR e RL). avlRemover continua chamando sem contador, então só as rotações da inserção são contadas.
+2. avlInserir passou a receber int &rotacoes e repassá-lo nas chamadas recursivas e em reequilibrar. O carregamento passa met.rotacoes.
+3. buscarPorCodigo passou a receber int &comparacoes, somando 1 a cada nó visitado.
+4. A altura registrada é avlAltura(raiz) + 1, pois avlAltura usa -1 para árvore vazia e a especificação usa 0.
+
+Jogo e hash:
+1. obterPedido e sortearPedido passaram a receber Metricas &met. No miss da hash, obterPedido cronometra buscarPorCodigo e acumula totalBuscas, totalComparacoes e tempoBuscas.
+2. exibirEstatisticasHash passou a copiar m, n, hits, misses e colisoes do cache para a Metricas.
+3. O jogo.hpp ganhou a declaração antecipada struct ListaContEst;, pois o listacontest.hpp inclui o jogo.hpp e incluir o contrário formaria um ciclo.
+
+Histórico:
+1. gravaJogoNoHistorico passou a receber a lista_historico e, além de gravar no arquivo, insere o novo Jogador no fim da lista. novoJogo recebe a lista do teste_menu e a repassa.
+2. Foi criada medirOrdenacaoHistorico em funcoes_menu.cpp, chamada logo após iniciaLog. Ela copia a lista para um vetor fora do intervalo cronometrado, ordena com mergeSortAdaptado e guarda tamanho e tempo na Metricas.
+3. historicov3 também atualiza tamanhoOrdenacao e tempoOrdenacao a cada acesso ao Histórico, e o Relatório de Desempenho mostra a ordenação abaixo de "Total de colisoes".
+4. O comando de compilação passou a incluir src/medicoes.cpp.
+
+Pendente: gravaJogoNoHistorico ainda grava em "src/historico.txt", e não no arquivo recebido em argv[2]; zeraMetricasPartida não é chamada no início de cada partida, e as estatísticas da hash vêm do cache reutilizado entre partidas; medir a ordenação com pelo menos 3 tamanhos de histórico para o relatório.
+
+Alterações de 15/11/2026:
+
+Histórico:
+1. gravaJogoNoHistorico passou a receber const char *nomeArqHistorico e abre esse arquivo com std::ios::app, em vez do caminho fixo "src/historico.txt".
+2. novoJogo, que já recebia argv, passa argv[2] para gravaJogoNoHistorico. Assim, o jogo grava no mesmo arquivo de histórico que foi lido na inicialização. A assinatura de novoJogo não mudou.
+
+Pendente: "medicoes.log" continua com nome fixo no teste_menu.cpp e no jogo.cpp; o medicoes.cpp tem um main de rascunho, que gera "multiple definition of main" se for compilado junto com o teste_menu.cpp; o src/main.cpp está vazio.
+
+Paciência inicial e contagem de turnos:
+
+1. `conta_turnos_ingrediente` conta 1 turno para adicionar o ingrediente e mais 1 quando ele exige preparo.
+2. `conta_turnos_pedido` percorre a lista encadeada da receita e soma o custo dos ingredientes, começando com 1 turno para enviar o pedido.
+3. Em `novoJogo`, a paciência inicial de cada cliente passou a ser o custo do seu pedido mais 2 turnos de margem.
+4. `conta_turnos_pedido` recebe `const ListaEnc *` e `conta_turnos_ingrediente` recebe `const Ingrediente *`. As declarações e chamadas foram ajustadas, e a dependência circular entre `listaenc.hpp` e `pedido.hpp` foi removida.
+
+TAD Lista Contígua:
+
+1. A definição de `Jogador` foi movida de `listacontest.hpp` para `jogo.hpp`, pois o tipo é usado na partida e no histórico. A lista continua armazenando registros com nome e pontuação e inclui `jogo.hpp` para acessar a definição.
+
+TAD Pilha e exibição do hambúrguer:
+
+1. Em `teste_pilha.cpp`, foi criada `desenho_ingrediente`, que associa o símbolo de cada ingrediente a um padrão de caracteres.
+2. A função `desenhar_hamburguer`, declarada em `teste_pilha.hpp`, recebe `const PilhaEnc *` e percorre os nós do topo à base sem desempilhar. Cada camada e seu nome são impressos na cor do ingrediente, com restauração da cor do terminal depois do nome.
+3. O pão de cima tem um desenho de várias linhas. O pão de baixo é desenhado separadamente, inclusive com a pilha vazia, pois faz parte da base e não ocupa um nó.
+4. `novoJogo` chama `desenhar_hamburguer` na tela da partida. A função `imprimir_hamburguer` continua disponível para exibir a versão em texto.
