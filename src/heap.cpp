@@ -89,6 +89,7 @@ bool fpEstaVazia(const FilaPrioridade *fp) {
 
 bool fpInserir(FilaPrioridade *fp, int valor) {
     if (fp->tamanho >= HEAP_CAP) return false;
+    // coloca no fim e sobe ate recuperar a ordem do min-heap
     fp->dados[fp->tamanho] = valor;
     siftUp(fp->dados, fp->tamanho);
     fp->tamanho++;
@@ -105,6 +106,7 @@ bool fpRemoverMinimo(FilaPrioridade *fp, int *valor) {
     if (fpEstaVazia(fp)) return false;
     *valor = fp->dados[0];
     fp->tamanho--;
+    // traz o ultimo pro topo e reorganiza o heap a partir da raiz
     fp->dados[0] = fp->dados[fp->tamanho];
     heapify(fp->dados, fp->tamanho, 0);
     return true;

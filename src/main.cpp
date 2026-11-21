@@ -1,41 +1,29 @@
-// Bibliotecas padrão
+// Bibliotecas padrao
 #include <iostream>
-
-using namespace std;
-#include <fstream>
 #include <string>
-#include <cstdio>
 
-
-// TADs
+// TADs e funcoes do jogo
 #include "avl.hpp"
 #include "listacontest.hpp"
 #include "hash.hpp"
-
-
-// Bibliotecas do jogo
 #include "cores.hpp"
 #include "funcoes_menu.hpp"
 #include "leitura_de_arquivos.hpp"
-#include "timer.hpp"
-#include "sortings.hpp"
 #include "jogo.hpp"
-#include "fila.hpp"
 #include "pilha.hpp"
-#include "preparo.hpp"
 #include "heap.hpp"
 #include "medicoes.hpp"
 
+using namespace std;
+
+// Compilar na raiz do projeto:
+// g++ src/main.cpp src/funcoes_menu.cpp src/jogo.cpp src/fila.cpp src/leitura_de_arquivos.cpp src/listacontest.cpp src/listaenc.cpp src/ingredientes.cpp src/avl.cpp src/hash.cpp src/timer.cpp src/sortings.cpp src/heap.cpp src/pilha.cpp src/hamburguer.cpp src/preparo.cpp src/medicoes.cpp -I src -o dado_burger.exe -Wall -std=c++17
+//
+// Executar no PowerShell:
+// .\dado_burger.exe data\pedidos.txt data\historico.txt
 
 
-
-//  COMPILAR:
-//  g++ src/main.cpp src/funcoes_menu.cpp src/jogo.cpp src/fila.cpp src/leitura_de_arquivos.cpp src/listacontest.cpp src/listaenc.cpp src/ingredientes.cpp src/avl.cpp src/hash.cpp src/timer.cpp src/sortings.cpp src/heap.cpp src/pilha.cpp src/hamburguer.cpp src/preparo.cpp src/medicoes.cpp -I src -o src/main.exe -Wall -std=c++17
-
-//  EXECUTAR:
-//  .\src\main.exe data\pedidos.txt data\historico.txt
-
-Metricas met;
+Metricas met; 
 
 int main(int argc, char *argv[])
 {
@@ -67,7 +55,7 @@ int main(int argc, char *argv[])
     double tempoHistorico = 0.0;
     int historicoslidos = carregarPartidasListaContEst(argv[2], &lista_historico, &tempoHistorico);
 
-    if (historicoslidos < 0)
+    if (historicoslidos < 0) 
     {
         liberar_recursos(raiz, &lista_historico);
         return 1;
@@ -79,13 +67,15 @@ int main(int argc, char *argv[])
     medirOrdenacaoHistorico(&lista_historico, met);
 
     TabelaEnc cache; 
-    encInicializar(&cache, 101); //cria e inicializa a tabela hash que vai armazenar os pedidos sorteados
+    encInicializar(&cache, 1009); //cria e inicializa a tabela hash que vai armazenar os pedidos sorteados, com m == 1009
 
-    Jogador player;
+    Jogador player; //inicializamos o jogador
 
     int ESTADO_MENU = MENU; //variavel que armazena o estado atual do menu, inicializado como MENU
 
-    while (ESTADO_MENU != SAIR)
+    int DIFICULDADE = 0; //determina se é facil , medio ou dificil
+
+    while (ESTADO_MENU != SAIR) //enquanto o estado_menu nao for sair...
         {
 
         if (ESTADO_MENU == MENU)
@@ -95,6 +85,14 @@ int main(int argc, char *argv[])
 
         if (ESTADO_MENU == NOVO_JOGO)
         {
+
+            if (!selecionar_dificuldade(DIFICULDADE)) //se der erro na hora de selecionar a dificuldade
+            {
+                liberar_recursos(raiz, &lista_historico, &cache);
+                return 0;
+            }
+
+            // cada partida comeca com hamburguer e estoques vazios
             PilhaEnc hamburguer;
             inicializa(&hamburguer);
 
@@ -104,27 +102,26 @@ int main(int argc, char *argv[])
             fpInicializar(&bacons);
 
             int quantidades[4] = {0, 0, 0, 0}; // s, q, c, t
-            novoJogo(raiz, &cache, ESTADO_MENU, argv, &hamburguer, &carnes, &ovos, &bacons, 0, quantidades, &player, met, &lista_historico);
-            ESTADO_MENU = MENU;
+
+            //aqui chamamos a funcao que é o motor do jogo. é la que ocorrem a montagem de hamburgers, laços de turnos, etc
+            novoJogo(raiz, &cache, ESTADO_MENU, argv, &hamburguer, &carnes, &ovos, &bacons, 0, quantidades, &player, met, &lista_historico, DIFICULDADE);
+            
+            ESTADO_MENU = MENU; //depois que acaba o jogo, volta automaticamente para o menu
         }
         else if (ESTADO_MENU == COMO_JOGAR)
         {
-            como_jogar(ESTADO_MENU);
+            como_jogar(ESTADO_MENU); //so mostra o texto explicando o jogo
         }
         else if (ESTADO_MENU == HISTORICO)
         {
-            historicov3(ESTADO_MENU, &lista_historico);
+            historicov3(ESTADO_MENU, &lista_historico); //exibe o historico, com diferentes formas de ordenamento
 
-        }
-        else if (ESTADO_MENU == SAIR)
-        {
-
-            liberar_recursos(raiz, &lista_historico, &cache);
-            return 0; //encerrar_programa();
         }
 
     }   
 
-
-    return 0;
+    //se cair aqui, é pq o ESTADO_MENU é SAIR
+    liberar_recursos(raiz, &lista_historico, &cache);
+    return 0; //encerrar_programa();
+    
 }

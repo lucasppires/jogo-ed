@@ -3,7 +3,7 @@
 
 #include "ingredientes.hpp"
 
-struct NodoReceita {
+struct NodoReceita {  //cada receita é composta por esses nodos que tem um ingrediente e um ponteiro para o prox nodo
     NodoReceita *prox;
     Ingrediente dado;
 };

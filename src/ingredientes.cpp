@@ -4,7 +4,7 @@ using namespace std;
 
 #include <string>
 
-const Ingrediente *buscarIngrediente(char simbolo)
+const Ingrediente *buscarIngrediente(char simbolo) //funcao que associa um ingrediente para cada caractere
 {
     switch (simbolo)
     {

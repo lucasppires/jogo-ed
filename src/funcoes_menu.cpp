@@ -32,6 +32,7 @@ void pula_linha(int n)
 void imprimir_menu(int& estado_menu)
 {
     // espacos fixos deixam o menu alinhado em terminais diferentes
+
     cout << '\n'
          << cores::AZUL_CLARO
          << "  ----------------------------------------------------------\n"
@@ -75,7 +76,7 @@ void imprimir_menu(int& estado_menu)
     }
 }
 
-//destroi a avl e a lista contígua de histórico, né? 
+//destroi a avl e a lista contígua de histórico
 void liberar_recursos(NodoAvl *&raiz, ListaContEst *lista_historico, TabelaEnc *cache)
 {
     
@@ -88,54 +89,120 @@ void liberar_recursos(NodoAvl *&raiz, ListaContEst *lista_historico, TabelaEnc *
     destruir(lista_historico);
 }
 
+// devolve false se a entrada for encerrada antes de escolher uma dificuldade
+bool selecionar_dificuldade(int &dificuldade)
+{
+    pula_linha(2);
+    cout << cores::VERDE_CLARO << "1 - Facil\n"
+         << cores::AMARELO_CLARO << "2 - Normal\n"
+         << cores::VERMELHO_CLARO << "3 - Dificil\n\n"
+         << cores::RESET;
+
+    string opcaoDificuldade;
+    while (true) {
+        cout << "Selecione um nivel de dificuldade [1-3]: ";
+
+        if (!(cin >> opcaoDificuldade)) {
+            return false;
+        }
+
+        // aceita somente um digito entre 1 e 3
+        if (opcaoDificuldade.size() == 1 && opcaoDificuldade[0] >= '1' && opcaoDificuldade[0] <= '3') 
+        {
+            // os valores de FACIL, NORMAL e DIFICIL sao 2, 3 e 4
+            dificuldade = opcaoDificuldade[0] - '0' + 1;
+            pula_linha(2);
+            return true;
+        }
+
+        cout << cores::VERMELHO_CLARO << "Opcao invalida! Escolha 1, 2 ou 3." << cores::RESET;
+
+        pula_linha(1);
+    }
+}
+
 void como_jogar(int& estado_menu)
 {
     cout << R"(
     COMO JOGAR - DADO BURGER
 
-    Voce e o novo funcionario do Dado Burger! Atenda todos os clientes antes que a paciencia deles acabe.
+    Atenda os 3 clientes da partida, na ordem de chegada.
+    Cada cliente tem uma receita e sua propria paciencia.
+    Somente o cliente da frente perde paciencia enquanto e atendido.
+
+    DIFICULDADE E PONTUACAO
+    A paciencia inicial depende dos turnos para preparar e montar a
+    receita, incluindo 1 turno reservado para enviar o pedido.
+
+    Facil    - 4 turnos de margem e multiplicador de pontos x1.
+    Normal   - 2 turnos de margem e multiplicador de pontos x1,5.
+    Dificil  - sem margem adicional e multiplicador de pontos x2.
+
+    A cada atendimento concluido, voce recebe
+    10 x paciencia restante x multiplicador da dificuldade.
+    A pontuacao final e a soma dos pontos dos clientes atendidos.
 
     MONTANDO O PEDIDO
-    Confira a receita do cliente e adicione os ingredientes na ordem indicada, de baixo para cima. O pao de baixo ja esta no prato. Finalize com o pao de cima: o hamburguer precisa corresponder exatamente a receita.
+    Confira a receita e adicione os ingredientes na ordem indicada,
+    de baixo para cima. O pao de baixo ja esta no prato.
+    Coloque o pao de cima (z) por ultimo e escolha Enviar pedido.
+    O hamburguer precisa corresponder exatamente a receita.
 
-    Voce so pode remover o ingrediente do topo. Ingredientes removidos sao descartados e nao voltam ao estoque. Nao e possivel adicionar ingredientes acima do pao de cima.
+    Voce so pode remover o ingrediente do topo. Ele e descartado
+    e nao volta ao estoque. O pao de baixo permanece no prato.
+    Depois do pao de cima, remova-o antes de adicionar outra camada.
 
     INGREDIENTES
-    Sem preparo e com quantidade infinita:
-    z - Pao de cima
-    k - Ketchup
-    m - Mostarda
-    p - Picles
-    a - Alface
+    Sem preparo e com quantidade ilimitada
+    z - Pao de cima    k - Ketchup    m - Mostarda
+    p - Picles        a - Alface
 
-    Precisam de preparo e nao vencem no estoque:
-    s - Queijo suico
-    q - Queijo cheddar
-    c - Cebola
-    t - Tomate
+    Precisam de preparo e permanecem no estoque sem vencer
+    s - Queijo suico   q - Queijo cheddar
+    c - Cebola        t - Tomate
 
-    Precisam de preparo e vencem no estoque:
-    n - Carne
-    o - Ovo frito
-    b - Bacon
+    Precisam de preparo e vencem no estoque
+    n - Carne         o - Ovo frito   b - Bacon
+    A validade atual dos tres e de 3 turnos a partir do preparo.
 
-    ACOES E TURNOS
-    Preparar uma unidade de ingrediente: 1 turno.
-    Adicionar um ingrediente ao hamburguer: 1 turno.
-    Remover o ingrediente do topo: 1 turno.
-    Consultar o pedido ou o estoque: nao gasta turno.
+    ACOES NA PARTIDA
+    1 - Adicionar um ingrediente ao hamburguer.
+    2 - Remover o ingrediente do topo.
+    3 - Enviar o pedido para conferir a montagem e atender o cliente.
+    4 - Preparar uma unidade de carne, ovo ou bacon.
+    5 - Preparar uma unidade de queijo, cebola ou tomate.
+    6 - Consultar o estoque.
+    7 - Encerrar a partida e guardar a pontuacao obtida.
+
+    Preparar, adicionar e remover consomem 1 turno por tentativa.
+    Enviar um pedido incorreto tambem consome 1 turno.
+    Ao enviar corretamente, o proximo cliente passa a ser atendido.
+    Consultar o estoque e sair nao consomem turno.
+    A receita e o hamburguer atual aparecem na tela de acoes.
 
     ESTOQUE E VALIDADE
-    Prepare os ingredientes antes de usa-los. Carne, ovo e bacon vencidos sao descartados automaticamente no inicio de cada turno. Ao usar um perecivel, sai primeiro a unidade mais proxima do vencimento.
+    Prepare as unidades necessarias antes de adiciona-las.
+    Para usar um ingrediente preparado, deve haver uma unidade
+    disponivel no estoque. Ao usa-la, a quantidade diminui em 1.
 
-    VITORIA E DERROTA
-    Somente o cliente em atendimento perde paciencia a cada acao que gasta turno. Se ela chegar a zero antes de concluir o pedido, a partida termina.
+    No inicio de cada turno, as unidades pereciveis vencidas sao
+    descartadas. Uma unidade preparada no turno 1 vence no inicio
+    do turno 4. Ao usar um perecivel, sai primeiro o que vence antes.
 
-    Atenda todos os clientes para vencer!
-    Sua pontuacao e o numero de clientes atendidos.
+    Na consulta ao estoque, voce ve as quantidades e quantos turnos
+    faltam para o proximo vencimento. Para voltar, digite uma tecla
+    e pressione Enter.
 
+    FIM DA PARTIDA
+    Atenda todos os clientes para vencer.
+    Se a paciencia do cliente da frente acabar com o pedido pendente,
+    a partida termina em GAME OVER. Voce tambem pode sair pela opcao 7.
 
-    Selecione uma opcao:
+    No encerramento, informe um nome com ate 20 caracteres para salvar
+    sua pontuacao. O Relatorio de Desempenho e exibido em seguida.
+    No menu Historico, escolha a ordem por pontuacao ou por nome.
+
+    Selecione uma opcao
 
     1. Jogar
     2. Voltar ao menu
@@ -181,6 +248,7 @@ void historicov2(int& estado_menu, ListaContEst *lista_historico)
     //imprimir_ListaContEst(lista_historico);
     Jogador *vetor = new Jogador[lista_historico->tamanho];
 
+    // ordenamos a copia para preservar a ordem original das partidas na lista
     int tamanhoVetor = lista_para_vetor(lista_historico, vetor);
 
     double tempo = ordena_vetor_pelo_score_bubble_sort(vetor, tamanhoVetor);
@@ -221,7 +289,7 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico)
 
     int res;
 
-    Jogador *vetor = new Jogador[lista_historico->tamanho];
+    Jogador *vetor = new Jogador[lista_historico->tamanho]; //aloca com new o vetor do tamanho da lista de jogadores
 
     int tamanhoVetor = lista_para_vetor(lista_historico, vetor);
 

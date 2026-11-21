@@ -3,9 +3,8 @@
 
 
 #include <string>
-
-using namespace std;
 #include "cores.hpp"
+using std::string;
 using namespace cores;
 
 
@@ -73,6 +72,7 @@ inline const Ingrediente BACON{
 
 
 const Ingrediente *buscarIngrediente(char simbolo);
+
 int conta_turnos_ingrediente(const Ingrediente *ingrediente);
 
 #endif

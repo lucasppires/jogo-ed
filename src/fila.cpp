@@ -40,6 +40,7 @@ bool desenfileira(FilaEnc *f, Cliente *valorRemovido)
         return false;
 
     removido = f->frente;
+    // copia os dados antes de liberar o no, para o jogo poder usar o cliente removido
     *valorRemovido = removido->dado;
     f->frente = removido->prox;
 

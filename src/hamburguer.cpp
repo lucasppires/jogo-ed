@@ -2,6 +2,7 @@
 #include "pedido.hpp"
 #include "ingredientes.hpp"
 #include <iostream>
+#include <new>
 
 // comando de compilação:
 // g++ -DTESTE_PILHA_MAIN hamburguer.cpp pilha.cpp ingredientes.cpp listaenc.cpp -o teste_pilha -Wall -std=c++17
@@ -169,45 +170,44 @@ bool remover_ingrediente(PilhaEnc *p){
 }
 
 
-bool corrige_pedido(PilhaEnc *p, const ListaEnc *receita){
-    // primeiro vamos colocar os ingredientes da pilha em uma vetor de ingredientes, para depois comparar com a receita, que é uma lista enc.
-
-
-    Ingrediente vetorCorrecao[tamanho(p)];   // o tamanho do vetor é o tamanho da pilha
+bool corrige_pedido(PilhaEnc *p, const ListaEnc *receita)
+{
     int n = tamanho(p);
-    int i = tamanho(p) - 1;
-
-    // vê se ambas as estruturas - array e lista - tem o mesmo tamanho, se nn tiver, deu merda no pedido
-
     if (n != tamanho(receita)) {
-        // cout << "Montaste o pedido com a quantidade errada de ingredientes!" << endl;
         return false;
     }
 
+    if (n == 0) {
+        return true;
+    }
 
+    char *simbolos = new (nothrow) char[n];
+    if (simbolos == nullptr) {
+        cerr << "Nao foi possivel conferir o pedido.\n";
+        return false;
+    }
 
-    while (!estaVazia(p)) {
-        Ingrediente aux;
-        desempilha(p, &aux);
-
-        vetorCorrecao[i] = aux;
+    // le do topo pra base e guarda ao contrario, sem retirar nenhum no da pilha
+    int i = n - 1;
+    for (const NodoPilha *atual = p->topo; atual != nullptr; atual = atual->prox) {
+        simbolos[i] = atual->dado.simbolo;
         i--;
     }
 
+    bool correto = true;
     i = 0;
-
-    NodoReceita *aux = receita->ini;
-
-    while(aux != nullptr){
-        if(aux->dado.simbolo != vetorCorrecao[i].simbolo){
-            cout << "Seu idiota, montaste o pedido na ordem errada!" << endl;
-            return false;
+    for (const NodoReceita *atual = receita->ini; atual != nullptr; atual = atual->prox) {
+        if (atual->dado.simbolo != simbolos[i]) {
+            cout << "A ordem dos ingredientes nao corresponde a receita.\n";
+            correto = false;
+            break;
         }
-
-        aux = aux->prox;
         i++;
     }
-    return true;
+
+    // o vetor e temporario; o hamburguer continua montado para o jogador corrigir
+    delete[] simbolos;
+    return correto;
 }
 
 void imprimir_hamburguer(PilhaEnc *p){
@@ -291,7 +291,7 @@ void desenhar_hamburguer(const PilhaEnc *p)
 }
 
 // ia gerou um main pra eu testar
-// so eh compilado com -DTESTE_PILHA_MAIN (senao conflita com o main do teste_menu)
+// so eh compilado com -DTESTE_PILHA_MAIN (senao conflita com o main.cpp do jogo)
 #ifdef TESTE_PILHA_MAIN
 int main(){
     PilhaEnc p;

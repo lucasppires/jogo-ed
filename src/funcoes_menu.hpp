@@ -21,6 +21,8 @@ void pula_linha(int n);
 
 void imprimir_menu(int& estado_menu);
 
+bool selecionar_dificuldade(int &dificuldade);
+
 void liberar_recursos(NodoAvl *&raiz, ListaContEst *lista_historico, TabelaEnc *cache = nullptr); //se nao receber o terceiro argumento, o cache é considerado nulo e nao sera destruido
 
 void como_jogar(int& estado_menu);

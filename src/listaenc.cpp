@@ -162,6 +162,7 @@ void destruir(ListaEnc *lista) {
     NodoReceita *aux = lista->ini;
 
     while (aux != nullptr) {
+        // guarda o proximo antes do delete para continuar percorrendo a lista
         NodoReceita *removido = aux;
         aux = aux->prox;
         delete removido;
