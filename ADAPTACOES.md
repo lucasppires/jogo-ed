@@ -94,9 +94,6 @@ Este arquivo reúne as alterações feitas nos códigos do Moodle e no restante 
 17. O nó da pilha foi renomeado para `NodoPilha`, porque a fila também tem uma struct `Nodo` e o `jogo.cpp` inclui os dois cabeçalhos. O nó da fila continua se chamando `Nodo`.
 18. Em `novoJogo`, a paciência inicial de cada cliente passou a ser o custo do seu pedido (`contaturnospedido`) mais 2 turnos de margem, no lugar do sorteio entre 9 e 15.
 
-**Pendências**
-- ❔ Implementar o atendimento, o desconto de paciência e a retirada dos clientes atendidos (na época, a função apenas preparava e exibia o primeiro atendimento). Um registro posterior já menciona o desconto de paciência feito pelo laço; a retirada dos clientes atendidos não foi registrada.
-
 ## 3. TAD Pilha (`pilha.hpp` / `pilha.cpp`) — mudanças em 04/11, 08/11, 10/11, 13/11, 15/11
 
 1. O dado do nó passou de `Produto` para `Ingrediente`, para representar o hambúrguer.
