@@ -85,7 +85,7 @@ Ingrediente buscar(const ListaEnc *lista, char simbolo) {
         aux = aux->prox;
     }
 
-    // Simbolo nulo indica ingrediente nao encontrado.
+    // simbolo nulo indica ingrediente nao encontrado
     return Ingrediente{"", '\0', false, false, 0};
 }
 

@@ -7,8 +7,8 @@ using namespace std;
 
 #include "avl.hpp"
 #include "hash.hpp"
-#include "heap.hpp"    // FilaPrioridade
-#include "pilha.hpp"   // PilhaEnc
+#include "heap.hpp"    // filaPrioridade
+#include "pilha.hpp"   // pilhaEnc
 
 
 struct Jogador {
@@ -20,7 +20,7 @@ typedef enum {
     FACIL = 2,
     NORMAL = 3,
     DIFICIL = 4
-} DIFICULDADE;
+} DIFICULDADE; //esses valores estao dobrados para facilitar o multiplicador de pontos ao final da partida
 
 struct ListaContEst;   // declaração antecipada: definida em listacontest.hpp
 

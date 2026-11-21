@@ -1,6 +1,6 @@
 /* avl.cpp
- * Arvore AVL: BST com balanceamento automatico por rotacoes.
- * INF01203 - Estruturas de Dados - UFRGS
+ * arvore AVL: BST com balanceamento automatico por rotacoes
+ * inf01203 - Estruturas de Dados - UFRGS
  */
 
 #include <iostream>
@@ -14,7 +14,7 @@ using namespace std;
 #include "leitura_de_arquivos.hpp"
 
 /* ------------------------------------------------------------------ */
-/*  Auxiliares internos                                                 */
+/*  auxiliares internos                                                 */
 /* ------------------------------------------------------------------ */
 static int maximo(int a, int b) { return a > b ? a : b; }
 
@@ -38,28 +38,28 @@ static void atualizarAltura(NodoAvl *n) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Altura e fator de balanceamento                                     */
+/*  altura e fator de balanceamento                                     */
 /* ------------------------------------------------------------------ */
 int avlAltura(const NodoAvl *n) {
     return n ? n->altura : -1;
 }
 
-/* FB = h(esq) - h(dir). Positivo: pesado a esquerda. */
+/* fb = h(esq) - h(dir). Positivo: pesado a esquerda */
 int avlFb(const NodoAvl *n) {
     return n ? avlAltura(n->esq) - avlAltura(n->dir) : 0;
 }
 
 /* ------------------------------------------------------------------ */
-/*  Rotacoes simples                                                    */
+/*  rotacoes simples                                                    */
 /* ------------------------------------------------------------------ */
 
 /*
- * Rotacao simples a direita (caso LL):
+ * rotacao simples a direita (caso LL):
  *       y                x
  *      / \             /   \
  *     x   T3   ->    T1     y
  *    / \                   / \
- *   T1  T2               T2   T3
+ *   t1  T2               T2   T3
  */
 static NodoAvl *rotDir(NodoAvl *y) {
     NodoAvl *x  = y->esq;
@@ -72,12 +72,12 @@ static NodoAvl *rotDir(NodoAvl *y) {
 }
 
 /*
- * Rotacao simples a esquerda (caso RR):
+ * rotacao simples a esquerda (caso RR):
  *     x                  y
  *    / \               /   \
- *   T1   y    ->      x     T3
+ *   t1   y    ->      x     T3
  *       / \          / \
- *      T2  T3       T1  T2
+ *      t2  T3       T1  T2
  */
 static NodoAvl *rotEsq(NodoAvl *x) {
     NodoAvl *y  = x->dir;
@@ -90,32 +90,32 @@ static NodoAvl *rotEsq(NodoAvl *x) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Reequilibrio: detecta o caso e aplica a rotacao adequada           */
+/*  reequilibrio: detecta o caso e aplica a rotacao adequada           */
 /* ------------------------------------------------------------------ */
 static NodoAvl *reequilibrar(NodoAvl *raiz, int *rotacoes = nullptr) {
     atualizarAltura(raiz);
     int fb = avlFb(raiz);
 
-    /* Caso LL: pesado a esquerda, filho esquerdo tambem pesado a esq */
+    /* caso LL: pesado a esquerda, filho esquerdo tambem pesado a esq */
     if (fb > 1 && avlFb(raiz->esq) >= 0){
         if (rotacoes) (*rotacoes)++; 
         return rotDir(raiz);
     }
 
-    /* Caso LR: pesado a esquerda, filho esquerdo pesado a dir */
+    /* caso LR: pesado a esquerda, filho esquerdo pesado a dir */
     if (fb > 1 && avlFb(raiz->esq) < 0) {
         if (rotacoes) (*rotacoes) += 2;
         raiz->esq = rotEsq(raiz->esq);
         return rotDir(raiz);
     }
 
-    /* Caso RR: pesado a direita, filho direito tambem pesado a dir */
+    /* caso RR: pesado a direita, filho direito tambem pesado a dir */
     if (fb < -1 && avlFb(raiz->dir) <= 0) {
         if (rotacoes) (*rotacoes)++;
         return rotEsq(raiz);
     }
 
-    /* Caso RL: pesado a direita, filho direito pesado a esq */
+    /* caso RL: pesado a direita, filho direito pesado a esq */
     if (fb < -1 && avlFb(raiz->dir) > 0) {
         if (rotacoes) (*rotacoes) += 2;
         raiz->dir = rotDir(raiz->dir);
@@ -126,7 +126,7 @@ static NodoAvl *reequilibrar(NodoAvl *raiz, int *rotacoes = nullptr) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Operacoes publicas                                                  */
+/*  operacoes publicas                                                  */
 /* ------------------------------------------------------------------ */
 NodoAvl *avlBuscar(NodoAvl *raiz, Pedido dado) {
     if (!raiz)             return nullptr;
@@ -170,7 +170,7 @@ NodoAvl *avlRemover(NodoAvl *raiz, Pedido dado) {
     } else if (dado.cod > raiz->dado.cod) {
         raiz->dir = avlRemover(raiz->dir, dado);
     } else {
-        // No sem filhos ou com apenas um filho.
+        // no sem filhos ou com apenas um filho
         if (!raiz->esq || !raiz->dir) {
             NodoAvl *filho = raiz->esq ? raiz->esq : raiz->dir;
 
@@ -180,19 +180,19 @@ NodoAvl *avlRemover(NodoAvl *raiz, Pedido dado) {
             return filho;
         }
 
-        // No com dois filhos.
+        // no com dois filhos
         NodoAvl *sucessor = minimo(raiz->dir);
 
-        // Libera a receita antiga do no atual.
+        // libera a receita antiga do no atual
         destruir(&raiz->dado.receita);
 
-        // Transfere o pedido completo do sucessor.
+        // transfere o pedido completo do sucessor
         raiz->dado = sucessor->dado;
 
-        // A receita passa a pertencer ao no atual.
+        // a receita passa a pertencer ao no atual
         sucessor->dado.receita.ini = nullptr;
 
-        // Remove o sucessor sem destruir a receita transferida.
+        // remove o sucessor sem destruir a receita transferida
         raiz->dir = avlRemover(raiz->dir, sucessor->dado);
     }
 

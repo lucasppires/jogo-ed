@@ -15,8 +15,8 @@ int calculaTurnoVencimento(int turnoAtual, const Ingrediente *ing){
 }
 
 
-// prepara os ingredintes que PRECISAM DE ESTOQUE. Pão de cima (z), Ketchup (k), Mostarda (m), Picles (p), Alface (a) nao precisam de estoque.
-// true == conseguiu preparar e armazenar na min heap.
+// prepara os ingredintes que PRECISAM DE ESTOQUE. Pão de cima (z), Ketchup (k), Mostarda (m), Picles (p), Alface (a) nao precisam de estoque
+// true == conseguiu preparar e armazenar na min heap
 bool prepararIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons){
     char codigo;
     cout << "Informe o codigo do ingrediente que queres preparar:" << endl;
@@ -32,7 +32,7 @@ bool prepararIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPr
     }
 
     if (preparado->perecivel == true){
-        // se o campo perecivel do ingrediente é true, entao devemos armazenar esse ingrediente numa heap. Temos três ingreidentes pereciveis: carne, ovo frito e bacon.
+        // se o campo perecivel do ingrediente é true, entao devemos armazenar esse ingrediente numa heap. Temos três ingreidentes pereciveis: carne, ovo frito e bacon
 
         switch(preparado->simbolo){
             case 'n':
@@ -136,7 +136,7 @@ bool removeIngredienteEstragado(int turnoAtual, FilaPrioridade* turnosDeVencimen
 
 
 // funcoes de usar ingredientes
-// posteriormente serao interligadas com as funcoes da pilha, que adiciona os ingredientes preparados no hamburguer.
+// posteriormente serao interligadas com as funcoes da pilha, que adiciona os ingredientes preparados no hamburguer
 
 bool usaIngredientePerecivel(char codigo, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, PilhaEnc *p){
 
@@ -146,11 +146,11 @@ bool usaIngredientePerecivel(char codigo, FilaPrioridade *carnes, FilaPrioridade
     if(usado == nullptr) return false;
 
     if (usado->perecivel == true){
-        // se o campo perecivel do ingrediente é true, entao devemos armazenar esse ingrediente numa heap. Temos três ingreidentes pereciveis: carne, ovo frito e bacon.
+        // se o campo perecivel do ingrediente é true, entao devemos armazenar esse ingrediente numa heap. Temos três ingreidentes pereciveis: carne, ovo frito e bacon
 
         switch(usado->simbolo){
             case 'n':
-                // para usar, deve existir pelo menos um ingrediente. Se existir, removemos-o da heap.
+                // para usar, deve existir pelo menos um ingrediente. Se existir, removemos-o da heap
                 if(fpEstaVazia(carnes)){
                     cout << "Nao ha carne disponivel!" << endl;
                     return false;
@@ -171,7 +171,7 @@ bool usaIngredientePerecivel(char codigo, FilaPrioridade *carnes, FilaPrioridade
             break;
 
             case 'o':
-                // para usar, deve existir pelo menos um ingrediente. Se existir, removemos-o da heap.
+                // para usar, deve existir pelo menos um ingrediente. Se existir, removemos-o da heap
                 if(fpEstaVazia(ovos)){
                     cout << "Nao ha ovo disponivel!" << endl;
                     return false;
@@ -192,7 +192,7 @@ bool usaIngredientePerecivel(char codigo, FilaPrioridade *carnes, FilaPrioridade
             break;
 
             case 'b':
-                // para usar, deve existir pelo menos um ingrediente. Se existir, removemos-o da heap.
+                // para usar, deve existir pelo menos um ingrediente. Se existir, removemos-o da heap
                 if(fpEstaVazia(bacons)){
                     cout << "Nao ha bacon disponivel!" << endl;
                     return false;
@@ -224,8 +224,8 @@ bool usaIngredienteNaoPerecivel(char codigo, int contadorDeQuantidadesDisponivei
     if(usado == nullptr) return false;
 
 
-    // ADICIONA INGREDIENTE QUE NAO PRECISA DE ESTOQUE!
-    // Pao de cima (z), Ketchup (k), Mostarda (m), Picles (p), Alface (a): quantidade infinita, vao direto pro hamburguer
+    // adiciona INGREDIENTE QUE NAO PRECISA DE ESTOQUE!
+    // pao de cima (z), Ketchup (k), Mostarda (m), Picles (p), Alface (a): quantidade infinita, vao direto pro hamburguer
     if(usado->perecivel == false and usado->requer_preparo == false){
         bool resultado = adicionar_ingrediente(p, usado->simbolo);
         if (!resultado){
@@ -314,7 +314,7 @@ bool usaIngredienteNaoPerecivel(char codigo, int contadorDeQuantidadesDisponivei
 
 }
 
-// Isso aqui deve ficar no inicio de cada turno do jogo!!
+// isso aqui deve ficar no inicio de cada turno do jogo!!
 //removeIngredienteEstragado(turnoAtual, &carnes);
 //removeIngredienteEstragado(turnoAtual, &ovos);
 //removeIngredienteEstragado(turnoAtual, &bacons);

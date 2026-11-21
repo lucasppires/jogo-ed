@@ -12,4 +12,4 @@ bool corrige_pedido(PilhaEnc *p, const ListaEnc *receita);
 void imprimir_hamburguer(PilhaEnc *p);
 void desenhar_hamburguer(const PilhaEnc *p);
 
-#endif /* TESTE_PILHA_HPP */
+#endif /* teste_PILHA_HPP */

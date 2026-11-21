@@ -125,7 +125,7 @@ double ordena_vetor_pelo_score_bubble_sort(
     return timer_parar(&t);
 }
 
-// Usar somente quando houver pelo menos dez registros.
+// usar somente quando houver pelo menos dez registros
 void imprime_dez_primeiros(Jogador vetor[], bool ehPorScore) {
     if (ehPorScore)
         cout << "RANKING (pelo score)\n";

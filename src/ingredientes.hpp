@@ -19,7 +19,7 @@ typedef struct
 
 } Ingrediente;
 
-// Sem preparo e com quantidade infinita
+// sem preparo e com quantidade infinita
 inline const Ingrediente PAO{
     "Pao de cima", 'z', false, false, 0, LARANJA
 };
@@ -40,7 +40,7 @@ inline const Ingrediente ALFACE{
     "Alface", 'a', false, false, 0, VERDE_CLARO
 };
 
-// Com preparo, mas nao pereciveis
+// com preparo, mas nao pereciveis
 inline const Ingrediente QUEIJO_SUICO{
     "Queijo suico", 's', false, true, 0, AMARELO_CLARO
 };
@@ -57,7 +57,7 @@ inline const Ingrediente TOMATE{
     "Tomate", 't', false, true, 0, VERMELHO_CLARO
 };
 
-// Com preparo e pereciveis
+// com preparo e pereciveis
 inline const Ingrediente CARNE{
     "Carne", 'n', true, true, 4, MARROM
 };

@@ -54,7 +54,7 @@ const Pedido *obterPedido(NodoAvl *raiz, TabelaEnc *cache, int codigo, Metricas 
     Timer t;
     timer_iniciar(&t);
 
-    // Se nao encontrou na hash, procura na AVL.
+    // se nao encontrou na hash, procura na AVL
     NodoAvl *no = buscarPorCodigo(raiz, codigo, comparacoes);
 
     // acumula so o tempo da busca na AVL, deixando a consulta da hash fora
@@ -64,7 +64,7 @@ const Pedido *obterPedido(NodoAvl *raiz, TabelaEnc *cache, int codigo, Metricas 
 
     if (no == nullptr) return nullptr;
 
-    // Guarda a referencia no cache para consultas futuras.
+    // guarda a referencia no cache para consultas futuras
     encInserir(cache, codigo, &no->dado);
 
     return &no->dado;
@@ -73,10 +73,10 @@ const Pedido *obterPedido(NodoAvl *raiz, TabelaEnc *cache, int codigo, Metricas 
 // const pq o pedido sorteado nao deve ser modificado
 const Pedido *sortearPedido(NodoAvl *raiz, TabelaEnc *cache, Metricas &met)
 {
-    if (raiz == nullptr || cache == nullptr || cache->m <= 0)
+    if (raiz == nullptr || cache == nullptr || cache->m <= 0)  //se nao tiver avl nem hash, retorna null
         return nullptr;
 
-    // Encontra o menor e o maior codigo presentes na AVL.
+    // encontra o menor e o maior codigo presentes na AVL
     const NodoAvl *menor = raiz;
     const NodoAvl *maior = raiz;
 
@@ -90,12 +90,12 @@ const Pedido *sortearPedido(NodoAvl *raiz, TabelaEnc *cache, Metricas &met)
 
     do
     {
-        int codigo_sorteado = numero_aleatorio(menor->dado.cod, maior->dado.cod);
+        int codigo_sorteado = numero_aleatorio(menor->dado.cod, maior->dado.cod); 
 
-        // Consulta a hash e busca na AVL somente no miss.
+        // consulta a hash e busca na AVL somente no miss
         pedido = obterPedido(raiz, cache, codigo_sorteado, met);
 
-        // Repete se o codigo sorteado nao existir.
+        // repete se o codigo sorteado nao existir
     } while (pedido == nullptr);
 
     return pedido;
@@ -282,17 +282,17 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
     FilaEnc clientes; //inicializamos a fila de clientes
     inicializa(&clientes);
 
-    int numeroClientes = N_CLIENTES; // Número de clientes a serem criados
+    int numeroClientes = N_CLIENTES; // número de clientes a serem criados
 
-    // Valores provisorios: tres clientes com paciencias aleatorias.
+    // valores provisorios: tres clientes com paciencias aleatorias
     int pacienciaInicial[N_MAX_CLIENTES]; //vetor do tamanho max
 
-    for (int i = 0; i < numeroClientes; i++) //para cada cliente...
+    for (int i = 0; i < numeroClientes; i++) //para cada cliente
     {
         // sorteia um pedido e guarda na variavel
         const Pedido *pedidoAtual = sortearPedido(raiz, cache, met);
 
-        if (pedidoAtual == nullptr) // Se não houver pedidos disponíveis
+        if (pedidoAtual == nullptr) // se não houver pedidos disponíveis
         {
             cout << "Nao foi possivel obter um pedido.\n";
             destruir(&clientes);
@@ -337,7 +337,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
 
     bool saida_voluntaria = false;
 
-    // LAÇO DO JOGO
+    // laço DO JOGO
     while (!estaVazia(&clientes))
      {     
         Cliente *atual = clienteDaFrente(&clientes);
@@ -373,7 +373,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
 
         removeEstragadosHeap(turnoAtual, carnes, ovos, bacons);
 
-        if (atual != nullptr) // Se houver clientes na fila
+        if (atual != nullptr) // se houver clientes na fila
         {
             const Pedido *pedidoAtual = atual->pedido_cliente; //atribui o pedido do cliente ao pedido atual
 
@@ -390,7 +390,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
             cout << "Pedido: " << pedidoAtual->cod << '\n';
             imprimir(&pedidoAtual->receita);
 
-            // A montagem do hamburguer sera implementada aqui.
+            // a montagem do hamburguer sera implementada aqui
 
             desenhar_hamburguer(p);
 
@@ -527,7 +527,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
             
 
         }
-            // O cliente continua na fila durante o atendimento.
+            // o cliente continua na fila durante o atendimento
 
         turnoAtual++;
 

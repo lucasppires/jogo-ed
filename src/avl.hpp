@@ -1,6 +1,6 @@
 /* avl.hpp
- * Arvore AVL: BST com balanceamento automatico por rotacoes.
- * INF01203 - Estruturas de Dados - UFRGS
+ * arvore AVL: BST com balanceamento automatico por rotacoes
+ * inf01203 - Estruturas de Dados - UFRGS
  */
 
 #ifndef AVL_HPP
@@ -9,7 +9,7 @@
 #include "pedido.hpp"
 
 /* ------------------------------------------------------------------ */
-/*  Estrutura de um nodo AVL                                            */
+/*  estrutura de um nodo AVL                                            */
 /* ------------------------------------------------------------------ */
 
 struct NodoAvl {
@@ -19,20 +19,20 @@ struct NodoAvl {
     NodoAvl *dir;
 };
 
-/* Altura e fator de balanceamento */
+/* altura e fator de balanceamento */
 int      avlAltura(const NodoAvl *n);
 int      avlFb(const NodoAvl *n);
 
-/* Operacoes principais (retornam a nova raiz da subarvore) */
+/* operacoes principais (retornam a nova raiz da subarvore) */
 NodoAvl *avlBuscar(NodoAvl *raiz, Pedido dado);
 NodoAvl *buscarPorCodigo(NodoAvl *raiz, int codigo, int &comparacoes);
 NodoAvl *avlInserir(NodoAvl *raiz, Pedido dado, int &rotacoes);
 NodoAvl *avlRemover(NodoAvl *raiz, Pedido dado);
 NodoAvl *avlDestruir(NodoAvl *raiz);
 
-/* Caminhamento em-ordem (imprime em ordem crescente) */
+/* caminhamento em-ordem (imprime em ordem crescente) */
 void     avlEmOrdem(const NodoAvl *raiz);
 
 
 
-#endif /* AVL_HPP */
+#endif /* avl_HPP */

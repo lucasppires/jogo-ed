@@ -21,7 +21,7 @@ bool adicionar_ingrediente(PilhaEnc *p, char adicionado){
     aux.simbolo = adicionado;
 
     /*
-    // Sem preparo e com quantidade infinita
+    // sem preparo e com quantidade infinita
 inline const Ingrediente PAO{
     "Pao de cima", 'z', false, false, 0
 };
@@ -42,7 +42,7 @@ inline const Ingrediente ALFACE{
     "Alface", 'a', false, false, 0
 };
 
-// Com preparo, mas nao pereciveis
+// com preparo, mas nao pereciveis
 inline const Ingrediente QUEIJO_SUICO{
     "Queijo suico", 's', false, true, 0
 };
@@ -59,7 +59,7 @@ inline const Ingrediente TOMATE{
     "Tomate", 't', false, true, 0
 };
 
-// Com preparo e pereciveis
+// com preparo e pereciveis
 inline const Ingrediente CARNE{
     "Carne", 'n', true, true, 3
 };
@@ -133,13 +133,13 @@ inline const Ingrediente BACON{
     }
 
     // verifica se o topo da pilha é o ingrediente PAO, se sim, nao pode adicionar mais ingredientes
-    // o !estaVazia(p) é para evitar que o programa tente acessar p->topo->dado.simbolo quando a pilha estiver vazia, o que causaria um erro de segmentação.
+    // o !estaVazia(p) é para evitar que o programa tente acessar p->topo->dado.simbolo quando a pilha estiver vazia, o que causaria um erro de segmentação
     if (!estaVazia(p) && p->topo->dado.simbolo == PAO.simbolo) {
         cout << "Tu nao pode adicionar mais ingredientes, pois o hamburguer ja tem o pao de cima.\n";
         return false;
     }
 
-    // se eh perecivel, entao ele sai do heap. se o heap estiver vazio, nao pode realizar a acao.
+    // se eh perecivel, entao ele sai do heap. se o heap estiver vazio, nao pode realizar a acao
     // heap ainda nao foi feito
 
     bool resultadoAdicao = empilha(p, aux);
@@ -224,7 +224,7 @@ void imprimir_hamburguer(PilhaEnc *p){
 
     else {
 
-        // sim, pode acessar a esturtura interna da pilha, a especificacao nao proibe.
+        // sim, pode acessar a esturtura interna da pilha, a especificacao nao proibe
         while (aux != nullptr) {
             cout << aux->dado.cor << aux->dado.nome << cores::RESET << endl;
             aux = aux->prox;
@@ -345,4 +345,4 @@ int main(){
     destruir(&receita);
     return 0;
 }
-#endif // TESTE_PILHA_MAIN
+#endif // teste_PILHA_MAIN

@@ -7,14 +7,14 @@ using namespace std;
 #include <iomanip>
 #include <sstream>
  
-// Monta o texto uma vez so; depois manda o MESMO texto para a tela e para o log.
+// monta o texto uma vez so; depois manda o MESMO texto para a tela e para o log
 
  
 static string textoRelatorio(const Metricas& m) {
     ostringstream s;
     s << fixed;
  
-    // TODO: conferir se as contas batem com o que voces acumularam
+    // todo: conferir se as contas batem com o que voces acumularam
     // os testes dos divisores evitam dividir por zero quando ainda nao ha buscas ou entradas
     double media  = (m.totalBuscas > 0) ? (double)m.totalComparacoes / m.totalBuscas : 0.0;
     double lambda = (m.tamanhoHash > 0) ? (double)m.ocupadasHash / m.tamanhoHash : 0.0;
@@ -56,7 +56,7 @@ static string textoRelatorio(const Metricas& m) {
 }
  
 bool iniciaLog(const string& caminho, const Metricas& m) {
-    ofstream log(caminho);                  // SEM app: apaga e recria a cada execucao
+    ofstream log(caminho);                  // sem app: apaga e recria a cada execucao
     if (!log) {
         cerr << "Erro ao criar " << caminho << "\n";
         return false;
@@ -81,7 +81,7 @@ bool geraRelatorio(const string& caminho, const Metricas& m) {
     string texto = textoRelatorio(m);
     cout << texto;                          // tela
  
-    ofstream log(caminho, ios::app);   // COM app: escreve no final
+    ofstream log(caminho, ios::app);   // com app: escreve no final
     if (!log) {
         cerr << "Erro ao abrir " << caminho << "\n";
         return false;
@@ -119,40 +119,40 @@ void zeraMetricasPartida(Metricas& m) {
     m.colisoes = 0;
     m.tamanhoOrdenacao = 0;
     m.tempoOrdenacao = 0.0;
-    // TODO: se a hash for recriada a cada partida, zere ocupadasHash tambem
+    // todo: se a hash for recriada a cada partida, zere ocupadasHash tambem
 }
  
-/* ===================== COMO USAR (exemplo no main.cpp) =====================
+/* ===================== como USAR (exemplo no main.cpp) =====================
  
 #include "relatorio.hpp"
 #include "timer.hpp"
  
-Metricas met;   // global ou passada por referencia
+metricas met;   // global ou passada por referencia
  
 int main(int argc, char* argv[]) {
-    // ... checar argc ...
+    // ... checar argc 
  
-    Timer t;
+    timer t;
     timer_iniciar(&t);
-    // TODO: carregar AVL (dentro da insercao: met.rotacoes++ em cada rotacao simples)
+    // todo: carregar AVL (dentro da insercao: met.rotacoes++ em cada rotacao simples)
     met.tempoCarga   = timer_parar(&t);
     met.nosInseridos = // TODO
     met.alturaAVL    = // TODO
  
-    // TODO: carregar historico
+    // todo: carregar historico
     met.entradasHistorico = // TODO
  
     iniciaLog("medicoes.log", met);
  
     // loop do menu:
-    //   Jogar:
+    //   jogar:
     //     zeraMetricasPartida(met);
     //     ... partida (em cada busca: cronometrar, somar em met.tempoBuscas,
-    //                  met.totalBuscas++, met.totalComparacoes += comparacoes) ...
+    //                  met.totalBuscas++, met.totalComparacoes += comparacoes) 
     //     met.tamanhoHash = ...; met.ocupadasHash = ...;
     //     geraRelatorio("medicoes.log", met);
     //
-    //   Historico:
+    //   historico:
     //     copiar o vetor (FORA do cronometro)
     //     timer_iniciar(&t); mergeSort(copia...); double tOrd = timer_parar(&t);
     //     registraOrdenacao("medicoes.log", tamanho, "Merge Sort", tOrd);

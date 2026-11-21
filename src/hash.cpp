@@ -1,6 +1,6 @@
 /* hash.cpp
- * Implementação do TAD Tabela Hash.
- * INF01203 — Estruturas de Dados — UFRGS
+ * implementação do TAD Tabela Hash
+ * inf01203 — Estruturas de Dados — UFRGS
  */
 
 #include <cmath>
@@ -15,7 +15,7 @@ using namespace std;
 
 
 /* ================================================================
- * Funções de hash
+ * funções de hash
  * ================================================================ */
 
 int hashDivisao(int k, int m) {
@@ -38,7 +38,7 @@ int hashString(const char *s, int m) {
 }
 
 /* ================================================================
- * Encadeamento separado
+ * encadeamento separado
  * ================================================================ */
 
 void encInicializar(TabelaEnc *t, int m) {
@@ -66,12 +66,12 @@ void encInserir(
     novo->chave = chave;
     novo->valor = valor;
 
-    // conta uma colisao se a posicao ja estiver ocupada.
+    // conta uma colisao se a posicao ja estiver ocupada
     if (t->tabela[i] != nullptr) {
         t->colisoes++;
     }
 
-    // insere no inicio da lista dessa posicao.
+    // insere no inicio da lista dessa posicao
     novo->prox = t->tabela[i];
     t->tabela[i] = novo;
 
@@ -176,7 +176,7 @@ void exibirEstatisticasHash(const TabelaEnc *cache, Metricas *met)
 }
 
 /* ================================================================
- * Sondagem linear
+ * sondagem linear
  * ================================================================ */
 
 void linInicializar(TabelaLinear *t, int m) {
@@ -253,7 +253,7 @@ void linDestruir(TabelaLinear *t) {
 }
 
 /* ================================================================
- * Sondagem quadrática
+ * sondagem quadrática
  * ================================================================ */
 
 void quadInicializar(TabelaQuad *t, int m) {
@@ -330,7 +330,7 @@ void quadDestruir(TabelaQuad *t) {
 }
 
 /* ================================================================
- * Hash duplo
+ * hash duplo
  * ================================================================ */
 
 void dblInicializar(TabelaDouble *t, int m) {

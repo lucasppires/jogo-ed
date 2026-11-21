@@ -10,7 +10,7 @@ void merge(int a[], int aux[], int ini, int meio, int fim);
 void mergeSortRec(int a[], int aux[], int ini, int fim);
 void mergeSort(int a[], int n);
 
-// ADAPTACOES
+// adaptacoes
 void mergeAdaptado(Jogador vetor[], Jogador aux[], int ini, int meio, int fim);
 void mergeSortRecAdaptado(Jogador vetor[], Jogador aux[], int ini, int fim);
 double mergeSortAdaptado(Jogador vetor[], int tamanhoVetor);   
@@ -29,4 +29,4 @@ int particionarAdaptado(Jogador vetor[], int esq, int dir);
 void quickSortRecAdaptado(Jogador vetor[], int esq, int dir);
 double quickSortAdaptado(Jogador vetor[], int tamanhoVetor);
 
-#endif /* SORTINGS_HPP */
+#endif /* sortings_HPP */

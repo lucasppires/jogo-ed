@@ -1,8 +1,8 @@
-// Bibliotecas padrao
+// bibliotecas padrao
 #include <iostream>
 #include <string>
 
-// TADs e funcoes do jogo
+// tADs e funcoes do jogo
 #include "avl.hpp"
 #include "listacontest.hpp"
 #include "hash.hpp"
@@ -16,10 +16,10 @@
 
 using namespace std;
 
-// Compilar na raiz do projeto:
+// compilar na raiz do projeto:
 // g++ src/main.cpp src/funcoes_menu.cpp src/jogo.cpp src/fila.cpp src/leitura_de_arquivos.cpp src/listacontest.cpp src/listaenc.cpp src/ingredientes.cpp src/avl.cpp src/hash.cpp src/timer.cpp src/sortings.cpp src/heap.cpp src/pilha.cpp src/hamburguer.cpp src/preparo.cpp src/medicoes.cpp -I src -o dado_burger.exe -Wall -std=c++17
 //
-// Executar no PowerShell:
+// executar no PowerShell:
 // .\dado_burger.exe data\pedidos.txt data\historico.txt
 
 
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     }
 
     met.nosInseridos = pedidosLidos;
-    met.alturaAVL = avlAltura(raiz) + 1; // a especificacao pediu arvore vazia => altura 0 e arvore folha = altura = 1.
+    met.alturaAVL = avlAltura(raiz) + 1; // a especificacao pediu arvore vazia => altura 0 e arvore folha = altura = 1
     met.tempoCarga = tempoPedidos;
 
     // cout << pedidosLidos << " pedidos lidos em " << tempoPedidos << " segundos.\n";
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 
     met.entradasHistorico = historicoslidos;
 
-    iniciaLog("data/medicoes.log", met); //cria o arquivo de log e escreve as metricas que ja temos nele.
+    iniciaLog("data/medicoes.log", met); //cria o arquivo de log e escreve as metricas que ja temos nele
     medirOrdenacaoHistorico(&lista_historico, met);
 
     TabelaEnc cache; 
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 
     int DIFICULDADE = 0; //determina se é facil , medio ou dificil
 
-    while (ESTADO_MENU != SAIR) //enquanto o estado_menu nao for sair...
+    while (ESTADO_MENU != SAIR) //enquanto o estado_menu nao for sair
         {
 
         if (ESTADO_MENU == MENU)

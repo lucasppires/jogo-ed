@@ -1,6 +1,6 @@
 /* hash.hpp
- * TAD Tabela Hash — funções de hash e tratamento de colisão.
- * Cobre o conteúdo das aulas 19 e 20 de INF01203 — UFRGS.
+ * tad Tabela Hash — funções de hash e tratamento de colisão
+ * cobre o conteúdo das aulas 19 e 20 de INF01203 — UFRGS
  *
  */
 
@@ -11,28 +11,28 @@
 #include "medicoes.hpp"
 
 /* ================================================================
- * Funções de hash (aula 19)
+ * funções de hash (aula 19)
  * ================================================================ */
 
-/* Hash por divisão: h(k) = k mod m
- * Recomendação: m primo, não próximo de potência de 2 ou 10. */
+/* hash por divisão: h(k) = k mod m
+ * recomendação: m primo, não próximo de potência de 2 ou 10 */
 int hashDivisao(int k, int m);
 
-/* Hash multiplicativo de Knuth: h(k) = floor(m * {k·A}), A ≈ 0,618.
- * O caráter irracional de A espalha os índices uniformemente. */
+/* hash multiplicativo de Knuth: h(k) = floor(m * {k·A}), A ≈ 0,618
+ * o caráter irracional de A espalha os índices uniformemente */
 int hashMultiplicativo(int k, int m);
 
-/* Hash polinomial para strings via Regra de Horner, base B = 31.
+/* hash polinomial para strings via Regra de Horner, base B = 31
  * h₀ = 0,  hᵢ = hᵢ₋₁·B + s[i]  (mod m),  h(s) = h_L mod m */
 int hashString(const char *s, int m);
 
 
 /* ================================================================
- * Encadeamento separado (aula 20)
+ * encadeamento separado (aula 20)
  * ================================================================
- * Cada slot é a cabeça de uma lista encadeada.
- * Suporta fator de carga λ > 1.
- * Custo médio de busca: O(1 + λ).
+ * cada slot é a cabeça de uma lista encadeada
+ * suporta fator de carga λ > 1
+ * custo médio de busca: O(1 + λ)
  */
 
 struct No 
@@ -62,9 +62,9 @@ void exibirEstatisticasHash(const TabelaEnc *cache, Metricas *met);
 
 
 /* ================================================================
- * Endereçamento aberto — tipo de slot compartilhado (aula 20)
+ * endereçamento aberto — tipo de slot compartilhado (aula 20)
  * ================================================================
- * Remoção usa marca lápide (DELETADO) para não interromper sondagens.
+ * remoção usa marca lápide (DELETADO) para não interromper sondagens
  */
 
 enum EstadoSlot { VAZIO, OCUPADO, DELETADO };
@@ -77,12 +77,12 @@ struct Slot {
 
 
 /* ================================================================
- * Sondagem linear (aula 20)
+ * sondagem linear (aula 20)
  * ================================================================
  * pos(i) = (h(k) + i) mod m,  i = 0, 1, 2, …
- * Vantagem: boa localidade de cache.
- * Desvantagem: agrupamento primário (clusters longos).
- * Requer λ < 1; m primo recomendado.
+ * vantagem: boa localidade de cache
+ * desvantagem: agrupamento primário (clusters longos)
+ * requer λ < 1; m primo recomendado
  */
 
 struct TabelaLinear {
@@ -99,12 +99,12 @@ void linDestruir(TabelaLinear *t);
 
 
 /* ================================================================
- * Sondagem quadrática (aula 20)
+ * sondagem quadrática (aula 20)
  * ================================================================
  * pos(i) = (h(k) + i²) mod m,  i = 0, 1, 2, …
- * Elimina agrupamento primário; pode não visitar todos os slots
- * (garantido visitar pelo menos m/2 slots distintos se m é primo).
- * Requer λ < 0,5 para garantia de inserção; m primo recomendado.
+ * elimina agrupamento primário; pode não visitar todos os slots
+ * (garantido visitar pelo menos m/2 slots distintos se m é primo)
+ * requer λ < 0,5 para garantia de inserção; m primo recomendado
  */
 
 struct TabelaQuad {
@@ -121,13 +121,13 @@ void quadDestruir(TabelaQuad *t);
 
 
 /* ================================================================
- * Hash duplo (aula 20)
+ * hash duplo (aula 20)
  * ================================================================
  * pos(i) = (h1(k) + i·h2(k)) mod m,  i = 0, 1, 2, …
  * h1(k) = k mod m
  * h2(k) = 1 + (k mod (m-2))   — garante passo ≥ 1
- * Elimina agrupamento secundário; melhor distribuição entre os três.
- * Requer m primo (e m-2 primo para máxima qualidade).
+ * elimina agrupamento secundário; melhor distribuição entre os três
+ * requer m primo (e m-2 primo para máxima qualidade)
  */
 
 struct TabelaDouble {
@@ -142,4 +142,4 @@ int  dblBuscar(const TabelaDouble *t, int chave);
 bool dblRemover(TabelaDouble *t, int chave);
 void dblDestruir(TabelaDouble *t);
 
-#endif/* HASH_HPP */
+#endif/* hash_HPP */

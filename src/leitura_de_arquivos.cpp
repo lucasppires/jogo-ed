@@ -42,10 +42,10 @@ int carregarPedidosAVL(const char *arquivo, NodoAvl **raiz, double *tempo, Metri
             continue; //quebra o loop e passa para o próximo pedido, pois o código já existe na árvore
         }
 
-        // Comeca com a lista vazia.
+        // comeca com a lista vazia
         inicializar(&pedido.receita);
 
-        // Transforma cada letra do texto em um no da lista.
+        // transforma cada letra do texto em um no da lista
         if (!montarReceita(receita, &pedido.receita)) 
         {
             *tempo = timer_parar(&t); //se der erro na montagem da receita, para o timer e retorna -1

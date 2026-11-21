@@ -80,7 +80,7 @@ void imprimir_menu(int& estado_menu)
 void liberar_recursos(NodoAvl *&raiz, ListaContEst *lista_historico, TabelaEnc *cache)
 {
     
-    // Libera o cache antes dos pedidos aos quais ele aponta.
+    // libera o cache antes dos pedidos aos quais ele aponta
     if (cache != nullptr) {
         encDestruir(cache);
     }
@@ -162,8 +162,10 @@ void como_jogar(int& estado_menu)
     c - Cebola        t - Tomate
 
     Precisam de preparo e vencem no estoque
-    n - Carne         o - Ovo frito   b - Bacon
-    A validade atual dos tres e de 3 turnos a partir do preparo.
+    n - Carne - Validade: 4 turnos
+    o - Ovo frito - Validade: 2 turnos
+    b - Bacon - Validade: 3 turnos
+    
 
     ACOES NA PARTIDA
     1 - Adicionar um ingrediente ao hamburguer.
@@ -246,7 +248,7 @@ void historico(int& estado_menu, ListaContEst *lista_historico)
 void historicov2(int& estado_menu, ListaContEst *lista_historico)
 {
     //imprimir_ListaContEst(lista_historico);
-    Jogador *vetor = new Jogador[lista_historico->tamanho];
+    jogador *vetor = new Jogador[lista_historico->tamanho];
 
     // ordenamos a copia para preservar a ordem original das partidas na lista
     int tamanhoVetor = lista_para_vetor(lista_historico, vetor);
@@ -375,7 +377,7 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico)
     }
 }
 
-// funcao pra por no medicoes.log infos sobre a ordenacao do historico.
+// funcao pra por no medicoes.log infos sobre a ordenacao do historico
 void medirOrdenacaoHistorico(ListaContEst *lista_historico, Metricas &met)
 {
     if (lista_historico->tamanho == 0) return;

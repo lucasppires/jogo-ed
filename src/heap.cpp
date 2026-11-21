@@ -1,12 +1,12 @@
 /* heap.cpp
- * Heap MINIMO (adaptado por Mateus em 8/11) e fila de prioridade (MIN-heap sobre array).
- * INF01203 - Estruturas de Dados - UFRGS
+ * heap MINIMO (adaptado por Mateus em 8/11) e fila de prioridade (MIN-heap sobre array)
+ * inf01203 - Estruturas de Dados - UFRGS
  */
 
 #include "heap.hpp"
 
 /* ------------------------------------------------------------------ */
-/*  Auxiliar                                                            */
+/*  auxiliar                                                            */
 /* ------------------------------------------------------------------ */
 static void trocar(int a[], int i, int j) {
     int tmp = a[i];
@@ -16,7 +16,7 @@ static void trocar(int a[], int i, int j) {
 
 /* ------------------------------------------------------------------ */
 /*  heapify (sift-down): desce o elemento em a[i] ate a posicao correta */
-/*  Supoe que as subarvores esquerda e direita ja sao heaps validos.    */
+/*  supoe que as subarvores esquerda e direita ja sao heaps validos    */
 /* ------------------------------------------------------------------ */
 void heapify(int a[], int n, int i) {
     int maior = i;
@@ -33,7 +33,7 @@ void heapify(int a[], int n, int i) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  siftUp: sobe o elemento em a[i] ate a posicao correta.             */
+/*  siftUp: sobe o elemento em a[i] ate a posicao correta             */
 /* ------------------------------------------------------------------ */
 void siftUp(int a[], int i) {
     while (i > 0) {
@@ -48,8 +48,8 @@ void siftUp(int a[], int i) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  buildHeap: constroi um min-heap in-place em O(n).                  */
-/*  Aplica heapify de baixo para cima, comecando no ultimo no interno. */
+/*  buildHeap: constroi um min-heap in-place em O(n)                  */
+/*  aplica heapify de baixo para cima, comecando no ultimo no interno */
 /* ------------------------------------------------------------------ */
 void buildHeap(int a[], int n) {
     for (int i = n / 2 - 1; i >= 0; i--)
@@ -57,7 +57,7 @@ void buildHeap(int a[], int n) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Heap Sort: ordena em ordem crescente.                               */
+/*  heap Sort: ordena em ordem crescente                               */
 /*  1. buildHeap O(n)                                                   */
 /*  2. n-1 vezes: troca a[0] (maximo) com o ultimo e heapify           */
 /* ------------------------------------------------------------------ */
@@ -68,16 +68,16 @@ void heapSort(int a[], int n) {
         heapify(a, i, 0);
     }
 
-    // o array esta, apos as adaptaçoes pra transformar em min heap, ordenado em ordem decrescente.
+    // o array esta, apos as adaptaçoes pra transformar em min heap, ordenado em ordem decrescente
     for (int j = 0, k = n - 1; j < k; j++, k--){
-        // n é o tamanho do vetor.
+        // n é o tamanho do vetor
         trocar(a, j, k);
     }
 
 }
 
 /* ------------------------------------------------------------------ */
-/*  Fila de prioridade                                                  */
+/*  fila de prioridade                                                  */
 /* ------------------------------------------------------------------ */
 void fpInicializar(FilaPrioridade *fp) {
     fp->tamanho = 0;

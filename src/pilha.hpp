@@ -26,4 +26,4 @@ int  tamanho(PilhaEnc *p);
 void esvaziarPilha(PilhaEnc *p);
 void montarPilhaViaSimbolos(PilhaEnc *p, const char *simbolos);
 
-#endif /* PILHA_HPP */
+#endif /* pilha_HPP */

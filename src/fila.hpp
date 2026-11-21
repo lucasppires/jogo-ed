@@ -23,4 +23,4 @@ void destruir(FilaEnc *fila);
 Cliente criarCliente(int index, int pacienciaInicial, const Pedido *pedido);
 Cliente *clienteDaFrente(FilaEnc *fila);
 
-#endif /* FILA_HPP */
+#endif /* fila_HPP */
