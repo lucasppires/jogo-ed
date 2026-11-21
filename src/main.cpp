@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     medirOrdenacaoHistorico(&lista_historico, met);
 
     TabelaEnc cache; 
-    encInicializar(&cache, 211); //cria e inicializa a tabela hash que vai armazenar os pedidos sorteados, com m == 211
+    encInicializar(&cache, 11); //cria e inicializa a tabela hash que vai armazenar os pedidos sorteados, com m == 11
 
     Jogador player; //inicializamos o jogador
 
