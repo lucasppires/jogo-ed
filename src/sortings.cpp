@@ -314,6 +314,7 @@ int particionarAdaptado(Jogador vetor[], int esq, int dir) {
     Jogador tmp;
 
     for (int j = esq; j < dir; j++) {
+        // nomes que vem antes do pivo, ou iguais a ele, vao para a parte esquerda
         if (compararNomes(vetor[j].nome_jogador, pivo) <= 0) {
             i++;
             tmp = vetor[i]; vetor[i] = vetor[j]; vetor[j] = tmp;   /* swap(A[i], A[j]) */
@@ -326,6 +327,7 @@ int particionarAdaptado(Jogador vetor[], int esq, int dir) {
 void quickSortRecAdaptado(Jogador vetor[], int esq, int dir) {
     if (esq >= dir) return;                          /* conquista: 0 ou 1 elemento */
     int p = particionarAdaptado(vetor, esq, dir);    /* divisão: faz o trabalho */
+    // o pivo ja esta na posicao final, por isso as chamadas seguintes pulam seu indice
     quickSortRecAdaptado(vetor, esq, p - 1);
     quickSortRecAdaptado(vetor, p + 1, dir);         /* recombinação: nada a fazer */
 }

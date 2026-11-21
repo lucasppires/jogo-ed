@@ -105,6 +105,7 @@ int carregarPartidasListaContEst(
         error_code erro;
         bool existe = filesystem::exists(arquivo, erro);
 
+        // historico inexistente equivale a uma lista vazia na primeira execucao
         if (!erro && !existe)
         {
             *tempoListaContEst = 0.0;

@@ -2258,3 +2258,45 @@ A comparação foi feita com :codex-file-citation{path="C:/Users/lucas/Downloads
 
 ##################################################
 
+Lucas — Prompt 66:
+me ajude a navegar no menu do vs code quando da conflito de merge
+
+Resposta:
+Pelo título da janela do VS Code, você está na tela **Resolve save conflict (main.cpp)**. Ela aparece quando o arquivo no disco foi alterado enquanto o editor tinha outra versão aberta. Isso pode ter acontecido quando transferi o teste para o `main.cpp`.
+
+Nessa tela:
+
+- **Esquerda — “in file”** mostra a versão salva no disco.
+- **Direita — “in Visual Studio Code”** mostra a versão que estava aberta no editor.
+
+Para usar o `main` que acabei de atualizar, procure a ação **Revert / Reverter / Descartar alterações do editor**. Ela recarrega a versão do disco. Confira antes se o lado esquerdo tem a escolha de dificuldade e a hash com `1009`, e se o lado direito contém alguma edição sua que você quer preservar. **Overwrite / Sobrescrever** grava a versão do editor por cima do arquivo no disco.
+
+Se você estiver em um conflito de **merge do Git**, o caminho é **Controle do Código-Fonte → Alterações de Mesclagem → arquivo em conflito**. Ali, “Atual/Current” é sua versão local e “Recebida/Incoming” é a versão que está sendo integrada. “Aceitar ambas” inclui os dois trechos e exige conferir se o código ficou coerente.
+
+O acesso à tela do VS Code foi bloqueado pela permissão de controle do aplicativo, então consegui identificar o título da janela, mas não conferir os botões visíveis. Pode mandar uma captura dessa tela para eu indicar o botão exato.
+
+##################################################
+
+Lucas — Prompt 67:
+a funcao de liberar recursos poderia liberar mais estruturas ou nao ha necessidade?
+
+Resposta:
+**Ela já libera as estruturas que duram até o programa fechar.** A fila de clientes e a pilha do hambúrguer precisam ser limpas ao terminar cada partida, porque o jogador pode voltar ao menu e iniciar outra.
+
+| Estrutura | Quando liberar |
+|---|---|
+| Hash | Ao fechar o programa, antes da AVL |
+| AVL e listas das receitas | Ao fechar o programa, por `avlDestruir` |
+| Lista contígua do histórico | Ao fechar o programa |
+| Fila de clientes | Ao terminar a partida |
+| Pilha do hambúrguer | Ao terminar a partida |
+| Heaps e vetor de quantidades | Saem de escopo automaticamente, pois usam vetores internos ou locais |
+
+A função `liberar_recursos` já faz a limpeza da hash, da AVL e do histórico. `avlDestruir` também destrói a receita de cada pedido. [Limpeza geral](C:/Users/lucas/jogo-ed/src/funcoes_menu.cpp:79) · [Destruição das receitas](C:/Users/lucas/jogo-ed/src/avl.cpp:201)
+
+**Há um ajuste que vale fazer em `novoJogo`.** O caminho “Cliente sem pedido associado” destrói a fila e retorna, mas pode deixar ingredientes na pilha. Acrescente `esvaziarPilha(p);` antes desse retorno. No encerramento comum, também pode colocar essa chamada antes de `destruir(&clientes);` para concentrar a limpeza da partida naquele ponto. [Retorno por erro](C:/Users/lucas/jogo-ed/src/jogo.cpp:351) · [Encerramento comum](C:/Users/lucas/jogo-ed/src/jogo.cpp:543)
+
+Minha recomendação é manter `liberar_recursos` para o encerramento do programa e garantir a limpeza da fila e da pilha em todas as saídas de `novoJogo`.
+
+##################################################
+

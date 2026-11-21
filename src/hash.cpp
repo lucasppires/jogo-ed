@@ -66,12 +66,12 @@ void encInserir(
     novo->chave = chave;
     novo->valor = valor;
 
-    // Conta uma colisao se a posicao ja estiver ocupada.
+    // conta uma colisao se a posicao ja estiver ocupada.
     if (t->tabela[i] != nullptr) {
         t->colisoes++;
     }
 
-    // Insere no inicio da lista dessa posicao.
+    // insere no inicio da lista dessa posicao.
     novo->prox = t->tabela[i];
     t->tabela[i] = novo;
 
@@ -81,7 +81,7 @@ void encInserir(
 const Pedido *encBuscar(TabelaEnc *t, int chave)
 {
     int i = hashDivisao(chave, t->m); 
-    No *p = t->tabela[i];
+    No *p = t->tabela[i]; //p aponta para a posicao determinada pela funcao hash
 
     while (p != nullptr)
     {

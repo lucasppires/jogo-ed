@@ -27,11 +27,13 @@ bool inserir(ListaContEst *l, Jogador novo, int pos) {
         for (int i = 0; i < l->tamanho; i++)
             novosDados[i] = l->dados[i];
 
+        // a copia ja esta pronta, entao podemos liberar o vetor antigo
         delete[] l->dados;
         l->dados = novosDados;
         l->capacidade = novaCapacidade;
     }
 
+    // desloca de tras pra frente para abrir espaco sem sobrescrever os jogadores
     for (int i = l->tamanho; i > pos; i--)
         l->dados[i] = l->dados[i - 1];
 
@@ -146,7 +148,8 @@ void imprime_dez_primeiros(Jogador vetor[], bool ehPorScore) {
     }
 }
 
-void imprime_de_1_a_9(Jogador vetor[], int tamanhoVetor, bool ehPorScore) {
+void imprime_de_1_a_9(Jogador vetor[], int tamanhoVetor, bool ehPorScore) 
+{
     if (ehPorScore)
         cout << "RANKING (pelo score)\n";
 

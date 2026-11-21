@@ -15,6 +15,7 @@ static string textoRelatorio(const Metricas& m) {
     s << fixed;
  
     // TODO: conferir se as contas batem com o que voces acumularam
+    // os testes dos divisores evitam dividir por zero quando ainda nao ha buscas ou entradas
     double media  = (m.totalBuscas > 0) ? (double)m.totalComparacoes / m.totalBuscas : 0.0;
     double lambda = (m.tamanhoHash > 0) ? (double)m.ocupadasHash / m.tamanhoHash : 0.0;
     long consultas = m.hits + m.misses;
@@ -76,6 +77,7 @@ bool iniciaLog(const string& caminho, const Metricas& m) {
 }
  
 bool geraRelatorio(const string& caminho, const Metricas& m) {
+    // monta uma vez para a tela e o arquivo receberem exatamente os mesmos valores
     string texto = textoRelatorio(m);
     cout << texto;                          // tela
  
@@ -107,6 +109,7 @@ bool registraOrdenacao(const string& caminho, long tamanho,
     return true;
 }
  
+// zera os contadores da partida e preserva as medidas do carregamento inicial
 void zeraMetricasPartida(Metricas& m) {
     m.totalBuscas = 0;
     m.totalComparacoes = 0;

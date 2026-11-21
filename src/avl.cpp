@@ -138,6 +138,7 @@ NodoAvl *avlBuscar(NodoAvl *raiz, Pedido dado) {
 NodoAvl *buscarPorCodigo(NodoAvl *raiz, int codigo, int &comparacoes)
  {
     if (!raiz) return nullptr;
+    // conta uma comparacao por no visitado, mesmo quando a busca segue para outro filho
     comparacoes++;
     
     if (codigo < raiz->dado.cod) return buscarPorCodigo(raiz->esq, codigo, comparacoes);
@@ -205,6 +206,7 @@ NodoAvl *avlDestruir(NodoAvl *raiz) {
     avlDestruir(raiz->esq);
     avlDestruir(raiz->dir);
 
+    // cada pedido e dono da sua receita, entao liberamos a lista antes do no da AVL
     destruir(&raiz->dado.receita);
     delete raiz;
 

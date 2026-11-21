@@ -57,6 +57,7 @@ const Pedido *obterPedido(NodoAvl *raiz, TabelaEnc *cache, int codigo, Metricas 
     // Se nao encontrou na hash, procura na AVL.
     NodoAvl *no = buscarPorCodigo(raiz, codigo, comparacoes);
 
+    // acumula so o tempo da busca na AVL, deixando a consulta da hash fora
     met.tempoBuscas += timer_parar(&t);
     met.totalBuscas++;
     met.totalComparacoes += comparacoes;
@@ -107,6 +108,7 @@ int numero_aleatorio(int minimo, int maximo)
     if (minimo > maximo)
         throw invalid_argument("Intervalo invalido");
 
+    // static mantem o gerador entre chamadas, sem reiniciar a sequencia a cada sorteio
     static mt19937 gerador(random_device{}());
     uniform_int_distribution<int> intervalo(minimo, maximo);
 
@@ -251,15 +253,15 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
         return;
     }
 
-    FilaEnc clientes;
+    FilaEnc clientes; //inicializamos a fila de clientes
     inicializa(&clientes);
 
     int numeroClientes = N_CLIENTES; // Número de clientes a serem criados
 
     // Valores provisorios: tres clientes com paciencias aleatorias.
-    int pacienciaInicial[N_MAX_CLIENTES];
+    int pacienciaInicial[N_MAX_CLIENTES]; //vetor do tamanho max
 
-    for (int i = 0; i < numeroClientes; i++)
+    for (int i = 0; i < numeroClientes; i++) //para cada cliente...
     {
         // sorteia um pedido e guarda na variavel
         const Pedido *pedidoAtual = sortearPedido(raiz, cache, met);
@@ -289,6 +291,7 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
         }
         
         // criamos o cliente
+        // o cliente guarda a referencia do pedido, cuja receita continua pertencendo a AVL
         Cliente cliente_atual = criarCliente(i+1, pacienciaInicial[i], pedidoAtual);
 
         // enfileiramos o cliente na fila
@@ -495,12 +498,6 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
 
             }
 
-            // Tirei isso pq acho melhor que seja printado o hamburguer inicial com o Pao de Baixo já posto, acho q fica mais claro e bonito.
-            //if (turnoAtual != 0)
-          //  {
-           //     imprimir_hamburguer(p);
-           // }
-
         }
             // O cliente continua na fila durante o atendimento.
 
@@ -508,10 +505,38 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
         
     }
 
+    if (estaVazia(&clientes) == true)
+    {
+        pula_linha(2);
+        
+        cout << cores::VERDE_CLARO
+             << "\n\n  ==================================================\n"
+             << cores::AMARELO_CLARO
+             << "                     __________\n"
+             << "                    '._      _.'\n"
+             << "                  (   |      |   )\n"
+             << "                   '._|      |_.'\n"
+             << "                      '.___.'\n"
+             << "                        | |\n"
+             << "                      __| |__\n"
+             << "                     [_______]\n\n"
+             << cores::VERDE_CLARO
+             << "                       VITORIA!\n\n"
+             << cores::BRANCO_CLARO
+             << "       Todos os clientes foram atendidos!\n"
+             << "       Voce concluiu seu turno no Dado Burger.\n\n"
+             << cores::CIANO_CLARO
+             << "       Clientes atendidos: " << numeroClientes << '\n'
+             << cores::VERDE_CLARO
+             << "  ==================================================\n"
+             << cores::RESET;
+    }
+
     pula_linha(1);
     cout << cores::VERDE_CLARO << "Sua pontuacao: " << player->score << cores::RESET;
+    
+    pula_linha(1);
 
-    cout << '\n';
     gravaJogoNoHistorico(player->score, lista_historico, argv[2]);
     exibirEstatisticasHash(cache, &met);
     geraRelatorio("data/medicoes.log", met);
