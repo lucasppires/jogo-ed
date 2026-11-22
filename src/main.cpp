@@ -18,7 +18,7 @@ using namespace std;
 
 // compilar na raiz do projeto:
 // g++ src/main.cpp src/funcoes_menu.cpp src/jogo.cpp src/fila.cpp src/leitura_de_arquivos.cpp src/listacontest.cpp src/listaenc.cpp src/ingredientes.cpp src/avl.cpp src/hash.cpp src/timer.cpp src/sortings.cpp src/heap.cpp src/pilha.cpp src/hamburguer.cpp src/preparo.cpp src/medicoes.cpp -I src -o dado_burger.exe -Wall -std=c++17
-//
+
 // executar no PowerShell:
 // .\dado_burger.exe data\pedidos.txt data\historico.txt
 
@@ -29,45 +29,52 @@ int main(int argc, char *argv[])
       return 1;
     }
 
-    Metricas met; //guarda as metricas de desempenho, passada por referencia para as funcoes que medem algo
-
-    NodoAvl *raiz = nullptr; //cria a raiz da arvore AVL que vai armazenar os pedidos
-    double tempoPedidos = 0.0;
-
-    int pedidosLidos = carregarPedidosAVL(argv[1], &raiz, &tempoPedidos, met); //carrega os pedidos do arquivo para a arvore AVL
+    //guarda as metricas de desempenho, passada por referencia para as funcoes que medem algo
+        Metricas met; 
 
 
-    if (pedidosLidos < 0) 
-    {
-        raiz = avlDestruir(raiz); //se der erro na leitura do arquivo, destruo a arvore e retorno 1
-        return 1;
-    }
 
-    met.nosInseridos = pedidosLidos;
-    met.alturaAVL = avlAltura(raiz) + 1; // a especificacao pediu arvore vazia => altura 0 e arvore folha = altura = 1
-    met.tempoCarga = tempoPedidos;
+    // Relacionado à leitura e inserção dos pedidos à AVL. pedidosLidos guarda o total de pedidos, 837253.
+        NodoAvl *raiz = nullptr; //cria a raiz da arvore AVL que vai armazenar os pedidos
+        double tempoPedidos = 0.0;
+        int pedidosLidos = carregarPedidosAVL(argv[1], &raiz, &tempoPedidos, met); //carrega os pedidos do arquivo para a arvore AVL
 
-    // cout << pedidosLidos << " pedidos lidos em " << tempoPedidos << " segundos.\n";
+        if (pedidosLidos < 0) 
+        {
+            raiz = avlDestruir(raiz); //se der erro na leitura do arquivo, destruo a arvore e retorno 1
+            return 1;
+        }
 
-    ListaContEst lista_historico;  //crio e inicializo a lista contígua que vai armazenar o histórico de partidas
-    inicializar(&lista_historico);
 
-    double tempoHistorico = 0.0;
-    int historicoslidos = carregarPartidasListaContEst(argv[2], &lista_historico, &tempoHistorico);
+    // Relacionado à inicialização da lista contígua que vai armazenar o histórico de partidas
+        ListaContEst lista_historico; 
+        inicializar(&lista_historico);
 
-    if (historicoslidos < 0) 
-    {
-        liberar_recursos(raiz, &lista_historico);
-        return 1;
-    }
+        double tempoHistorico = 0.0;
+        int historicoslidos = carregarPartidasListaContEst(argv[2], &lista_historico, &tempoHistorico);
 
-    met.entradasHistorico = historicoslidos;
+        if (historicoslidos < 0) 
+        {
+            liberar_recursos(raiz, &lista_historico);
+            return 1;
+        }
 
-    iniciaLog("data/medicoes.log", met); //cria o arquivo de log e escreve as metricas que ja temos nele
-    medirOrdenacaoHistorico(&lista_historico, met);
 
-    TabelaEnc cache; 
-    encInicializar(&cache, 11); //cria e inicializa a tabela hash que vai armazenar os pedidos sorteados, com m == 11
+    // Relacionado ao log:
+        met.nosInseridos = pedidosLidos;
+        met.alturaAVL = avlAltura(raiz) + 1; // a especificacao pediu arvore vazia => altura 0 e arvore folha = altura = 1
+        met.tempoCarga = tempoPedidos;
+        met.entradasHistorico = historicoslidos;
+
+        iniciaLog("data/medicoes.log", met); //cria o arquivo de log e escreve as metricas que ja temos nele
+        medirOrdenacaoHistorico(&lista_historico, met);
+
+
+    // Relacionado à tabela hash, cuja função é h(k) = k mod 11.
+        TabelaEnc cache; 
+        encInicializar(&cache, 11);
+
+
 
     Jogador player; //inicializamos o jogador
 

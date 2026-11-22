@@ -210,8 +210,8 @@ void como_jogar(int& estado_menu)
     2. Voltar ao menu
     )";
 
-    int opcao;
-    cin >> opcao;
+    int opcao = 0;
+    if (!(cin >> opcao)) { cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); } // se digitar letra, limpa o cin pra nao travar
 
     if (opcao == 1)
     {
@@ -289,7 +289,7 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico, Metricas &met)
         return;
     }
 
-    int res;
+    int res = 0;
 
     Jogador *vetor = new Jogador[lista_historico->tamanho]; //aloca com new o vetor do tamanho da lista de jogadores
 
@@ -364,8 +364,8 @@ void historicov3(int& estado_menu, ListaContEst *lista_historico, Metricas &met)
     cout << "1. Jogar\n";
     cout << "2. Voltar ao menu\n";
 
-    int opcao;
-    cin >> opcao;
+    int opcao = 0;
+    if (!(cin >> opcao)) { cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); } // se digitar letra, limpa o cin pra nao travar
 
     if (opcao == 1)
     {
