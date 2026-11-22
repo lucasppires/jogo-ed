@@ -11,68 +11,12 @@
 
 using namespace std;
 
+
+// creio eu que essa função acabou nao sendo utilizada no jogo, mas fica a recordação kkk
 bool adicionar_ingrediente(PilhaEnc *p, char adicionado){
     Ingrediente aux;
-
-
-   // cout << "Qual ingrediente tu quer adicionar? Informe a letra do ingrediente:";
- //   cin >> adicionado;
-
     aux.simbolo = adicionado;
 
-    /*
-    // sem preparo e com quantidade infinita
-inline const Ingrediente PAO{
-    "Pao de cima", 'z', false, false, 0
-};
-
-inline const Ingrediente KETCHUP{
-    "Ketchup", 'k', false, false, 0
-};
-
-inline const Ingrediente MOSTARDA{
-    "Mostarda", 'm', false, false, 0
-};
-
-inline const Ingrediente PICLES{
-    "Picles", 'p', false, false, 0
-};
-
-inline const Ingrediente ALFACE{
-    "Alface", 'a', false, false, 0
-};
-
-// com preparo, mas nao pereciveis
-inline const Ingrediente QUEIJO_SUICO{
-    "Queijo suico", 's', false, true, 0
-};
-
-inline const Ingrediente QUEIJO_CHEDDAR{
-    "Queijo cheddar", 'q', false, true, 0
-};
-
-inline const Ingrediente CEBOLA{
-    "Cebola", 'c', false, true, 0
-};
-
-inline const Ingrediente TOMATE{
-    "Tomate", 't', false, true, 0
-};
-
-// com preparo e pereciveis
-inline const Ingrediente CARNE{
-    "Carne", 'n', true, true, 3
-};
-
-inline const Ingrediente OVO_FRITO{
-    "Ovo frito", 'o', true, true, 2
-};
-
-inline const Ingrediente BACON{
-    "Bacon", 'b', true, true, 3
-};
-
-*/
     switch(aux.simbolo){
         case 'z':
         aux = PAO;
@@ -153,6 +97,10 @@ inline const Ingrediente BACON{
 }
 }
 
+// a parte da remoção é bem intuitiva e segue a logica LIFO,
+// ele so consegue desempilhar se há algum nodo.
+// atenção: o pao de baixo nao equivale a um nodo, entao nao eh possivel remover ele.
+
 bool remover_ingrediente(PilhaEnc *p){
     Ingrediente aux;
 
@@ -169,18 +117,23 @@ bool remover_ingrediente(PilhaEnc *p){
     }
 }
 
+//funcao que retorna um booleano referente ao resultado da correção
+// ela recebe como parametro a receita, a receita eh a mesma para o mesmo cliente.
 
 bool corrige_pedido(PilhaEnc *p, const ListaEnc *receita)
 {
+    // se a pilha e a lista possuem tamanhos diferentes, obrigatoriamente eles nao sao iguais, entao tchau
     int n = tamanho(p);
     if (n != tamanho(receita)) {
         return false;
     }
 
+    // se a pilha eh vazia, obviamente o usuario tb nao montou corretamente
     if (n == 0) {
         return true;
     }
 
+    // é alocado dinamicamente um vetor de chars do tamanho da pilha.
     char *simbolos = new (nothrow) char[n];
     if (simbolos == nullptr) {
         cerr << "Nao foi possivel conferir o pedido.\n";
@@ -194,6 +147,8 @@ bool corrige_pedido(PilhaEnc *p, const ListaEnc *receita)
         i--;
     }
 
+    // aqui acontece a comparacao, da lista com o vetor que contem os ingredientes. 
+    // como o contador foi inicializado com n-1 e vai até i=0, o vetor e a lista vao ficar na mesma ordem.
     bool correto = true;
     i = 0;
     for (const NodoReceita *atual = receita->ini; atual != nullptr; atual = atual->prox) {

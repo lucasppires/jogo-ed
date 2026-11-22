@@ -10,6 +10,12 @@ using namespace std;
 // compilar g++ src/preparo.cpp src/heap.cpp src/ingredientes.cpp -o src/teste_heap.exe -Wall -std=c++17
 // executar src/teste_heap.exe
 
+
+
+
+// simples, a cada cliente que esta aguardando seu pedido é calculado um turno, é a partir desse turno que é calculado o vencimento do ingrediente.
+// se um ingrediente foi produzido no turno 2 e tem validade 3, ele vence no inicio do turno 6,
+// e pode ser usado em tres turnos - no caso o 3, 4 e 5.
 int calculaTurnoVencimento(int turnoAtual, const Ingrediente *ing){
     return turnoAtual + ing->validade_turnos + 1;
 }
@@ -17,6 +23,8 @@ int calculaTurnoVencimento(int turnoAtual, const Ingrediente *ing){
 
 // prepara os ingredintes que PRECISAM DE ESTOQUE. Pão de cima (z), Ketchup (k), Mostarda (m), Picles (p), Alface (a) nao precisam de estoque
 // true == conseguiu preparar e armazenar na min heap
+
+// repare que eu passo por referencia todas as min-heaps, isso pq nao sei em qual o usuario pode inserir.
 bool prepararIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons){
     char codigo;
     cout << "Informe o codigo do ingrediente que queres preparar:" << endl;
@@ -24,7 +32,7 @@ bool prepararIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPr
 
     const Ingrediente *preparado = buscarIngrediente(codigo);
 
-    // digitou uma letra invalida
+    // digitou uma letra invalida,
     if(preparado == nullptr) 
     {
         cout << "Ingrediente invalido.\n";
@@ -37,6 +45,9 @@ bool prepararIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPr
         switch(preparado->simbolo){
             case 'n':
                 {
+                    // a funcao fpInserir insere na min-heap um inteiro
+                    // no caso, aqui ela esta inserindo na min-heap CARNES o turno de vencimento dessa carne que recem foi preparada
+                    // isso faz sentido pq a nossa chave de prioridade, como explicitado no relatorio, é o turno de vencimento do ingrediente adicionado.
                 bool resultadoInsercaoHeap = fpInserir(carnes, calculaTurnoVencimento(turnoAtual, preparado));
                 if(!resultadoInsercaoHeap){
                     cout << "Deu merda" << endl;
@@ -47,6 +58,7 @@ bool prepararIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPr
 
             case 'o':
                 {
+                    // o mesmo vale pras outras min-heaps
                 bool resultadoInsercaoHeap = fpInserir(ovos, calculaTurnoVencimento(turnoAtual, preparado));
                 if(!resultadoInsercaoHeap){
                     cout << "Deu merda" << endl;
@@ -74,7 +86,10 @@ bool prepararIngredientePerecivel(int turnoAtual, FilaPrioridade *carnes, FilaPr
     return false;
 }
 
+
 // são eles: Queijo suíço (s), Queijo cheddar (q), Cebola (c), Tomate (t)
+
+// funcao importante, passo a ela um array, cada posicao do array representa uma quantidade de um dos 4 ingredientes n perecivieis q necessitam estoque
 bool prepararIngredienteNaoPerecivel(int quantidadesPereciveisDisponiveis[]){
     char codigo;
     cout << "Informe o codigo do ingrediente que queres preparar:" << endl;
@@ -97,6 +112,8 @@ bool prepararIngredienteNaoPerecivel(int quantidadesPereciveisDisponiveis[]){
             posicao 2: Cebola (c)
             posicao 3: Tomate (t)
         */
+
+        // intuitivo, aumenta o valor daquele ingrediente se voce preparou ele
         switch (preparado->simbolo){
             case 's':
                 quantidadesPereciveisDisponiveis[0]++;
@@ -122,17 +139,41 @@ bool prepararIngredienteNaoPerecivel(int quantidadesPereciveisDisponiveis[]){
 
 }
 
+
+
+
+
+
 // remove ingrediente cuja validade ja passou
+// a essa funcao é passado o turno atual, ele é crucial no calculo
+// e é passada uma fila de prioridade qualquer. isso porque, no jogo em si, aplico essa funcao às tres min-heaps a cada turno que passa,
+// com o objetivo de sempre veriifcar se algo estragou
+
 bool removeIngredienteEstragado(int turnoAtual, FilaPrioridade* turnosDeVencimento){
     // se o turno de vencimento for <= turno atual, então a unidade é removida
+
     int vencimento; // variavel que vai receber o valor do turno de vencimento atual
 
     while(fpMinimo(turnosDeVencimento, &vencimento) and (vencimento <= turnoAtual)){
-        fpRemoverMinimo(turnosDeVencimento, &vencimento);
+            // vamos por partes
+            // fpMinimo retorna o menor valor do min-heap.
+            // esse valor é salvo na variavel vencimento
+            // essa funcao fpMinimo so vai retornar false se a min-heap estiver vazia
+
+            // esse valor salvo em vencimento deve ser menor que o turno atual pra esse ingrediente nao ser vencido.
+
+            // é um while mas tipo, como essa funcao acontece a cada turno, ela sempre vai remover no maximo um ingrediente por turno.
+
+        fpRemoverMinimo(turnosDeVencimento, &vencimento); // aqui ocorre a remocao de fato, o valor é salvo na variavel vencimento
+
         cout << "Alimento com o turno de vencimento " << vencimento << " foi removido" << endl;
     }
     return true;
 }
+
+
+
+
 
 
 // funcoes de usar ingredientes
