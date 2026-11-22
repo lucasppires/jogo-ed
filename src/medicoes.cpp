@@ -7,7 +7,11 @@ using namespace std;
 #include <iomanip>
 #include <sstream>
  
+
+// Este arquivo contém tudo relacionado ao log das medções. 
+
 // monta o texto uma vez so; depois manda o MESMO texto para a tela e para o log
+
 
  
 static string textoRelatorio(const Metricas& m) {
@@ -55,6 +59,8 @@ static string textoRelatorio(const Metricas& m) {
     return s.str();
 }
  
+
+// essa funcao cria o arquivo de log.
 bool iniciaLog(const string& caminho, const Metricas& m) {
     ofstream log(caminho);                  // sem app: apaga e recria a cada execucao
     if (!log) {

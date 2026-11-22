@@ -279,7 +279,7 @@ void historicov2(int& estado_menu, ListaContEst *lista_historico)
 */
 
 //usa merge sort
-void historicov3(int& estado_menu, ListaContEst *lista_historico)
+void historicov3(int& estado_menu, ListaContEst *lista_historico, Metricas &met)
 {
 
     if (lista_historico->tamanho == 0)

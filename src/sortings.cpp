@@ -1,10 +1,17 @@
 #include <new>
 
-using namespace std;
+
 #include <cctype>
+#include <iostream>
+#include <string>
+#include <vector>
+
 #include "sortings.hpp"
 #include "timer.hpp"
 #include "listacontest.hpp"
+
+using namespace std;
+// Este arquivo inclui as funcoes usadas para ordenar o historico, por score e por nome.
 
 void merge(int a[], int aux[], int ini, int meio, int fim) {
     for (int t = ini; t <= fim; t++)      /* linhas 1-2: copia para Aux */
@@ -38,7 +45,9 @@ void mergeSort(int a[], int n) {
     delete[] aux;
 }
 
-// adaptacoes
+// adaptacoes.
+// agora ordenamos um vetor de jogadores, em vez de um vetor de inteiros.
+
 
 void mergeAdaptado(Jogador vetor[], Jogador aux[], int ini, int meio, int fim) {
     for (int t = ini; t <= fim; t++)      /* linhas 1-2: copia para Aux */
@@ -80,6 +89,8 @@ double mergeSortAdaptado(Jogador vetor[], int tamanhoVetor) {
     return tempoExecucao;
 }
 
+// RELEMBRANDO: no fim o radix sort nao foi utlizado.
+
 
 // radix Sort para strings em C++
 // duas versões:
@@ -94,10 +105,6 @@ double mergeSortAdaptado(Jogador vetor[], int tamanhoVetor) {
 //
 // compilar:  g++ -std=c++17 -Wall -O2 radix_sort_strings.cpp -o radix
 // executar:  ./radix
- 
-#include <iostream>
-#include <string>
-#include <vector>
  
  
 const int R = 256; // tamanho do alfabeto (ASCII estendido)
@@ -272,6 +279,7 @@ int main() {
 
 
 // quick sort:
+// utliza recursao.
 
 int particionar(int a[], int esq, int dir) {
     int pivo = a[dir];   /* x = A[b]: o último elemento é o pivô */
@@ -281,7 +289,9 @@ int particionar(int a[], int esq, int dir) {
     for (j = esq; j < dir; j++) {
         if (a[j] <= pivo) {
             i++;
-            tmp = a[i]; a[i] = a[j]; a[j] = tmp;   /* swap(A[i], A[j]) */
+            tmp = a[i]; 
+            a[i] = a[j]; 
+            a[j] = tmp;   /* swap(A[i], A[j]) */
         }
     }
     tmp = a[i + 1]; a[i + 1] = a[dir]; a[dir] = tmp; /* pivô para a posição final */
@@ -298,6 +308,9 @@ void quickSort(int a[], int esq, int dir) {
 // feito por IA
 // compara dois nomes ignorando maiusculas/minusculas (mesmo criterio do radix)
 // retorna < 0 se a vem antes de b, 0 se sao iguais, > 0 se a vem depois de b
+
+// essa funcao existe pra corrigir o problema de um zé estar na frente de ANA.
+// Causado pela tabela ASCII e maiusculas e minusculas.
 int compararNomes(const string& a, const string& b) {
     int n = (a.size() < b.size()) ? a.size() : b.size();
     for (int k = 0; k < n; k++) {
@@ -307,6 +320,10 @@ int compararNomes(const string& a, const string& b) {
     }
     return (int)a.size() - (int)b.size();   /* prefixo menor vem antes ("ab" < "abc") */
 }
+
+
+// Adaptações
+// agora recebemos um vetor de jogadores que será ordenado com base nos seus nomes.
 
 int particionarAdaptado(Jogador vetor[], int esq, int dir) {
     string pivo = vetor[dir].nome_jogador;   /* o último elemento é o pivô */
@@ -332,6 +349,12 @@ void quickSortRecAdaptado(Jogador vetor[], int esq, int dir) {
     quickSortRecAdaptado(vetor, p + 1, dir);         /* recombinação: nada a fazer */
 }
 
+
+// Ela chama a si mesma duas vezes, uma para a parte à esquerda do pivô,
+// e outra para a parte à direita
+
+// Essa de cima eh a funcao que de fato entra no menu, ela chama todas as auxiliares
+
 double quickSortAdaptado(Jogador vetor[], int tamanhoVetor) {
     Timer t;
     timer_iniciar(&t);
@@ -343,4 +366,5 @@ double quickSortAdaptado(Jogador vetor[], int tamanhoVetor) {
     double tempoExecucao = timer_parar(&t);
     return tempoExecucao;
 }
+
 

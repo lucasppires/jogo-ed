@@ -181,6 +181,7 @@ bool removeIngredienteEstragado(int turnoAtual, FilaPrioridade* turnosDeVencimen
 
 bool usaIngredientePerecivel(char codigo, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, PilhaEnc *p){
 
+    // Primeiramente, é buscado qual ingrediente bate com o codigo que o usuario quer adicionar ao hamburguer.
     const Ingrediente *usado = buscarIngrediente(codigo);
 
     // digitou uma letra invalida
@@ -191,12 +192,13 @@ bool usaIngredientePerecivel(char codigo, FilaPrioridade *carnes, FilaPrioridade
 
         switch(usado->simbolo){
             case 'n':
-                // para usar, deve existir pelo menos um ingrediente. Se existir, removemos-o da heap
+                // Intuitivo. para usar, deve existir pelo menos um ingrediente. Se existir, removemos-o da heap
                 if(fpEstaVazia(carnes)){
                     cout << "Nao ha carne disponivel!" << endl;
                     return false;
                 }
                 else{
+                    // Se a min-heap não está vazia, ...
                     int vencimento;
 
                     // so tira a unidade do heap se ela realmente entrou no hamburguer
@@ -206,10 +208,14 @@ bool usaIngredientePerecivel(char codigo, FilaPrioridade *carnes, FilaPrioridade
                         return false;
                     }
 
+                    // remove da heap. 
+                    // ele remove aquele que tem maior prioridade, isto é, aquele que tem o menor turno de vencimento da min-heap.
                     fpRemoverMinimo(carnes, &vencimento);
                     cout << "Adicionaste carne." << endl;
                 }
             break;
+
+            // AS MESMAS EXPLICACOES VALEM PRO OVO E PRO BACON.
 
             case 'o':
                 // para usar, deve existir pelo menos um ingrediente. Se existir, removemos-o da heap
@@ -257,8 +263,11 @@ bool usaIngredientePerecivel(char codigo, FilaPrioridade *carnes, FilaPrioridade
     return false;
 }
 
+// A essa funcao nao eh passado os min-heaps, obviamente,
+// porque os naoPereciveis sao passados em array.
 bool usaIngredienteNaoPerecivel(char codigo, int contadorDeQuantidadesDisponiveis[], PilhaEnc *p){
 
+    // ve qual ingrediente bate com o do usuario
     const Ingrediente *usado = buscarIngrediente(codigo);
 
     // digitou uma letra invalida
@@ -288,19 +297,30 @@ bool usaIngredienteNaoPerecivel(char codigo, int contadorDeQuantidadesDisponivei
         switch (usado->simbolo){
             // so desconta do estoque se o ingrediente realmente entrou no hamburguer
             case 's':
+
+                // Primeiro verifica se naquela posicao a posicao é maior que zero
+                // se a posicao eh zero, entao o estoque desse ingrediente ta vazio
                 if(contadorDeQuantidadesDisponiveis[0] > 0){
+
+                    // adiciona o ingrediente à pilha.
                     bool resultado = adicionar_ingrediente(p, usado->simbolo);
                     if (!resultado){
                         cout << "Nao foi possivel adicionar queijo suico." << endl;
                         return false;
                     }
+
+                    // diminui a quantidade desse ingrediente em 1 unidade.
                     contadorDeQuantidadesDisponiveis[0]--;
                 }
                 else{
                     cout << "Nao ha queijo suico disponivel!" << endl;
                     return false;
                 }
+
             break;
+            
+
+            // O MESMO VALE PRA TODOS!
             
             case 'q':
                 if(contadorDeQuantidadesDisponiveis[1] > 0){

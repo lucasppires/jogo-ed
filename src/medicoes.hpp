@@ -29,7 +29,6 @@ struct Metricas{
     double tempoOrdenacao = 0.0;
 };
 
-extern Metricas met;   // definida em main.cpp
 
 bool iniciaLog(const string& caminho, const Metricas& m);
 

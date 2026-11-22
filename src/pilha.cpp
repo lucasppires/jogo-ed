@@ -61,6 +61,7 @@ void esvaziarPilha(PilhaEnc *p){
     while (desempilha(p, &lixo)) {}
 }
 
+// essa função recebe uma string, na qual cada char é um simbolo == ingrediente, e poe numa pilha cada ingrediente.
 void montarPilhaViaSimbolos(PilhaEnc *p, const char *simbolos){
     esvaziarPilha(p);
     for (int i = 0; simbolos[i] != '\0'; i++)

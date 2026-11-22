@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 
-// tADs e funcoes do jogo
+// TADs e funcoes do jogo
 #include "avl.hpp"
 #include "listacontest.hpp"
 #include "hash.hpp"
@@ -22,20 +22,20 @@ using namespace std;
 // executar no PowerShell:
 // .\dado_burger.exe data\pedidos.txt data\historico.txt
 
-
-Metricas met; 
-
 int main(int argc, char *argv[])
 {
-   if (confere_argc_e_argv(argc, argv) != 0) // verifica se os argumentos de linha de comando estão corretos
-   {
+    if (confere_argc_e_argv(argc, argv) != 0) // verifica se os argumentos de linha de comando estão corretos
+    {
       return 1;
-   }
+    }
+
+    Metricas met; //guarda as metricas de desempenho, passada por referencia para as funcoes que medem algo
 
     NodoAvl *raiz = nullptr; //cria a raiz da arvore AVL que vai armazenar os pedidos
     double tempoPedidos = 0.0;
 
     int pedidosLidos = carregarPedidosAVL(argv[1], &raiz, &tempoPedidos, met); //carrega os pedidos do arquivo para a arvore AVL
+
 
     if (pedidosLidos < 0) 
     {
@@ -96,14 +96,17 @@ int main(int argc, char *argv[])
             PilhaEnc hamburguer;
             inicializa(&hamburguer);
 
+            // Inicializam-se as min-heaps dos pereciveis
             FilaPrioridade carnes, ovos, bacons;
             fpInicializar(&carnes);
             fpInicializar(&ovos);
             fpInicializar(&bacons);
 
+            // Inicializa-se o array dos não perecíveis
             int quantidades[4] = {0, 0, 0, 0}; // s, q, c, t
 
-            //aqui chamamos a funcao que é o motor do jogo. é la que ocorrem a montagem de hamburgers, laços de turnos, etc
+            //aqui chamamos a funcao que é o motor do jogo. 
+            // é la que ocorrem a montagem de hamburgers, laços de turnos, etc
             novoJogo(raiz, &cache, ESTADO_MENU, argv, &hamburguer, &carnes, &ovos, &bacons, 0, quantidades, &player, met, &lista_historico, DIFICULDADE);
             
             ESTADO_MENU = MENU; //depois que acaba o jogo, volta automaticamente para o menu
@@ -114,13 +117,14 @@ int main(int argc, char *argv[])
         }
         else if (ESTADO_MENU == HISTORICO)
         {
-            historicov3(ESTADO_MENU, &lista_historico); //exibe o historico, com diferentes formas de ordenamento
+            historicov3(ESTADO_MENU, &lista_historico, met); //exibe o historico, com diferentes formas de ordenamento
 
         }
 
     }   
 
     //se cair aqui, é pq o ESTADO_MENU é SAIR
+    // evita o memory leak.
     liberar_recursos(raiz, &lista_historico, &cache);
     return 0; //encerrar_programa();
     
