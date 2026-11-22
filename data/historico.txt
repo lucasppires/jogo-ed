@@ -200078,37 +200078,8 @@ Patricia
 740
 pefoj
 0
-<<<<<<< HEAD
 
 0
-=======
-TST
-480
-
-645
-
-600
-
-680
-Max Heap
-645
-
-0
-q
-615
-1
-45
-.
-0
-1
-0
-1
-0
-
-0
-T8
-450
->>>>>>> 595d402857b74bef32b05d8f6f5a4100e946e9ee
 ez
 585
 c
@@ -200117,7 +200088,11 @@ c
 0
 cv
 0
-
-405
-
-0
+Schen
+740
+Lucimara Regina
+640
+Thigas
+490
+Gustavinho
+480
