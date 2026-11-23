@@ -109,8 +109,7 @@ bool selecionar_dificuldade(int &dificuldade)
         // aceita somente um digito entre 1 e 3
         if (opcaoDificuldade.size() == 1 && opcaoDificuldade[0] >= '1' && opcaoDificuldade[0] <= '3') 
         {
-            // os valores de FACIL, NORMAL e DIFICIL sao 2, 3 e 4
-            dificuldade = opcaoDificuldade[0] - '0' + 1;
+            dificuldade = opcaoDificuldade[0] - '0';
             pula_linha(2);
             return true;
         }
@@ -126,51 +125,71 @@ void como_jogar(int& estado_menu)
     cout << R"(
     COMO JOGAR - DADO BURGER
 
+    E o seu primeiro dia de trabalho na lanchonete Dado Burger, a mais
+    movimentada da cidade! Seu objetivo e montar os hamburgueres
+    exatamente como os clientes pedem. Afinal, voce nao quer ter
+    problemas com seu chefe logo no primeiro dia, ne?
+
     Atenda os 3 clientes da partida, na ordem de chegada.
     Cada cliente tem uma receita e sua propria paciencia.
-    Somente o cliente da frente perde paciencia enquanto e atendido.
+    Somente o cliente em atendimento perde paciencia.
 
     DIFICULDADE E PONTUACAO
-    A paciencia inicial depende dos turnos para preparar e montar a
-    receita, incluindo 1 turno reservado para enviar o pedido.
 
-    Facil    - 4 turnos de margem e multiplicador de pontos x1.
-    Normal   - 2 turnos de margem e multiplicador de pontos x1,5.
-    Dificil  - sem margem adicional e multiplicador de pontos x2.
+    A paciencia inicial depende dos turnos necessarios para preparar,
+    montar e enviar o pedido. Cada dificuldade acrescenta uma margem:
 
-    A cada atendimento concluido, voce recebe
-    10 x paciencia restante x multiplicador da dificuldade.
-    A pontuacao final e a soma dos pontos dos clientes atendidos.
+    Facil   - 5 turnos adicionais.
+    Normal  - 3 turnos adicionais.
+    Dificil - 1 turno adicional.
+
+    Os pontos de cada atendimento correto sao calculados assim:
+
+    Facil   - paciencia restante x 10.
+    Normal  - (paciencia restante + 2) x 10 x 1,5.
+    Dificil - (paciencia restante + 4) x 10 x 2.
+
+    Os adicionais na pontuacao compensam a menor paciencia dos clientes
+    nos niveis normal e dificil. Os multiplicadores recompensam a
+    dificuldade escolhida. A pontuacao final soma os pontos de todos
+    os clientes atendidos.
 
     MONTANDO O PEDIDO
+
     Confira a receita e adicione os ingredientes na ordem indicada,
-    de baixo para cima. O pao de baixo ja esta no prato.
+    de baixo para cima. O primeiro ingrediente da lista fica na base.
+    O pao de baixo ja esta no prato e nao pode ser removido.
+
     Coloque o pao de cima (z) por ultimo e escolha Enviar pedido.
     O hamburguer precisa corresponder exatamente a receita.
 
     Voce so pode remover o ingrediente do topo. Ele e descartado
-    e nao volta ao estoque. O pao de baixo permanece no prato.
-    Depois do pao de cima, remova-o antes de adicionar outra camada.
+    e nao volta ao estoque. Para adicionar outra camada depois
+    do pao de cima, primeiro remova esse pao.
+
+    Se o pedido estiver errado, o hamburguer permanece montado
+    para que voce possa corrigi-lo enquanto ainda houver paciencia.
 
     INGREDIENTES
+
     Sem preparo e com quantidade ilimitada
     z - Pao de cima    k - Ketchup    m - Mostarda
     p - Picles        a - Alface
 
-    Precisam de preparo e permanecem no estoque sem vencer
+    Precisam de preparo e nao vencem no estoque
     s - Queijo suico   q - Queijo cheddar
     c - Cebola        t - Tomate
 
     Precisam de preparo e vencem no estoque
-    n - Carne - Validade: 4 turnos
-    o - Ovo frito - Validade: 2 turnos
-    b - Bacon - Validade: 3 turnos
-    
+    n - Carne         validade de 4 turnos
+    o - Ovo frito     validade de 2 turnos
+    b - Bacon         validade de 3 turnos
 
     ACOES NA PARTIDA
+
     1 - Adicionar um ingrediente ao hamburguer.
-    2 - Remover o ingrediente do topo.
-    3 - Enviar o pedido para conferir a montagem e atender o cliente.
+    2 - Remover e descartar o ingrediente do topo.
+    3 - Enviar o pedido para conferir a montagem.
     4 - Preparar uma unidade de carne, ovo ou bacon.
     5 - Preparar uma unidade de queijo, cebola ou tomate.
     6 - Consultar o estoque.
@@ -178,25 +197,33 @@ void como_jogar(int& estado_menu)
 
     Preparar, adicionar e remover consomem 1 turno por tentativa.
     Enviar um pedido incorreto tambem consome 1 turno.
-    Ao enviar corretamente, o proximo cliente passa a ser atendido.
+    Ao enviar corretamente, o cliente sai da fila e o proximo
+    passa a ser atendido.
+
     Consultar o estoque e sair nao consomem turno.
     A receita e o hamburguer atual aparecem na tela de acoes.
 
     ESTOQUE E VALIDADE
+
     Prepare as unidades necessarias antes de adiciona-las.
     Para usar um ingrediente preparado, deve haver uma unidade
     disponivel no estoque. Ao usa-la, a quantidade diminui em 1.
 
-    No inicio de cada turno, as unidades pereciveis vencidas sao
-    descartadas. Uma unidade preparada no turno 1 vence no inicio
-    do turno 4. Ao usar um perecivel, sai primeiro o que vence antes.
+    Na contagem atual, a validade permite usar o ingrediente nos
+    turnos seguintes ao preparo. Uma carne preparada no turno 1
+    pode ser usada nos turnos 2, 3, 4 e 5. Se continuar no estoque,
+    sera descartada no inicio do turno 6.
+
+    Ao usar um perecivel, sai primeiro a unidade mais proxima de vencer.
+    Ingredientes ja adicionados ao hamburguer saem do estoque.
 
     Na consulta ao estoque, voce ve as quantidades e quantos turnos
     faltam para o proximo vencimento. Para voltar, digite uma tecla
     e pressione Enter.
 
     FIM DA PARTIDA
-    Atenda todos os clientes para vencer.
+
+    Atenda todos os clientes para vencer!
     Se a paciencia do cliente da frente acabar com o pedido pendente,
     a partida termina em GAME OVER. Voce tambem pode sair pela opcao 7.
 

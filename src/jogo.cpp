@@ -305,15 +305,15 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
 
         if (dificuldade == FACIL)
         {
-             pacienciaInicial[i] += 4; //usamos essa funcao para contar o numero minimo de turnos e somamos 4, para nao ser tao dificil tb
+             pacienciaInicial[i] += 5; //usamos essa funcao para contar o numero minimo de turnos e somamos 5, para nao ser tao dificil tb
         }
         else if (dificuldade == NORMAL)
         {
-            pacienciaInicial[i] += 2;
+            pacienciaInicial[i] += 3;
         }
         else if (dificuldade == DIFICIL)
         {
-            pacienciaInicial[i] += 0;
+            pacienciaInicial[i] += 1;
         }
         
         // criamos o cliente
@@ -466,7 +466,19 @@ void novoJogo(NodoAvl *raiz, TabelaEnc *cache, int &estado_menu, char *argv[], P
                         desenfileira(&clientes, &atendido);
                         esvaziarPilha(p);
 
-                        player->score += atendido.paciencia_restante * (10*((float) dificuldade/2)); //se é facil mult por 1; normal mult por 1.5 e difiil mult por 2
+                        if (dificuldade == FACIL)
+                        {
+                            player->score += atendido.paciencia_restante * 10 * 1; //se é facil mult por 1; normal mult por 1.5 e difiil mult por 2
+                        }
+                        else if (dificuldade == NORMAL)
+                        {
+                            player->score += (atendido.paciencia_restante + 2) * 10 * 1.5; 
+                        }
+                        else if (dificuldade == DIFICIL)
+                        {
+                            player->score += (atendido.paciencia_restante + 4) * 10 * 2;  //esses adicionais sao para compensar o numero de turnos a menos em relacao ao facil
+                        }
+
 
                         cout << "Cliente " << atendido.id
                              << " foi atendido e saiu da fila." << endl;

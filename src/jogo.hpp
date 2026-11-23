@@ -17,10 +17,10 @@ struct Jogador {
 };
 
 typedef enum {
-    FACIL = 2,
-    NORMAL = 3,
-    DIFICIL = 4
-} DIFICULDADE; //esses valores estao dobrados para facilitar o multiplicador de pontos ao final da partida
+    FACIL = 1,
+    NORMAL = 2,
+    DIFICIL = 3
+} DIFICULDADE; 
 
 struct ListaContEst;   // declaração antecipada: definida em listacontest.hpp
 
