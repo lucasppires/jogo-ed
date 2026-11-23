@@ -12,6 +12,9 @@ using namespace std;
 #include "timer.hpp"
 #include "leitura_de_arquivos.hpp"
 
+// O que consta em cada nodo da AVL é uma struct Pedido
+// Cada nodo guarda, logo, um código (int) e uma receita (lista encadeada).
+// A receita original do arquivo (string) é transformada em lista encadeada.
 
 int carregarPedidosAVL(const char *arquivo, NodoAvl **raiz, double *tempo, Metricas &met)
 {

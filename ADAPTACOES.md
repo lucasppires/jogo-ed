@@ -18,6 +18,7 @@ Este arquivo reúne as alterações feitas nos códigos do Moodle e no restante 
 6. TAD Hash (encadeamento separado)
 7. TAD Heap / Fila de prioridade
 8. Ordenação (Merge Sort e Heap Sort)
+8.1. Ordenação de strings (Quick Sort)
 
 **Parte 2 — Outros módulos**
 
@@ -234,6 +235,22 @@ Este arquivo reúne as alterações feitas nos códigos do Moodle e no restante 
 
 **Pendências**
 - ⏳ Medir a ordenação com pelo menos 3 tamanhos de histórico para o relatório.
+
+## 8.1. Ordenação de strings — Quick Sort (`sortings.hpp` / `sortings.cpp`) — mudanças em 15/11, 16/11, 17/11, 21/11
+
+1. Em 15/11, a ordenação do histórico por nome foi feita primeiro com Radix Sort (`radixSortAdaptado`, LSD). Em 16/11, ela passou a usar Quick Sort, porque o Radix Sort não tinha sido visto em aula. O código do Radix continua em `sortings.cpp`, mas não é mais chamado pelo menu.
+2. A base é o Quick Sort visto em aula (`particionar` e `quickSort`), que ordena um vetor de `int` e usa o último elemento como pivô (partição de Lomuto). Essas duas funções foram mantidas sem alteração.
+3. Foram criadas versões adaptadas que recebem um vetor da struct `Jogador` e comparam o campo `nome_jogador` (uma `string`) em vez de um inteiro: `particionarAdaptado`, `quickSortRecAdaptado` e `quickSortAdaptado`. A troca de posições passou a mover o `Jogador` inteiro, para que o nome continue junto do escore.
+4. Como `<=` entre inteiros não serve para nomes, foi criada `compararNomes` (feita com ajuda de IA). Ela compara caractere a caractere ignorando maiúsculas e minúsculas (`tolower`), mesmo critério que era usado no Radix, e devolve um valor negativo, zero ou positivo. Quando um nome é prefixo do outro, o menor vem antes (`"ab"` antes de `"abc"`).
+5. Na partição, a condição `a[j] <= pivo` virou `compararNomes(vetor[j].nome_jogador, pivo) <= 0`. O pivô é copiado para uma `string` antes do laço.
+6. Assim como `mergeSortAdaptado`, `quickSortAdaptado` funciona como função de entrada: recebe o vetor e o tamanho, chama a recursão `quickSortRecAdaptado(vetor, 0, tamanhoVetor - 1)`, mede o tempo com `Timer` e devolve um `double` com esse tempo. Para vetores com 0 ou 1 elemento, retorna `0.0` sem ordenar.
+7. No Histórico (`funcoes_menu.cpp`), a opção 2 ("por ordem alfabética") chama `quickSortAdaptado`, guarda tamanho e tempo na `Metricas` (`tamanhoOrdenacao` e `tempoOrdenacao`) e grava a linha `"Quick Sort (nomes)"` no `medicoes.log` por meio de `registraOrdenacao`. Em 17/11, o caminho do log passou a ser `data/medicoes.log`.
+8. Para imprimir, foi adicionado o parâmetro `bool ehPorScore` a `imprime_dez_primeiros` e `imprime_de_1_a_9`; com `false`, o título indica a ordem alfabética em vez do ranking por escore.
+9. Em 21/11, os comentários das funções foram revisados.
+
+**Pendências**
+- ⏳ Medir o Quick Sort com pelo menos 3 tamanhos de histórico para o relatório.
+- ⏳ O pivô fixo no último elemento leva ao pior caso, O(n²), quando o vetor já está ordenado por nome (por exemplo, ao ordenar duas vezes seguidas). Com o tamanho atual do histórico isso não pesa, mas vale citar no relatório.
 
 ---
 
