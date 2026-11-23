@@ -1,7 +1,6 @@
 #include <iostream>
 #include <iomanip>
 
-using namespace std;
 #include <string>
 #include "jogo.hpp"
 #include "fila.hpp"
@@ -24,22 +23,10 @@ using namespace std;
 #include "timer.hpp"
 #include "sortings.hpp"
 
-
-
+using namespace std;
 
 #define N_MAX_CLIENTES 100
 #define N_CLIENTES 3
-
-
-
-// essa funcao deve rodar no inicio de cada turno
-void removeEstragadosHeap(int turnoAtual, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons)
-{
-    removeIngredienteEstragado(turnoAtual, carnes);
-    removeIngredienteEstragado(turnoAtual, ovos);
-    removeIngredienteEstragado(turnoAtual, bacons);
-}
-
 
 
 

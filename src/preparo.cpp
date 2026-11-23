@@ -375,10 +375,12 @@ bool usaIngredienteNaoPerecivel(char codigo, int contadorDeQuantidadesDisponivei
 
 }
 
-// isso aqui deve ficar no inicio de cada turno do jogo!!
-//removeIngredienteEstragado(turnoAtual, &carnes);
-//removeIngredienteEstragado(turnoAtual, &ovos);
-//removeIngredienteEstragado(turnoAtual, &bacons);
-
+// essa funcao deve rodar no inicio de cada turno
+void removeEstragadosHeap(int turnoAtual, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons)
+{
+    removeIngredienteEstragado(turnoAtual, carnes);
+    removeIngredienteEstragado(turnoAtual, ovos);
+    removeIngredienteEstragado(turnoAtual, bacons);
+}
 
 

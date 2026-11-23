@@ -16,4 +16,6 @@ bool removeIngredienteEstragado(int turnoAtual, FilaPrioridade *turnosDeVencimen
 bool usaIngredientePerecivel(char codigo, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons, PilhaEnc *p);
 bool usaIngredienteNaoPerecivel(char codigo, int contadorDeQuantidadesDisponiveis[], PilhaEnc *p);
 
+void removeEstragadosHeap(int turnoAtual, FilaPrioridade *carnes, FilaPrioridade *ovos, FilaPrioridade *bacons);
+
 #endif /* teste_HEAP_HPP */

@@ -200116,3 +200116,9 @@ Alvaro
 300
 0
 1020
+Kleber
+500
+Pedrinho
+500
+Iuri
+530
