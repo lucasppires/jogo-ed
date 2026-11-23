@@ -200088,7 +200088,6 @@ c
 0
 cv
 0
-<<<<<<< HEAD
 
 405
 
@@ -200107,16 +200106,6 @@ q
 700
 m
 0
-=======
-Schen
-740
-Lucimara Regina
-640
-Thigas
-490
-Gustavinho
-480
->>>>>>> 42921d04c6e7c00a5d4f5453764c15d047829bc7
 Juninho
 410
 f
