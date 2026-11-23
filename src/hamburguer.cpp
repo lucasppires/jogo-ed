@@ -12,7 +12,8 @@
 using namespace std;
 
 
-// creio eu que essa função acabou nao sendo utilizada no jogo, mas fica a recordação kkk
+// essa função é utilizada nas funcoes usaIngredientePerecivel e usaIngredienteNaoPerecivel,
+// para colocar ingredientes no hamburguer.
 bool adicionar_ingrediente(PilhaEnc *p, char adicionado){
     Ingrediente aux;
     aux.simbolo = adicionado;
@@ -96,6 +97,7 @@ bool adicionar_ingrediente(PilhaEnc *p, char adicionado){
         return false;
 }
 }
+
 
 // a parte da remoção é bem intuitiva e segue a logica LIFO,
 // ele so consegue desempilhar se há algum nodo.
