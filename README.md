@@ -4,12 +4,6 @@
 
 **Um jogo de hamburgueria por turnos, no terminal, feito para colocar em prática as estruturas de dados do semestre.**
 
-![C++17](https://img.shields.io/badge/C%2B%2B-17-00599C?logo=cplusplus&logoColor=white)
-![Terminal](https://img.shields.io/badge/interface-terminal-1E293B?logo=windowsterminal&logoColor=white)
-![UFRGS](https://img.shields.io/badge/UFRGS-INF01203-8B0000)
-![Semestre](https://img.shields.io/badge/semestre-2026%2F2-blue)
-![Sem STL](https://img.shields.io/badge/estruturas-feitas%20na%20m%C3%A3o-orange)
-
 *Trabalho Prático Final de Estruturas de Dados (INF01203) · UFRGS · Prof. Dennis Giovani Balreira · Turma C*
 
 **Lucas Pires** · **Mateus Schenato**
