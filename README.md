@@ -15,6 +15,7 @@
 ## 📋 Sumário
 
 - [Sobre o jogo](#-sobre-o-jogo)
+- [Screenshots](#-screenshots)
 - [Como compilar e executar](#-como-compilar-e-executar)
 - [Como jogar](#-como-jogar)
 - [Ingredientes](#-ingredientes)
@@ -43,6 +44,26 @@ Por trás da chapa, tudo é estrutura de dados:
 - o histórico de partidas fica numa **lista contígua** e é ordenado com **Merge Sort** e **Quick Sort**.
 
 > Nenhuma estrutura pronta da STL (`std::map`, `std::stack`, `std::queue`, `std::priority_queue`...) é usada. Todas partem dos códigos das aulas, convertidos de C para C++ e adaptados ao jogo.
+
+---
+
+## 📸 Screenshots
+
+<div align="center">
+
+**Menu inicial**
+
+<img src="assets/01_menu.png" alt="Menu inicial do Dado Burger" width="560">
+
+**Partida em andamento:** pedido do cliente, receita a montar e o hambúrguer na chapa
+
+<img src="assets/02_partida.png" alt="Primeiro turno de uma partida" width="560">
+
+**Histórico:** ranking ordenado por pontuação com Merge Sort
+
+<img src="assets/03_historico.png" alt="Histórico ordenado por score" width="560">
+
+</div>
 
 ---
 

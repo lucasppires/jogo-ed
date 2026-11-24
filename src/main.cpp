@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 
     // Relacionado à tabela hash, cuja função é h(k) = k mod 11.
         TabelaEnc cache; 
-        encInicializar(&cache, 11);
+        encInicializar(&cache, 11);  
 
 
 
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
     int DIFICULDADE = 0; //determina se é facil , medio ou dificil
 
     while (ESTADO_MENU != SAIR) //enquanto o estado_menu nao for sair
-        {
+    {
 
         if (ESTADO_MENU == MENU)
         {
